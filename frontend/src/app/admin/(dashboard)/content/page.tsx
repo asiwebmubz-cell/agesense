@@ -56,8 +56,38 @@ export default function ContentAdminPage() {
 
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsPublishing(true);
     setError("");
+
+    // ── Pre-flight validation (mirrors createProgramSchema rules) ──────────────
+    if (title.trim().length < 3) {
+      setError("Title must be at least 3 characters.");
+      return;
+    }
+    if (contentBody.trim().length < 10) {
+      setError("Content / description must be at least 10 characters.");
+      return;
+    }
+
+    const isValidUrl = (val: string) => {
+      if (!val) return true; // empty is fine (optional)
+      try { new URL(val); return true; } catch { return false; }
+    };
+
+    if (videoUrl && !isValidUrl(videoUrl)) {
+      setError("Video URL must be a valid URL (e.g. https://example.com/video.mp4).");
+      return;
+    }
+    if (galleryLink1 && !isValidUrl(galleryLink1)) {
+      setError("Gallery Item 1 Link must be a valid URL.");
+      return;
+    }
+    if (galleryLink2 && !isValidUrl(galleryLink2)) {
+      setError("Gallery Item 2 Link must be a valid URL.");
+      return;
+    }
+    // ── End pre-flight ─────────────────────────────────────────────────────────
+
+    setIsPublishing(true);
 
     try {
       let image_url = "";
