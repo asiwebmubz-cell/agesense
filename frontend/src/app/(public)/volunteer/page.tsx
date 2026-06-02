@@ -261,29 +261,8 @@ export default function VolunteerPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="bg-surface-container-low py-16">
-        <div className="px-4 md:px-8 max-w-[1200px] mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <p className="text-4xl md:text-5xl text-primary font-bold">2.5k+</p>
-              <p className="text-sm font-medium text-on-surface-variant">Active Volunteers</p>
-            </div>
-            <div>
-              <p className="text-4xl md:text-5xl text-primary font-bold">15k</p>
-              <p className="text-sm font-medium text-on-surface-variant">Seniors Supported</p>
-            </div>
-            <div>
-              <p className="text-4xl md:text-5xl text-primary font-bold">50k+</p>
-              <p className="text-sm font-medium text-on-surface-variant">Hours Logged</p>
-            </div>
-            <div>
-              <p className="text-4xl md:text-5xl text-primary font-bold">98%</p>
-              <p className="text-sm font-medium text-on-surface-variant">Satisfaction Rate</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Spacer */}
+      <div className="py-12"></div>
     </>
   );
 }
