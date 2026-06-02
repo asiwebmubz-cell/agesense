@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-surface: #f8f9ff;
+  --color-surface-dim: #d8dae1;
+  --color-surface-bright: #f8f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f1f3fa;
+  --color-surface-container: #eceef5;
+  --color-surface-container-high: #e6e8ef;
+  --color-surface-container-highest: #e0e2e9;
+
+  --color-on-surface: #181c21;
+  --color-on-surface-variant: #404751;
+  --color-inverse-surface: #2d3136;
+  --color-inverse-on-surface: #eff1f7;
+
+  --color-outline: #717882;
+  --color-outline-variant: #c0c7d3;
+  --color-surface-tint: #0061a3;
+
+  --color-primary: #0071bc;
+  --color-primary-dark: #005894;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #0071bc;
+  --color-on-primary-container: #eaf1ff;
+  --color-inverse-primary: #9ecaff;
+
+  --color-secondary: #3f6088;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #b0d1ff;
+  --color-on-secondary-container: #385a81;
+
+  --color-tertiary: #874300;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #ab5702;
+  --color-on-tertiary-container: #ffeee5;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-background: #ffffff;
+  /* Changed base to white as per DESIGN.md level 0 */
+  --color-on-background: #181c21;
+  --color-surface-variant: #e0e2e9;
+
+  --color-brand-blue: #0071bc;
+  --color-brand-navy: #0c3459;
+  --color-brand-ice: #f2f7fa;
+
+  --font-sans: var(--font-inter);
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  --shadow-card: 0px 4px 12px rgba(12, 52, 89, 0.05);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-sans), sans-serif;
+}
