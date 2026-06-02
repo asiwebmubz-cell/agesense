@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useApi } from "@/hooks/useApi";
 import { getPublishedPrograms } from "@/services/programs.service";
@@ -13,122 +12,18 @@ export default function Home() {
   const { data: stats, loading: statsLoading } = useApi(getStats);
   const programs = allPrograms?.slice(0, 3) ?? [];
 
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  // Auto-play timer for carousel
-  useEffect(() => {
-    if (!allPrograms || allPrograms.length === 0) return;
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % allPrograms.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [allPrograms]);
-
-  const handlePrevSlide = () => {
-    if (!allPrograms || allPrograms.length === 0) return;
-    setCurrentSlide((prev) => (prev - 1 + allPrograms.length) % allPrograms.length);
-  };
-
-  const handleNextSlide = () => {
-    if (!allPrograms || allPrograms.length === 0) return;
-    setCurrentSlide((prev) => (prev + 1) % allPrograms.length);
-  };
-
   return (
     <>
-      {/* Hero / Carousel Section */}
+      {/* Hero Section (Static Banner) */}
       <section className="relative bg-background py-0 sm:py-6 md:py-10">
         <div className="max-w-[1200px] mx-auto px-0 sm:px-4 md:px-8">
-          {!allPrograms || allPrograms.length === 0 ? (
-            // Fallback to static banner if no published programs exist
-            <div className="relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-b sm:border border-outline-variant/20 sm:rounded-3xl">
-              <img 
-                src="/hero-01.png" 
-                alt="AgeSense Initiative Banner" 
-                className="w-full h-auto block"
-              />
-            </div>
-          ) : (
-            // Gorgeous dynamic sliding carousel
-            <div className="relative h-[350px] sm:h-[450px] md:h-[520px] w-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-b sm:border border-outline-variant/20 sm:rounded-3xl bg-neutral-900 group">
-              
-              {/* Slides wrapper */}
-              <div className="relative w-full h-full">
-                {allPrograms.map((program, idx) => (
-                  <div
-                    key={program.id}
-                    className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
-                      idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
-                    }`}
-                  >
-                    {program.image_url ? (
-                      <img
-                        src={program.image_url}
-                        alt={program.title}
-                        className="w-full h-full object-cover brightness-[0.6]"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-tr from-primary/80 to-secondary/80 opacity-70" />
-                    )}
-
-                    {/* Content overlay */}
-                    <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-12 md:p-16 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
-                      <div className="max-w-2xl space-y-4">
-                        <span className="inline-block px-3 py-1 text-xs font-bold tracking-wider uppercase bg-secondary text-on-secondary rounded-full">
-                          {program.type === "Our Programs" ? "Program" : program.type}
-                        </span>
-                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight">
-                          {program.title}
-                        </h2>
-                        <p className="text-sm sm:text-base md:text-lg text-white/90 line-clamp-2 leading-relaxed">
-                          {program.description}
-                        </p>
-                        <div className="pt-2">
-                          <Link
-                            href={`/programs/${program.id}`}
-                            className="inline-flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-full text-sm font-bold hover:shadow-lg hover:bg-primary/90 transition-all transform active:scale-95"
-                          >
-                            Read More
-                            <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Navigation Arrows */}
-              <button
-                onClick={handlePrevSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
-                aria-label="Previous Slide"
-              >
-                <span className="material-symbols-outlined !text-3xl">chevron_left</span>
-              </button>
-              <button
-                onClick={handleNextSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
-                aria-label="Next Slide"
-              >
-                <span className="material-symbols-outlined !text-3xl">chevron_right</span>
-              </button>
-
-              {/* Dot Indicators */}
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-                {allPrograms.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentSlide(idx)}
-                    className={`h-2.5 rounded-full transition-all duration-300 ${
-                      idx === currentSlide ? "w-8 bg-primary" : "w-2.5 bg-white/50 hover:bg-white"
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          <div className="relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-b sm:border border-outline-variant/20 sm:rounded-3xl transition-all duration-500 hover:scale-[1.002]">
+            <img 
+              src="/hero-01.png" 
+              alt="AgeSense Initiative Banner" 
+              className="w-full h-auto block"
+            />
+          </div>
         </div>
       </section>
 
@@ -200,7 +95,11 @@ export default function Home() {
               <div className="col-span-3">
                 <ErrorMessage message={error} onRetry={refetch} />
               </div>
-            ) : programs.length === 0 ? null : (
+            ) : programs.length === 0 ? (
+              <div className="col-span-3 text-center py-12 text-on-surface-variant italic">
+                No published programs found.
+              </div>
+            ) : (
               programs.map((item) => (
                 <div key={item.id} className="bg-surface-container-low rounded-lg overflow-hidden border border-outline-variant hover:shadow-xl transition-all duration-300 flex flex-col">
                   <div className="h-48 overflow-hidden bg-primary/10 flex items-center justify-center relative">
@@ -274,23 +173,23 @@ export default function Home() {
                 </div>
               </div>
               <div className="hidden md:block">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4 translate-y-8">
-                <img className="rounded-xl aspect-square object-cover" alt="Gardening" src="/img/IMG-20250308-WA0024.jpg" />
-                <img className="rounded-xl aspect-square object-cover" alt="Hand stack" src="/img/IMG-20250318-WA0052.jpg" />
-              </div>
-              <div className="space-y-4">
-                <img className="rounded-xl aspect-square object-cover" alt="Laughing man" src="/img/IMG-20250318-WA0058.jpg" />
-                <img className="rounded-xl aspect-square object-cover" alt="Park walk" src="/img/IMG-20250318-WA0062.jpg" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-4 translate-y-8">
+                    <img className="rounded-xl aspect-square object-cover" alt="Gardening" src="/img/IMG-20250308-WA0024.jpg" />
+                    <img className="rounded-xl aspect-square object-cover" alt="Hand stack" src="/img/IMG-20250318-WA0052.jpg" />
+                  </div>
+                  <div className="space-y-4">
+                    <img className="rounded-xl aspect-square object-cover" alt="Laughing man" src="/img/IMG-20250318-WA0058.jpg" />
+                    <img className="rounded-xl aspect-square object-cover" alt="Park walk" src="/img/IMG-20250318-WA0062.jpg" />
+                  </div>
+                </div>
               </div>
             </div>
+            {/* Decorative Circle */}
+            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary rounded-full opacity-20 blur-3xl"></div>
           </div>
         </div>
-        {/* Decorative Circle */}
-        <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary rounded-full opacity-20 blur-3xl"></div>
-      </div>
-    </div >
-      </section >
+      </section>
     </>
   );
 }
