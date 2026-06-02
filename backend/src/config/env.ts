@@ -17,10 +17,15 @@ const envSchema = z.object({
   ADMIN_EMAIL: z.string().email().optional(),
   ADMIN_PASSWORD: z.string().min(6).optional(),
 
-  // Database (optional until DB layer is wired)
-  DATABASE_URL: emptyStringToUndefined(z.string().optional()),
+  // Database connection string
+  DATABASE_URL: z.string({ required_error: 'DATABASE_URL is required' }).min(1),
 
-  // ImgBB
+  // Cloudinary
+  CLOUDINARY_CLOUD_NAME: z.string({ required_error: 'CLOUDINARY_CLOUD_NAME is required' }).min(1),
+  CLOUDINARY_API_KEY: z.string({ required_error: 'CLOUDINARY_API_KEY is required' }).min(1),
+  CLOUDINARY_API_SECRET: z.string({ required_error: 'CLOUDINARY_API_SECRET is required' }).min(1),
+
+  // ImgBB (optional / legacy)
   IMGBB_API_KEY: emptyStringToUndefined(z.string().optional()),
 
   // Render keep-alive

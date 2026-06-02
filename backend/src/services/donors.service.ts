@@ -1,12 +1,12 @@
 /**
  * Donors Service
  *
- * Business logic layer for donors resource.
- * Currently returns stub data. Replace with database queries in the DB sprint.
+ * Business logic layer for donors resource backed by PostgreSQL.
  */
 
 import type { CreateDonorInput } from '../validators/donors.validator';
 import { ApiError } from '../utils/ApiError';
+import { db } from '../database';
 
 export interface Donor {
   id: string;
@@ -16,45 +16,49 @@ export interface Donor {
   payment_status: 'Pending' | 'Completed' | 'Failed';
   transaction_id?: string;
   created_at: string;
+  updated_at: string;
 }
-
-// ─── In-memory stub store ─────────────────────────────────────────────────────
-const stub: Donor[] = [];
 
 export const donorsService = {
   /**
    * Get all donor records (admin).
    */
   async getAll(): Promise<Donor[]> {
-    // TODO: SELECT * FROM donors ORDER BY created_at DESC
-    return [...stub].reverse();
+    return db.query<Donor>(
+      `SELECT * FROM donors ORDER BY created_at DESC`
+    );
   },
 
   /**
    * Record a new donation (public submit).
    */
   async create(input: CreateDonorInput): Promise<Donor> {
-    // TODO: INSERT INTO donors (name, email, amount, payment_status, transaction_id) VALUES (...) RETURNING *
-    const newDonor: Donor = {
-      id: crypto.randomUUID(),
-      name: input.name,
-      email: input.email,
-      amount: input.amount,
-      payment_status: input.payment_status,
-      transaction_id: input.transaction_id,
-      created_at: new Date().toISOString(),
-    };
-    stub.push(newDonor);
-    return newDonor;
+    const queryText = `
+      INSERT INTO donors (name, email, amount, payment_status, transaction_id)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *;
+    `;
+    const params = [
+      input.name || 'Anonymous',
+      input.email,
+      input.amount,
+      input.payment_status || 'Pending',
+      input.transaction_id || null,
+    ];
+
+    const rows = await db.query<Donor>(queryText, params);
+    return rows[0];
   },
 
   /**
    * Get a single donor by ID (admin).
    */
   async getById(id: string): Promise<Donor> {
-    // TODO: SELECT * FROM donors WHERE id = $1
-    const donor = stub.find((d) => d.id === id);
-    if (!donor) throw new ApiError(404, 'Donor record not found.');
-    return donor;
+    const rows = await db.query<Donor>(
+      `SELECT * FROM donors WHERE id = $1`,
+      [id]
+    );
+    if (rows.length === 0) throw new ApiError(404, 'Donor record not found.');
+    return rows[0];
   },
 };

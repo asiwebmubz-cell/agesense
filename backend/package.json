@@ -8,12 +8,14 @@
     "build": "tsc --project tsconfig.json",
     "start": "node dist/server.js",
     "type-check": "tsc --noEmit",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "seed-admin": "ts-node --transpile-only scripts/seed-admin.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cloudinary": "^2.10.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
