@@ -253,10 +253,7 @@ export default function VolunteerPage() {
                 </div>
               </div>
             </div>
-            
-            <div className="relative rounded-xl overflow-hidden h-64">
-              <img className="w-full h-full object-cover" alt="Volunteers in action" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgZmj9Mc7QmH6uDCMActtsDKJWUmEi1O9NlZYC5ENuLFBTZAdPpQXIjo_XsPXy0XhGvMlbMoXo3hUZa5v3Lj9K-_TnC45qp4VYExPndm2UgsMsj0rEoYBjB533f4CTDQlN2DqWnuW7FSn9WgaSJbZYvQmpWEZKt3oaUrv34NIM1tFA3iu_4kU9ehfJExQqJT5t4G4QGbDyJxPBQkIWhb3SEJ2VsvCa2K4CWJ7ZXaJYmfYy22SkI2RzzC0JLBxYVHp13CS7Mw8dnpkn" />
-            </div>
+
           </div>
         </div>
       </section>
