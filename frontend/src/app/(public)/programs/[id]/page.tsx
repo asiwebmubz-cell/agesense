@@ -242,10 +242,28 @@ export default function ProgramDetailPage({
           </Link>
         </div>
 
+        {/* Dynamic Gallery Grid */}
+        {program.images && program.images.length > 0 && (
+          <section className="space-y-8">
+            <h2 className="text-3xl font-extrabold text-primary text-center">Showcase Gallery</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-6 bg-surface-container-low rounded-2xl border border-outline-variant">
+              {program.images.map((imgUrl, index) => (
+                <div key={index} className="relative aspect-square overflow-hidden rounded-xl bg-primary/10 border border-outline-variant shadow-sm hover:shadow-md transition-shadow group">
+                  <img
+                    src={imgUrl}
+                    alt={`${program.title} showcase ${index + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Gallery Section */}
         {(program.gallery_title_1 || program.gallery_title_2) && (
           <section className="space-y-8">
-            <h2 className="text-3xl font-extrabold text-primary text-center">Gallery</h2>
+            <h2 className="text-3xl font-extrabold text-primary text-center">Legacy Links</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {program.gallery_title_1 && (
                 <div className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant flex items-center justify-between shadow-sm">

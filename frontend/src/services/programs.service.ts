@@ -37,6 +37,7 @@ export interface CreateProgramPayload {
   gallery_title_2?: string;
   gallery_link_2?: string;
   gallery_description?: string;
+  images?: string[];
 }
 
 /** Create a new program entry. */
@@ -60,7 +61,7 @@ export async function deleteProgram(id: string): Promise<void> {
 }
 
 /**
- * Upload an image to ImgBB via the backend proxy.
+ * Upload an image to Cloudinary via the backend proxy.
  * Returns the hosted image URL.
  */
 export async function uploadImage(file: File): Promise<string> {
@@ -74,4 +75,23 @@ export async function uploadImage(file: File): Promise<string> {
   });
 
   return res.imageUrl;
+}
+
+/**
+ * Upload multiple images (up to 20) to Cloudinary via the backend proxy.
+ * Returns an array of hosted image URLs.
+ */
+export async function uploadMultipleImages(files: File[]): Promise<string[]> {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append("images", file);
+  });
+
+  const res = await apiFetch<{ imageUrls: string[] }>("/api/admin/upload-multiple", {
+    method: "POST",
+    auth: true,
+    body: formData,
+  });
+
+  return res.imageUrls;
 }

@@ -33,6 +33,9 @@ export interface Program {
   gallery_title_2?: string;
   gallery_link_2?: string;
   gallery_description?: string;
+  
+  // Dynamic multi-images
+  images?: string[];
 }
 
 export const programsService = {
@@ -40,24 +43,52 @@ export const programsService = {
    * Get all published programs (public).
    */
   async getPublished(): Promise<Program[]> {
-    return db.query<Program>(
+    const programs = await db.query<Program>(
       `SELECT * FROM programs WHERE status = 'Published' ORDER BY created_at DESC`
     );
+    if (programs.length === 0) return [];
+
+    const programIds = programs.map(p => p.id);
+    const images = await db.query<{ program_id: string; image_url: string }>(
+      `SELECT program_id, image_url FROM program_images WHERE program_id = ANY($1) ORDER BY created_at ASC`,
+      [programIds]
+    );
+
+    programs.forEach(p => {
+      p.images = images.filter(img => img.program_id === p.id).map(img => img.image_url);
+    });
+
+    return programs;
   },
 
   /**
    * Get all programs including drafts (admin).
    */
   async getAll(): Promise<Program[]> {
-    return db.query<Program>(
+    const programs = await db.query<Program>(
       `SELECT * FROM programs ORDER BY created_at DESC`
     );
+    if (programs.length === 0) return [];
+
+    const programIds = programs.map(p => p.id);
+    const images = await db.query<{ program_id: string; image_url: string }>(
+      `SELECT program_id, image_url FROM program_images WHERE program_id = ANY($1) ORDER BY created_at ASC`,
+      [programIds]
+    );
+
+    programs.forEach(p => {
+      p.images = images.filter(img => img.program_id === p.id).map(img => img.image_url);
+    });
+
+    return programs;
   },
 
   /**
    * Create a new program entry.
    */
   async create(input: CreateProgramInput): Promise<Program> {
+    const { images, ...rawInput } = input as any;
+
     const queryText = `
       INSERT INTO programs (
         type, title, description, image_url, status, subtitle, video_url,
@@ -69,35 +100,51 @@ export const programsService = {
       ) RETURNING *;
     `;
     const params = [
-      input.type,
-      input.title,
-      input.description,
-      input.image_url || null,
-      input.status || 'Draft',
-      input.subtitle || null,
-      input.video_url || null,
-      input.goals || null,
-      input.beneficiaries || null,
-      input.expense_categories || null,
-      input.project_areas || null,
-      input.duration || null,
-      input.active_years || null,
-      input.packages_distributed || null,
-      input.gallery_title_1 || null,
-      input.gallery_link_1 || null,
-      input.gallery_title_2 || null,
-      input.gallery_link_2 || null,
-      input.gallery_description || null,
+      rawInput.type,
+      rawInput.title,
+      rawInput.description,
+      rawInput.image_url || null,
+      rawInput.status || 'Draft',
+      rawInput.subtitle || null,
+      rawInput.video_url || null,
+      rawInput.goals || null,
+      rawInput.beneficiaries || null,
+      rawInput.expense_categories || null,
+      rawInput.project_areas || null,
+      rawInput.duration || null,
+      rawInput.active_years || null,
+      rawInput.packages_distributed || null,
+      rawInput.gallery_title_1 || null,
+      rawInput.gallery_link_1 || null,
+      rawInput.gallery_title_2 || null,
+      rawInput.gallery_link_2 || null,
+      rawInput.gallery_description || null,
     ];
 
     const rows = await db.query<Program>(queryText, params);
-    return rows[0];
+    const createdProgram = rows[0];
+
+    if (images && images.length > 0) {
+      for (const imgUrl of images) {
+        await db.query(
+          `INSERT INTO program_images (program_id, image_url) VALUES ($1, $2)`,
+          [createdProgram.id, imgUrl]
+        );
+      }
+      createdProgram.images = images;
+    } else {
+      createdProgram.images = [];
+    }
+
+    return createdProgram;
   },
 
   /**
    * Update an existing program.
    */
   async update(id: string, input: UpdateProgramInput): Promise<Program> {
+    const { images, ...rawInput } = input as any;
+
     const queryText = `
       UPDATE programs SET
         type = COALESCE($1, type),
@@ -124,31 +171,53 @@ export const programsService = {
       RETURNING *;
     `;
     const params = [
-      input.type !== undefined ? input.type : null,
-      input.title !== undefined ? input.title : null,
-      input.description !== undefined ? input.description : null,
-      input.image_url !== undefined ? input.image_url : null,
-      input.status !== undefined ? input.status : null,
-      input.subtitle !== undefined ? input.subtitle : null,
-      input.video_url !== undefined ? input.video_url : null,
-      input.goals !== undefined ? input.goals : null,
-      input.beneficiaries !== undefined ? input.beneficiaries : null,
-      input.expense_categories !== undefined ? input.expense_categories : null,
-      input.project_areas !== undefined ? input.project_areas : null,
-      input.duration !== undefined ? input.duration : null,
-      input.active_years !== undefined ? input.active_years : null,
-      input.packages_distributed !== undefined ? input.packages_distributed : null,
-      input.gallery_title_1 !== undefined ? input.gallery_title_1 : null,
-      input.gallery_link_1 !== undefined ? input.gallery_link_1 : null,
-      input.gallery_title_2 !== undefined ? input.gallery_title_2 : null,
-      input.gallery_link_2 !== undefined ? input.gallery_link_2 : null,
-      input.gallery_description !== undefined ? input.gallery_description : null,
+      rawInput.type !== undefined ? rawInput.type : null,
+      rawInput.title !== undefined ? rawInput.title : null,
+      rawInput.description !== undefined ? rawInput.description : null,
+      rawInput.image_url !== undefined ? rawInput.image_url : null,
+      rawInput.status !== undefined ? rawInput.status : null,
+      rawInput.subtitle !== undefined ? rawInput.subtitle : null,
+      rawInput.video_url !== undefined ? rawInput.video_url : null,
+      rawInput.goals !== undefined ? rawInput.goals : null,
+      rawInput.beneficiaries !== undefined ? rawInput.beneficiaries : null,
+      rawInput.expense_categories !== undefined ? rawInput.expense_categories : null,
+      rawInput.project_areas !== undefined ? rawInput.project_areas : null,
+      rawInput.duration !== undefined ? rawInput.duration : null,
+      rawInput.active_years !== undefined ? rawInput.active_years : null,
+      rawInput.packages_distributed !== undefined ? rawInput.packages_distributed : null,
+      rawInput.gallery_title_1 !== undefined ? rawInput.gallery_title_1 : null,
+      rawInput.gallery_link_1 !== undefined ? rawInput.gallery_link_1 : null,
+      rawInput.gallery_title_2 !== undefined ? rawInput.gallery_title_2 : null,
+      rawInput.gallery_link_2 !== undefined ? rawInput.gallery_link_2 : null,
+      rawInput.gallery_description !== undefined ? rawInput.gallery_description : null,
       id,
     ];
 
     const rows = await db.query<Program>(queryText, params);
     if (rows.length === 0) throw new ApiError(404, 'Program not found.');
-    return rows[0];
+    const updatedProgram = rows[0];
+
+    if (images !== undefined) {
+      // Clear out existing associated images first
+      await db.query(`DELETE FROM program_images WHERE program_id = $1`, [id]);
+      if (images && images.length > 0) {
+        for (const imgUrl of images) {
+          await db.query(
+            `INSERT INTO program_images (program_id, image_url) VALUES ($1, $2)`,
+            [id, imgUrl]
+          );
+        }
+      }
+      updatedProgram.images = images;
+    } else {
+      const dbImages = await db.query<{ image_url: string }>(
+        `SELECT image_url FROM program_images WHERE program_id = $1 ORDER BY created_at ASC`,
+        [id]
+      );
+      updatedProgram.images = dbImages.map(img => img.image_url);
+    }
+
+    return updatedProgram;
   },
 
   /**

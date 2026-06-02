@@ -6,7 +6,7 @@ import volunteersRouter from './volunteers.routes';
 import donorsRouter from './donors.routes';
 import statsRouter from './stats.routes';
 import { dbHealthCheck } from '../controllers/db-health.controller';
-import { handleImageUpload, upload } from '../controllers/upload.controller';
+import { handleImageUpload, handleMultipleImagesUpload, upload } from '../controllers/upload.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { cloudinaryHealthCheck } from '../controllers/cloudinary-health.controller';
 
@@ -22,6 +22,7 @@ const router = Router();
  * Cloudinary Health: GET /api/cloudinary-health
  * Auth:             POST /api/auth/login
  * Admin Upload:     POST /api/admin/upload       (auth)
+ *                   POST /api/admin/upload-multiple (auth)
  * Programs:         GET  /api/programs           (public)
  *                   CRUD /api/programs/admin      (auth)
  * Volunteers:       POST /api/volunteers          (public)
@@ -35,6 +36,7 @@ router.get('/db-health', dbHealthCheck);
 router.get('/cloudinary-health', cloudinaryHealthCheck);
 router.use('/auth', authRouter);
 router.post('/admin/upload', authMiddleware, upload.single('image'), handleImageUpload);
+router.post('/admin/upload-multiple', authMiddleware, upload.array('images', 20), handleMultipleImagesUpload);
 router.use('/programs', programsRouter);
 router.use('/volunteers', volunteersRouter);
 router.use('/donors', donorsRouter);

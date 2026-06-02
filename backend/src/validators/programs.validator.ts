@@ -36,6 +36,7 @@ export const createProgramSchema = z.object({
   gallery_title_2: z.string().optional(),
   gallery_link_2: z.string().url('gallery_link_2 must be a valid URL.').or(z.literal('')).optional(),
   gallery_description: z.string().optional(),
+  images: z.array(z.string()).optional(),
 });
 
 export const updateProgramSchema = createProgramSchema.partial().refine(

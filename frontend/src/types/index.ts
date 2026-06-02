@@ -28,6 +28,7 @@ export interface Program {
   gallery_title_2?: string;
   gallery_link_2?: string;
   gallery_description?: string;
+  images?: string[];
 }
 
 /** Legacy alias used inside admin content page */

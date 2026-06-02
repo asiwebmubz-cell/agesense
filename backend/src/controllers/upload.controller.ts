@@ -75,3 +75,58 @@ export const handleImageUpload = asyncHandler(
     }
   }
 );
+
+// ─── Multi-Upload Handler (max 20 images) ──────────────────────────────────
+export const handleMultipleImagesUpload = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const files = req.files as Express.Multer.File[] | undefined;
+    if (!files || files.length === 0) {
+      throw new ApiError(400, 'No image files provided in upload request.');
+    }
+
+    const context = req.query.folder as string;
+    let targetFolder = 'agesense/general';
+
+    if (context === 'programs') {
+      targetFolder = 'agesense/programs';
+    } else if (context === 'impact-stories') {
+      targetFolder = 'agesense/impact-stories';
+    } else if (context === 'gallery') {
+      targetFolder = 'agesense/gallery';
+    } else if (context === 'partners') {
+      targetFolder = 'agesense/partners';
+    }
+
+    const uploadStream = (fileBuffer: Buffer): Promise<any> => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: targetFolder,
+            resource_type: 'image',
+          },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+        (stream as any).end(fileBuffer);
+      });
+    };
+
+    try {
+      const uploadPromises = files.map((file) => uploadStream(file.buffer));
+      const results = await Promise.all(uploadPromises);
+      const imageUrls = results.map((result) => result.secure_url);
+
+      res.status(200).json({
+        success: true,
+        imageUrls,
+      });
+    } catch (err: any) {
+      throw new ApiError(500, `Cloudinary multi-stream upload failed: ${err.message}`);
+    }
+  }
+);

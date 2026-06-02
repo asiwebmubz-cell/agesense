@@ -7,6 +7,7 @@ import {
   createProgram,
   deleteProgram,
   uploadImage,
+  uploadMultipleImages,
 } from "@/services/programs.service";
 
 export default function ContentAdminPage() {
@@ -14,6 +15,7 @@ export default function ContentAdminPage() {
   const [contentBody, setContentBody] = useState("");
   const [postType, setPostType] = useState<ProgramType>("Our Programs");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
 
   // Program details states
   const [subtitle, setSubtitle] = useState("");
@@ -37,6 +39,7 @@ export default function ContentAdminPage() {
 
   const [recentContent, setRecentContent] = useState<Program[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   const loadContent = useCallback(async () => {
     try {
@@ -58,19 +61,26 @@ export default function ContentAdminPage() {
 
     try {
       let image_url = "";
+      let images: string[] = [];
 
-      // 1. Upload image if selected
+      // 1. Upload featured image if selected
       if (imageFile) {
         image_url = await uploadImage(imageFile);
       }
 
-      // 2. Publish post
+      // 2. Upload gallery images if selected
+      if (galleryFiles.length > 0) {
+        images = await uploadMultipleImages(galleryFiles);
+      }
+
+      // 3. Publish post
       await createProgram({
         type: postType,
         title,
         description: contentBody,
         image_url: image_url || undefined,
         status: "Published",
+        images,
         ...(postType === "Our Programs" ? {
           subtitle,
           video_url: videoUrl || undefined,
@@ -95,6 +105,7 @@ export default function ContentAdminPage() {
       setTitle("");
       setContentBody("");
       setImageFile(null);
+      setGalleryFiles([]);
       setSubtitle("");
       setVideoUrl("");
       setGoals("");
@@ -184,30 +195,91 @@ export default function ContentAdminPage() {
                   rows={8}
                 ></textarea>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-on-surface-variant">Featured Image</label>
-                <div 
-                  className="relative border-2 border-dashed border-outline-variant rounded-xl p-8 bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group flex flex-col items-center justify-center text-center"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <input 
-                    ref={fileInputRef} 
-                    className="hidden" 
-                    type="file" 
-                    accept="image/*" 
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setImageFile(e.target.files[0]);
-                      }
-                    }}
-                  />
-                  <span className="material-symbols-outlined text-4xl text-primary mb-3">add_photo_alternate</span>
-                  <p className="text-base text-on-surface">
-                    {imageFile ? `Selected: ${imageFile.name}` : 'Click to upload or drag and drop'}
-                  </p>
-                  <p className="text-sm font-medium text-outline">SVG, PNG, JPG or GIF (max. 800x400px)</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Featured Image */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-on-surface-variant">Featured Image</label>
+                  <div 
+                    className="relative border-2 border-dashed border-outline-variant rounded-xl p-8 bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group flex flex-col items-center justify-center text-center h-[180px]"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <input 
+                      ref={fileInputRef} 
+                      className="hidden" 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setImageFile(e.target.files[0]);
+                        }
+                      }}
+                    />
+                    <span className="material-symbols-outlined text-4xl text-primary mb-2">add_photo_alternate</span>
+                    <p className="text-base text-on-surface truncate max-w-full px-2">
+                      {imageFile ? `Selected: ${imageFile.name}` : 'Featured image'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Multiple Gallery Images */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-on-surface-variant">Gallery Showcase (Max 20 Images)</label>
+                  <div 
+                    className="relative border-2 border-dashed border-outline-variant rounded-xl p-8 bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group flex flex-col items-center justify-center text-center h-[180px]"
+                    onClick={() => galleryInputRef.current?.click()}
+                  >
+                    <input 
+                      ref={galleryInputRef} 
+                      className="hidden" 
+                      type="file" 
+                      accept="image/*" 
+                      multiple
+                      onChange={(e) => {
+                        if (e.target.files) {
+                          const filesArray = Array.from(e.target.files);
+                          if (filesArray.length + galleryFiles.length > 20) {
+                            alert("You can upload a maximum of 20 gallery images.");
+                            return;
+                          }
+                          setGalleryFiles(prev => [...prev, ...filesArray]);
+                        }
+                      }}
+                    />
+                    <span className="material-symbols-outlined text-4xl text-primary mb-2">collections</span>
+                    <p className="text-base text-on-surface">
+                      {galleryFiles.length > 0 ? `${galleryFiles.length} images selected` : 'Select gallery images'}
+                    </p>
+                  </div>
                 </div>
               </div>
+
+              {/* Gallery Image Previews */}
+              {galleryFiles.length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-on-surface-variant">Selected Gallery Previews ({galleryFiles.length})</label>
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 p-3 bg-surface-container rounded-xl border border-outline-variant max-h-48 overflow-y-auto">
+                    {galleryFiles.map((file, idx) => (
+                      <div key={idx} className="relative aspect-square bg-surface-container-high rounded overflow-hidden group">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`preview-${idx}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setGalleryFiles(prev => prev.filter((_, i) => i !== idx));
+                          }}
+                          className="absolute inset-0 bg-black/50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <span className="material-symbols-outlined text-lg">delete</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {postType === "Our Programs" && (
                 <div className="border-t border-outline-variant/30 pt-6 mt-6 space-y-6">
@@ -319,7 +391,7 @@ export default function ContentAdminPage() {
                   </div>
 
                   <div className="border-t border-outline-variant/20 pt-4 space-y-4">
-                    <h4 className="text-sm font-bold text-on-surface">Gallery Settings</h4>
+                    <h4 className="text-sm font-bold text-on-surface">Gallery Settings (Legacy Options)</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-on-surface-variant">Gallery Item 1 Title</label>
@@ -377,10 +449,8 @@ export default function ContentAdminPage() {
                   </div>
                 </div>
               )}
+              {error && <p className="text-sm font-semibold text-error">{error}</p>}
               <div className="flex justify-end pt-4 gap-4">
-                <button className="px-6 py-3 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary-container/10 transition-colors disabled:opacity-50" type="button" disabled={isPublishing || isPublished}>
-                  Save as Draft
-                </button>
                 <button 
                   disabled={isPublishing || isPublished}
                   className={`px-8 py-3 font-bold rounded-lg shadow-md transition-all flex items-center gap-2 ${isPublished ? 'bg-green-600 text-white' : 'bg-primary text-white hover:bg-primary-container active:scale-95'}`} 
