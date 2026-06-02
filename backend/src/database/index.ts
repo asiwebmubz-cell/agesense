@@ -28,16 +28,49 @@ export const db = {
   },
 
   /**
-   * Pings the database to verify active connection.
+   * Pings the database and returns details.
    */
-  async checkConnection(): Promise<boolean> {
+  async checkConnection(): Promise<{ connected: boolean; error?: string; diagnostics: any }> {
+    let host = 'unknown';
+    let port = '5432';
+    let database = 'unknown';
+
+    try {
+      if (env.DATABASE_URL.startsWith('postgresql://') || env.DATABASE_URL.startsWith('postgres://')) {
+        const urlObj = new URL(env.DATABASE_URL);
+        host = urlObj.hostname;
+        port = urlObj.port || '5432';
+        database = urlObj.pathname.replace(/^\//, '');
+      } else {
+        const hostMatch = env.DATABASE_URL.match(/host=([^; ]+)/);
+        const portMatch = env.DATABASE_URL.match(/port=([^; ]+)/);
+        const dbMatch = env.DATABASE_URL.match(/(?:dbname|database)=([^; ]+)/);
+        if (hostMatch) host = hostMatch[1];
+        if (portMatch) port = portMatch[1];
+        if (dbMatch) database = dbMatch[1];
+      }
+    } catch (e) {
+      // Ignored - fallback to unknown
+    }
+
+    const diagnostics = {
+      host,
+      port,
+      database,
+      ssl: 'rejectUnauthorized: false (Pool Configured)',
+    };
+
     try {
       const client = await pool.connect();
       client.release();
-      return true;
-    } catch (err) {
+      return { connected: true, diagnostics };
+    } catch (err: any) {
       logger.error('Database connection test failed:', err);
-      return false;
+      return { 
+        connected: false, 
+        error: err.message || String(err), 
+        diagnostics 
+      };
     }
   },
 };
