@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { login } from "@/services/auth.service";
 
 export default function AdminLoginPage() {
@@ -28,14 +29,14 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-surface flex items-center justify-center p-4">
-      <div className="bg-surface-container-low border border-outline-variant rounded-2xl p-8 max-w-md w-full shadow-lg">
-        <div className="text-center mb-8">
+      <div className="bg-surface-container-low border border-outline-variant rounded-2xl p-8 max-w-md w-full shadow-lg space-y-6">
+        <div className="text-center">
           <h1 className="text-3xl font-bold text-primary mb-2">AgeSense Admin</h1>
           <p className="text-sm text-on-surface-variant">Sign in to manage volunteers, donors, and content</p>
         </div>
 
         {error && (
-          <div className="bg-error/10 border border-error/20 text-error p-3 rounded-lg text-sm mb-6 flex items-center gap-2">
+          <div className="bg-error/10 border border-error/20 text-error p-3 rounded-lg text-sm flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px]">error</span>
             {error}
           </div>
@@ -80,6 +81,17 @@ export default function AdminLoginPage() {
             )}
           </button>
         </form>
+
+        <div className="pt-4 border-t border-outline-variant/30 text-center">
+          <Link
+            href="/"
+            aria-label="Go to homepage"
+            className="text-primary text-sm font-semibold hover:underline flex items-center justify-center gap-1"
+          >
+            <span className="material-symbols-outlined text-[18px]">home</span>
+            Go to Homepage
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -5,9 +5,11 @@ import { useApi } from "@/hooks/useApi";
 import { getAllDonorsAdmin } from "@/services/donors.service";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import ErrorMessage from "@/components/ui/ErrorMessage";
+import { API_BASE_URL, getAuthHeaders } from "@/lib/api";
 
 export default function DonorsAdminPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const { data: donors, loading, error, refetch } = useApi(getAllDonorsAdmin);
 
@@ -26,6 +28,29 @@ export default function DonorsAdminPage() {
     if (charCode % 3 === 0) return "bg-secondary-container text-on-secondary-container";
     if (charCode % 3 === 1) return "bg-primary-container text-on-primary-container";
     return "bg-tertiary-fixed text-on-tertiary-fixed";
+  };
+
+  const handleDownloadExcel = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/donors/admin/export`, {
+        headers: {
+          ...getAuthHeaders(),
+        }
+      });
+      if (!response.ok) throw new Error("Excel export failed.");
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "donors.xlsx";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to download donors Excel sheet.");
+    }
   };
 
   const completedDonors = donors?.filter(d => d.payment_status === 'Completed') || [];
@@ -47,16 +72,34 @@ export default function DonorsAdminPage() {
           <h1 className="text-3xl font-semibold text-on-surface">Donor Records</h1>
           <p className="text-base text-on-surface-variant mt-1">Manage and track contributions from our community partners.</p>
         </div>
-        {/* Search Bar */}
-        <div className="relative w-full md:w-96 group">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-          <input 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-12 pl-10 pr-4 bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-base group-focus-within:shadow-sm" 
-            placeholder="Search by name, email or TXN ID..." 
-            type="text" 
-          />
+        {/* Search & Actions Bar */}
+        <div className="flex items-center flex-wrap gap-2 w-full md:w-auto">
+          <div className="relative w-full md:w-72 group">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+            <input 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full h-12 pl-10 pr-4 bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-base group-focus-within:shadow-sm" 
+              placeholder="Search..." 
+              type="text" 
+            />
+          </div>
+          <button 
+            onClick={() => setIsHistoryOpen(true)}
+            aria-label="See donor contribution history"
+            className="px-4 h-12 border border-outline-variant rounded-lg text-sm font-semibold hover:bg-surface-container-low transition-colors flex items-center gap-2 text-on-surface"
+          >
+            <span className="material-symbols-outlined text-[18px]">history</span>
+            See History
+          </button>
+          <button 
+            onClick={handleDownloadExcel}
+            aria-label="Download Excel list of donors"
+            className="px-4 h-12 bg-primary text-on-primary rounded-lg text-sm font-bold hover:shadow-md transition-all flex items-center gap-2"
+          >
+            <span className="material-symbols-outlined text-[18px]">download</span>
+            Download Excel
+          </button>
         </div>
       </div>
 
@@ -164,6 +207,73 @@ export default function DonorsAdminPage() {
           <p className="text-sm font-medium text-on-surface-variant">Showing {filteredDonors.length} entries</p>
         </div>
       </section>
+
+      {/* See History Modal */}
+      {isHistoryOpen && (
+        <div className="fixed inset-0 bg-black/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <header className="p-6 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold text-on-surface flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary">history</span>
+                  Donor Transactions History Logs
+                </h3>
+                <p className="text-sm text-on-surface-variant font-medium">All logged transactions including failed and pending attempts.</p>
+              </div>
+              <button 
+                onClick={() => setIsHistoryOpen(false)}
+                className="p-2 hover:bg-surface-variant/20 rounded-full transition-colors text-on-surface-variant"
+                aria-label="Close modal"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </header>
+            
+            <div className="p-6 overflow-y-auto flex-1">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-outline-variant text-sm font-bold text-outline">
+                    <th className="pb-3">Donor Name</th>
+                    <th className="pb-3">Email Address</th>
+                    <th className="pb-3 text-right">Amount</th>
+                    <th className="pb-3">Transaction ID</th>
+                    <th className="pb-3 text-right">Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant/40">
+                  {donors?.map((d) => (
+                    <tr key={d.id} className="text-sm">
+                      <td className="py-3 font-semibold text-on-surface">{d.name}</td>
+                      <td className="py-3 text-on-surface-variant">{d.email}</td>
+                      <td className="py-3 font-bold text-on-surface text-right">${Number(d.amount).toFixed(2)}</td>
+                      <td className="py-3 text-outline font-mono">{d.transaction_id || '—'}</td>
+                      <td className="py-3 text-right text-outline">
+                        {d.created_at ? new Date(d.created_at).toLocaleString() : ''}
+                      </td>
+                    </tr>
+                  ))}
+                  {(!donors || donors.length === 0) && (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-on-surface-variant italic">
+                        No transactions logged in database.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <footer className="p-6 border-t border-outline-variant flex justify-end bg-surface-container-low">
+              <button 
+                onClick={() => setIsHistoryOpen(false)}
+                className="px-6 py-2.5 bg-primary text-on-primary font-bold rounded-lg hover:shadow-md transition-all"
+              >
+                Close Logs
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

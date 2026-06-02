@@ -5,12 +5,14 @@ import { useApi } from "@/hooks/useApi";
 import { getAllVolunteersAdmin, updateVolunteerStatusAdmin } from "@/services/volunteers.service";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import ErrorMessage from "@/components/ui/ErrorMessage";
+import { API_BASE_URL, getAuthHeaders } from "@/lib/api";
 
 export default function VolunteersAdminPage() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("Volunteer approved successfully.");
   const [activeTab, setActiveTab] = useState<'pending' | 'accepted'>('pending');
   const [searchTerm, setSearchTerm] = useState("");
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const { data: volunteers, loading, error, refetch } = useApi(getAllVolunteersAdmin);
 
@@ -35,6 +37,29 @@ export default function VolunteersAdminPage() {
       setTimeout(() => setShowToast(false), 3000);
     } catch (err) {
       console.error("Failed to reject volunteer:", err);
+    }
+  };
+
+  const handleDownloadExcel = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/volunteers/admin/export`, {
+        headers: {
+          ...getAuthHeaders(),
+        }
+      });
+      if (!response.ok) throw new Error("Excel export failed.");
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "volunteers.xlsx";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to download volunteers Excel sheet.");
     }
   };
 
@@ -115,7 +140,7 @@ export default function VolunteersAdminPage() {
               <h3 className="text-xl font-semibold text-on-surface">Volunteer Management</h3>
               <p className="text-sm font-medium text-on-surface-variant">Review new applications and manage active volunteers.</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center flex-wrap gap-2">
               <div className="relative group">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
                 <input 
@@ -126,6 +151,22 @@ export default function VolunteersAdminPage() {
                   type="text" 
                 />
               </div>
+              <button 
+                onClick={() => setIsHistoryOpen(true)}
+                aria-label="See volunteer application logs"
+                className="px-4 py-2 border border-outline-variant rounded-lg text-sm font-semibold hover:bg-surface-container-low transition-colors flex items-center gap-2 text-on-surface"
+              >
+                <span className="material-symbols-outlined text-[18px]">history</span>
+                See History
+              </button>
+              <button 
+                onClick={handleDownloadExcel}
+                aria-label="Download Excel list of volunteers"
+                className="px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-bold hover:shadow-md transition-all flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[18px]">download</span>
+                Download Excel
+              </button>
             </div>
           </div>
           
@@ -236,6 +277,79 @@ export default function VolunteersAdminPage() {
           <span className="text-sm font-medium text-on-surface-variant">Showing {displayData.length} records</span>
         </div>
       </section>
+
+      {/* See History Modal */}
+      {isHistoryOpen && (
+        <div className="fixed inset-0 bg-black/55 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <header className="p-6 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold text-on-surface flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary">history</span>
+                  Volunteer Application History Logs
+                </h3>
+                <p className="text-sm text-on-surface-variant font-medium">All logged submissions and operational status updates.</p>
+              </div>
+              <button 
+                onClick={() => setIsHistoryOpen(false)}
+                className="p-2 hover:bg-surface-variant/20 rounded-full transition-colors text-on-surface-variant"
+                aria-label="Close modal"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </header>
+            
+            <div className="p-6 overflow-y-auto flex-1">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-outline-variant text-sm font-bold text-outline">
+                    <th className="pb-3">Applicant Name</th>
+                    <th className="pb-3">Email Address</th>
+                    <th className="pb-3">Logged Status</th>
+                    <th className="pb-3 text-right">Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-outline-variant/40">
+                  {volunteers?.map((v) => (
+                    <tr key={v.id} className="text-sm">
+                      <td className="py-3 font-semibold text-on-surface">{v.full_name}</td>
+                      <td className="py-3 text-on-surface-variant">{v.email}</td>
+                      <td className="py-3">
+                        <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                          v.status === 'Approved' ? 'bg-green-100 text-green-700' :
+                          v.status === 'Rejected' ? 'bg-red-100 text-red-700' :
+                          'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {v.status}
+                        </span>
+                      </td>
+                      <td className="py-3 text-right text-outline">
+                        {v.created_at ? new Date(v.created_at).toLocaleString() : ''}
+                      </td>
+                    </tr>
+                  ))}
+                  {(!volunteers || volunteers.length === 0) && (
+                    <tr>
+                      <td colSpan={4} className="py-8 text-center text-on-surface-variant italic">
+                        No volunteer records logged in database.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <footer className="p-6 border-t border-outline-variant flex justify-end bg-surface-container-low">
+              <button 
+                onClick={() => setIsHistoryOpen(false)}
+                className="px-6 py-2.5 bg-primary text-on-primary font-bold rounded-lg hover:shadow-md transition-all"
+              >
+                Close Logs
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
 
       {/* Featured Visual: Mission Banner */}
       <section className="relative h-48 rounded-2xl overflow-hidden group">

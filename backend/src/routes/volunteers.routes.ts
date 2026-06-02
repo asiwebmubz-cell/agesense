@@ -3,6 +3,7 @@ import {
   getAllVolunteers,
   createVolunteer,
   updateVolunteerStatus,
+  exportVolunteers,
 } from '../controllers/volunteers.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validate.middleware';
@@ -26,6 +27,7 @@ router.post(
 
 // ─── Admin routes ──────────────────────────────────────────────────────────────
 router.get('/admin', authMiddleware, getAllVolunteers);
+router.get('/admin/export', authMiddleware, exportVolunteers);
 
 router.put(
   '/admin/:id',

@@ -35,3 +35,21 @@ export const updateVolunteerStatus = asyncHandler(async (req: Request, res: Resp
   const updated = await volunteersService.updateStatus(id, input);
   res.status(200).json(updated);
 });
+
+/**
+ * GET /api/admin/volunteers/export
+ * Export volunteer submissions to Excel/CSV sheet. Admin only.
+ */
+export const exportVolunteers = asyncHandler(async (_req: Request, res: Response) => {
+  const volunteers = await volunteersService.getAll();
+  
+  let csv = 'ID,Full Name,Email,Phone,Status,Applied At\n';
+  volunteers.forEach(v => {
+    const cleanName = (v.full_name || '').replace(/"/g, '""');
+    csv += `"${v.id}","${cleanName}","${v.email}","${v.phone || ''}","${v.status}","${v.created_at}"\n`;
+  });
+
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', 'attachment; filename=volunteers.xlsx');
+  res.status(200).send(Buffer.from(csv, 'utf-8'));
+});

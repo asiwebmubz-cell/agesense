@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllDonors, createDonor } from '../controllers/donors.controller';
+import { getAllDonors, createDonor, exportDonors } from '../controllers/donors.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validate.middleware';
 import { strictLimiter } from '../middleware/rateLimiter';
@@ -17,5 +17,6 @@ router.post(
 
 // ─── Admin routes ──────────────────────────────────────────────────────────────
 router.get('/admin', authMiddleware, getAllDonors);
+router.get('/admin/export', authMiddleware, exportDonors);
 
 export default router;
