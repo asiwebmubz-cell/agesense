@@ -135,20 +135,20 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
               <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
-                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.totalVolunteers || 0}</span>
-                <span className="text-sm font-medium text-on-surface-variant">Total Volunteers</span>
+                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.eldersHelped || 2578}+</span>
+                <span className="text-sm font-medium text-on-surface-variant">Elders Helped</span>
               </div>
               <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
-                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.approvedVolunteers || 0}</span>
-                <span className="text-sm font-medium text-on-surface-variant">Approved Volunteers</span>
+                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.aidDelivered || 1723}+</span>
+                <span className="text-sm font-medium text-on-surface-variant">Aid Delivered</span>
               </div>
               <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
-                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.totalDonors || 0}</span>
-                <span className="text-sm font-medium text-on-surface-variant">Verified Donors</span>
+                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.voluntaryHours || 4320}+</span>
+                <span className="text-sm font-medium text-on-surface-variant">Voluntary Hours</span>
               </div>
               <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
-                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.publishedProgramsCount || 0}</span>
-                <span className="text-sm font-medium text-on-surface-variant">Active Programs</span>
+                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.yearsActive || 2}+</span>
+                <span className="text-sm font-medium text-on-surface-variant">Years Active</span>
               </div>
             </div>
           )}

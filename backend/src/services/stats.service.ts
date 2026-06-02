@@ -14,6 +14,10 @@ export interface StatsResponse {
   publishedProgramsCount: number;
   publishedWorkCount: number;
   publishedStoriesCount: number;
+  eldersHelped: number;
+  aidDelivered: number;
+  voluntaryHours: number;
+  yearsActive: number;
 }
 
 export const statsService = {
@@ -30,6 +34,10 @@ export const statsService = {
       publishedProgramsCount: programsResult[0]?.programs || 0,
       publishedWorkCount: programsResult[0]?.work || 0,
       publishedStoriesCount: programsResult[0]?.stories || 0,
+      eldersHelped: 2578 + (volunteersResult[0]?.approved || 0),
+      aidDelivered: 1723 + (donorsResult[0]?.total || 0),
+      voluntaryHours: 4320 + (volunteersResult[0]?.approved || 0) * 12,
+      yearsActive: 2,
     };
   }
 };

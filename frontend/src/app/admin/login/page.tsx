@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
 
     try {
       await login(email, password);
-      router.push("/admin");
+      window.location.href = "/admin/volunteers";
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Login authentication failed.");
     } finally {

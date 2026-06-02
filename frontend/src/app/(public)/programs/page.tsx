@@ -77,7 +77,6 @@ export default function ProgramsPage() {
           <h2 className="text-3xl font-semibold mb-4">Interested in participating?</h2>
           <p className="text-lg mb-8 opacity-90">Whether you&apos;re looking for support or want to offer your time as a volunteer, we have a place for you in the AgeSense family.</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-surface-container-lowest text-primary px-8 py-3 rounded-full font-bold text-sm hover:shadow-lg transition-all active:scale-95">Enroll Now</button>
             <Link href="/volunteer" className="border-2 border-surface-container-lowest text-surface-container-lowest px-8 py-3 rounded-full font-bold text-sm hover:bg-surface-container-lowest/10 transition-all active:scale-95 inline-block">Become a Volunteer</Link>
           </div>
         </div>

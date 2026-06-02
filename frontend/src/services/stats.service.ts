@@ -8,6 +8,10 @@ export interface StatsResponse {
   publishedProgramsCount: number;
   publishedWorkCount: number;
   publishedStoriesCount: number;
+  eldersHelped: number;
+  aidDelivered: number;
+  voluntaryHours: number;
+  yearsActive: number;
 }
 
 export async function getStats(): Promise<StatsResponse> {
