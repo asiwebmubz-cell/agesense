@@ -59,7 +59,7 @@ export const handleImageUpload = asyncHandler(
             }
           }
         );
-        stream.end(fileBuffer);
+        (stream as any).end(fileBuffer);
       });
     };
 
