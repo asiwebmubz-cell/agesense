@@ -9,8 +9,8 @@ export const corsOptions: CorsOptions = {
       'http://localhost:3001',
     ];
 
-    // Allow non-browser requests (curl, Postman, server-to-server) in development
-    if (!origin && env.NODE_ENV === 'development') {
+    // Allow non-browser requests (curl, Postman, server-to-server, Render health checks)
+    if (!origin) {
       return callback(null, true);
     }
 
