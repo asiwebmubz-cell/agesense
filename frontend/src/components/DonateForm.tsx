@@ -1,46 +1,110 @@
 "use client";
 
 import { useState } from "react";
+import { submitDonationVerification } from "@/services/donors.service";
 
 export default function DonateForm() {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [amount, setAmount] = useState("");
+  const [trxId, setTrxId] = useState("");
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // TODO: Integrate with backend to save donation verification
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setErrorMsg("");
+
+    try {
+      await submitDonationVerification({
+        name: fullName,
+        email,
+        amount: parseFloat(amount),
+        transaction_id: trxId,
+        payment_status: "Pending",
+      });
       setIsSuccess(true);
-    }, 1500);
+    } catch (err: any) {
+      setErrorMsg(err instanceof Error ? err.message : "Submission failed.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
+      {errorMsg && (
+        <div className="p-4 rounded bg-error-container text-on-error-container text-sm">
+          {errorMsg}
+        </div>
+      )}
       <div className="grid grid-cols-1 gap-6">
         <div className="space-y-2 group">
           <label className="text-sm font-medium text-on-surface group-focus-within:text-primary transition-colors" htmlFor="full_name">Full Name</label>
-          <input required className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" id="full_name" placeholder="John Doe" type="text" />
+          <input 
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            required 
+            className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" 
+            id="full_name" 
+            placeholder="John Doe" 
+            type="text" 
+          />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2 group">
             <label className="text-sm font-medium text-on-surface group-focus-within:text-primary transition-colors" htmlFor="email">Email Address</label>
-            <input required className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" id="email" placeholder="john@example.com" type="email" />
+            <input 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+              className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" 
+              id="email" 
+              placeholder="john@example.com" 
+              type="email" 
+            />
           </div>
           <div className="space-y-2 group">
             <label className="text-sm font-medium text-on-surface group-focus-within:text-primary transition-colors" htmlFor="phone">Phone Number</label>
-            <input required className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" id="phone" placeholder="+880 1XXX-XXXXXX" type="tel" />
+            <input 
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" 
+              id="phone" 
+              placeholder="+880 1XXX-XXXXXX" 
+              type="tel" 
+            />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2 group">
             <label className="text-sm font-medium text-on-surface group-focus-within:text-primary transition-colors" htmlFor="amount">Amount (BDT)</label>
-            <input required min="1" className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" id="amount" placeholder="e.g. 5000" type="number" />
+            <input 
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              required 
+              min="1" 
+              className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" 
+              id="amount" 
+              placeholder="e.g. 5000" 
+              type="number" 
+            />
           </div>
           <div className="space-y-2 group">
             <label className="text-sm font-medium text-on-surface group-focus-within:text-primary transition-colors" htmlFor="trxid">Transaction ID</label>
-            <input required className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" id="trxid" placeholder="8X23M19A" type="text" />
+            <input 
+              value={trxId}
+              onChange={(e) => setTrxId(e.target.value)}
+              required 
+              className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" 
+              id="trxid" 
+              placeholder="8X23M19A" 
+              type="text" 
+            />
           </div>
         </div>
       </div>

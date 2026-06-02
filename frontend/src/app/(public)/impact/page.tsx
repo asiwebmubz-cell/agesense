@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { useApi } from "@/hooks/useApi";
+import { getPublishedPrograms } from "@/services/programs.service";
+import { getStats } from "@/services/stats.service";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 function AnimatedCounter({ target, suffix }: { target: number, suffix: string }) {
   const counterRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const counter = counterRef.current;
-    if (!counter) return;
+    if (!counter || target === 0) return;
 
     const speed = 200;
     const animate = () => {
@@ -43,71 +47,58 @@ function AnimatedCounter({ target, suffix }: { target: number, suffix: string })
   return <h3 ref={counterRef} className="text-4xl md:text-5xl font-bold text-primary">0{suffix}</h3>;
 }
 
-type ContentItem = {
-  id: string;
-  type: string;
-  title: string;
-  content: string;
-  date: string;
-  status: "Published" | "Draft";
-};
-
 export default function ImpactPage() {
-  const [dynamicStories, setDynamicStories] = useState<ContentItem[]>([]);
+  const { data: stats, loading: statsLoading } = useApi(getStats);
+  const { data: allPrograms, loading: programsLoading } = useApi(getPublishedPrograms);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("asi_content");
-    if (saved) {
-      const allContent: ContentItem[] = JSON.parse(saved);
-      const stories = allContent.filter(item => item.type === "Impact Stories" && item.status === "Published");
-      setDynamicStories(stories);
-    }
-  }, []);
+  const dynamicStories = allPrograms?.filter(item => item.type === "Impact Stories") ?? [];
 
   return (
     <>
-
-
       {/* Key Metrics Bento Grid */}
       <section className="py-24 bg-surface px-4 md:px-8 max-w-[1200px] mx-auto">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-semibold text-primary mb-4">2023 at a Glance</h2>
           <div className="h-1 w-20 bg-primary-container mx-auto rounded-full"></div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* Large Card */}
-          <div className="md:col-span-2 bg-surface-container-low p-8 rounded-xl border border-outline-variant shadow-[var(--shadow-card)] flex flex-col justify-between">
-            <div>
-              <span className="material-symbols-outlined text-primary text-4xl mb-4">groups</span>
-              <AnimatedCounter target={2500} suffix="+" />
-              <p className="text-xl font-semibold text-on-surface-variant">Seniors Supported</p>
-            </div>
-            <p className="text-base mt-6 opacity-75">Providing consistent companionship and digital literacy support to elders in assisted living and private homes.</p>
-          </div>
-          {/* Vertical Tall Card */}
-          <div className="bg-secondary-container p-8 rounded-xl border border-outline-variant shadow-[var(--shadow-card)] flex flex-col justify-center items-center text-center">
-            <span className="material-symbols-outlined text-on-secondary-container text-5xl mb-4">schedule</span>
-            <AnimatedCounter target={12} suffix="k+" />
-            <p className="text-sm font-bold uppercase tracking-wider text-on-secondary-container">Volunteer Hours</p>
-          </div>
-          {/* Split Cards */}
-          <div className="flex flex-col gap-6">
-            <div className="bg-surface-container-highest p-6 rounded-xl flex-1 border border-outline-variant flex items-center gap-4">
-              <div className="p-3 bg-white rounded-lg"><span className="material-symbols-outlined text-primary">volunteer_activism</span></div>
+        {statsLoading ? (
+          <LoadingSpinner count={1} message="Loading live statistics..." />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {/* Large Card */}
+            <div className="md:col-span-2 bg-surface-container-low p-8 rounded-xl border border-outline-variant shadow-[var(--shadow-card)] flex flex-col justify-between">
               <div>
-                <AnimatedCounter target={1200} suffix="+" />
-                <div className="text-sm font-medium">Youth Volunteers</div>
+                <span className="material-symbols-outlined text-primary text-4xl mb-4">groups</span>
+                <AnimatedCounter target={stats?.approvedVolunteers || 0} suffix="+" />
+                <p className="text-xl font-semibold text-on-surface-variant">Approved Volunteers</p>
+              </div>
+              <p className="text-base mt-6 opacity-75">Dedicated young leaders working across multiple initiatives to bridge generational gaps.</p>
+            </div>
+            {/* Vertical Tall Card */}
+            <div className="bg-secondary-container p-8 rounded-xl border border-outline-variant shadow-[var(--shadow-card)] flex flex-col justify-center items-center text-center">
+              <span className="material-symbols-outlined text-on-secondary-container text-5xl mb-4">schedule</span>
+              <AnimatedCounter target={stats?.publishedProgramsCount || 0} suffix="+" />
+              <p className="text-sm font-bold uppercase tracking-wider text-on-secondary-container">Active Programs</p>
+            </div>
+            {/* Split Cards */}
+            <div className="flex flex-col gap-6">
+              <div className="bg-surface-container-highest p-6 rounded-xl flex-1 border border-outline-variant flex items-center gap-4">
+                <div className="p-3 bg-white rounded-lg"><span className="material-symbols-outlined text-primary">volunteer_activism</span></div>
+                <div>
+                  <AnimatedCounter target={stats?.totalDonors || 0} suffix="+" />
+                  <div className="text-sm font-medium">Verified Donors</div>
+                </div>
+              </div>
+              <div className="bg-primary p-6 rounded-xl flex-1 text-white border border-outline-variant flex items-center gap-4">
+                <div className="p-3 bg-primary-container rounded-lg"><span className="material-symbols-outlined">payments</span></div>
+                <div>
+                  <AnimatedCounter target={stats?.totalDonationsAmount || 0} suffix=" BDT" />
+                  <div className="text-sm font-medium">Total BDT Raised</div>
+                </div>
               </div>
             </div>
-            <div className="bg-primary p-6 rounded-xl flex-1 text-white border border-outline-variant flex items-center gap-4">
-              <div className="p-3 bg-primary-container rounded-lg"><span className="material-symbols-outlined">location_on</span></div>
-              <div>
-                <AnimatedCounter target={45} suffix="" />
-                <div className="text-sm font-medium">Cities Reached</div>
-              </div>
-            </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* Success Stories */}
@@ -125,17 +116,23 @@ export default function ImpactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
             {/* Dynamic Stories from Admin */}
-            {dynamicStories.map((story) => (
-              <div key={story.id} className="lg:col-span-12 bg-white rounded-2xl overflow-hidden border border-outline-variant shadow-[var(--shadow-card)]">
-                <div className="p-8 md:p-12">
-                  <div className="bg-primary-fixed text-on-primary-fixed text-[10px] font-bold px-2 py-1 rounded mb-4 inline-block w-fit">NEW STORY</div>
-                  <span className="material-symbols-outlined text-primary-container text-4xl mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
-                  <p className="text-lg italic text-on-surface mb-6">"{story.content}"</p>
-                  <div className="text-xl font-semibold">— {story.title}</div>
-                  <p className="text-sm text-outline mt-2">{story.date}</p>
-                </div>
+            {programsLoading ? (
+              <div className="lg:col-span-12">
+                <LoadingSpinner count={1} message="Loading stories..." />
               </div>
-            ))}
+            ) : (
+              dynamicStories.map((story) => (
+                <div key={story.id} className="lg:col-span-12 bg-white rounded-2xl overflow-hidden border border-outline-variant shadow-[var(--shadow-card)]">
+                  <div className="p-8 md:p-12">
+                    <div className="bg-primary-fixed text-on-primary-fixed text-[10px] font-bold px-2 py-1 rounded mb-4 inline-block w-fit">NEW STORY</div>
+                    <span className="material-symbols-outlined text-primary-container text-4xl mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
+                    <p className="text-lg italic text-on-surface mb-6">"{story.description}"</p>
+                    <div className="text-xl font-semibold">— {story.title}</div>
+                    <p className="text-sm text-outline mt-2">{story.created_at ? new Date(story.created_at).toLocaleDateString() : ''}</p>
+                  </div>
+                </div>
+              ))
+            )}
 
             {/* Featured Story */}
             <div className="lg:col-span-7 bg-white rounded-2xl overflow-hidden border border-outline-variant shadow-[var(--shadow-card)]">

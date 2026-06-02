@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "type-check": "tsc --noEmit",
     "clean": "rimraf dist",
-    "seed-admin": "ts-node --transpile-only scripts/seed-admin.ts"
+    "seed-admin": "ts-node --transpile-only scripts/seed-admin.ts",
+    "migrate": "ts-node scripts/migrate.ts"
   },
   "keywords": [],
   "author": "",

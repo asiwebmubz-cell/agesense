@@ -14,8 +14,8 @@ const envSchema = z.object({
 
   // Auth
   JWT_SECRET: z.string().min(16, 'JWT_SECRET must be at least 16 characters'),
-  ADMIN_EMAIL: z.string().email().optional(),
-  ADMIN_PASSWORD: z.string().min(6).optional(),
+  ADMIN_EMAIL: z.string().email('ADMIN_EMAIL must be a valid email address'),
+  ADMIN_PASSWORD: z.string().min(6, 'ADMIN_PASSWORD must be at least 6 characters'),
 
   // Database connection string
   DATABASE_URL: z.string({ required_error: 'DATABASE_URL is required' }).min(1),
@@ -32,10 +32,7 @@ const envSchema = z.object({
   RENDER_EXTERNAL_URL: emptyStringToUndefined(z.string().url().optional()),
 });
 
-type Env = z.infer<typeof envSchema> & {
-  ADMIN_EMAIL: string;
-  ADMIN_PASSWORD: string;
-};
+type Env = z.infer<typeof envSchema>;
 
 function loadEnv(): Env {
   const result = envSchema.safeParse(process.env);
@@ -45,22 +42,7 @@ function loadEnv(): Env {
     process.exit(1);
   }
 
-  const data = {
-    ...result.data,
-    ADMIN_EMAIL: result.data.ADMIN_EMAIL || 'admin@agesense.org',
-    ADMIN_PASSWORD: result.data.ADMIN_PASSWORD || 'admin12345',
-  };
-
-  if (data.NODE_ENV === 'production') {
-    if (data.ADMIN_EMAIL === 'admin@agesense.org' || data.ADMIN_PASSWORD === 'admin12345') {
-      console.warn(
-        '⚠️  [SECURITY WARNING]: Using default admin credentials in production environment. ' +
-        'Please define ADMIN_EMAIL and ADMIN_PASSWORD in your environment variables.'
-      );
-    }
-  }
-
-  return data;
+  return result.data;
 }
 
 export const env = loadEnv();

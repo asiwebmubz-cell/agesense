@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useApi } from "@/hooks/useApi";
 import { getPublishedPrograms } from "@/services/programs.service";
+import { getStats } from "@/services/stats.service";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 
 export default function Home() {
   const { data: allPrograms, loading, error, refetch } = useApi(getPublishedPrograms);
+  const { data: stats, loading: statsLoading } = useApi(getStats);
   const programs = allPrograms?.slice(0, 3) ?? [];
 
   return (
@@ -126,24 +128,30 @@ export default function Home() {
             <h2 className="text-3xl font-semibold text-primary mb-4">Our Impact</h2>
             <p className="text-base text-on-surface-variant">The numbers speak to the dedication of our community and the need for our mission.</p>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
-            <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
-              <span className="text-4xl md:text-5xl font-bold text-primary">2578+</span>
-              <span className="text-sm font-medium text-on-surface-variant">Elders Helped</span>
+          {statsLoading ? (
+            <div className="py-8">
+              <LoadingSpinner count={1} message="Loading live impact metrics..." />
             </div>
-            <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
-              <span className="text-4xl md:text-5xl font-bold text-primary">1723+</span>
-              <span className="text-sm font-medium text-on-surface-variant">Aid Delivered</span>
+          ) : (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
+              <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
+                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.totalVolunteers || 0}</span>
+                <span className="text-sm font-medium text-on-surface-variant">Total Volunteers</span>
+              </div>
+              <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
+                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.approvedVolunteers || 0}</span>
+                <span className="text-sm font-medium text-on-surface-variant">Approved Volunteers</span>
+              </div>
+              <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
+                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.totalDonors || 0}</span>
+                <span className="text-sm font-medium text-on-surface-variant">Verified Donors</span>
+              </div>
+              <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
+                <span className="text-4xl md:text-5xl font-bold text-primary">{stats?.publishedProgramsCount || 0}</span>
+                <span className="text-sm font-medium text-on-surface-variant">Active Programs</span>
+              </div>
             </div>
-            <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
-              <span className="text-4xl md:text-5xl font-bold text-primary">4320+</span>
-              <span className="text-sm font-medium text-on-surface-variant">Voluntary Hours</span>
-            </div>
-            <div className="bg-surface-container-low aspect-square flex flex-col items-center justify-center p-6 rounded-xl border border-outline-variant text-center space-y-2 hover:bg-primary-container/5 transition-colors">
-              <span className="text-4xl md:text-5xl font-bold text-primary">2+</span>
-              <span className="text-sm font-medium text-on-surface-variant">Years Active</span>
-            </div>
-          </div>
+          )}
 
           {/* Get Involved CTA */}
           <div className="bg-inverse-surface text-surface-bright rounded-3xl p-12 overflow-hidden relative group" id="get-involved">

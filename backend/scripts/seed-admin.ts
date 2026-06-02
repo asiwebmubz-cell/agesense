@@ -9,8 +9,13 @@ async function seed() {
     process.exit(1);
   }
 
-  const email = process.env.ADMIN_EMAIL || 'admin@agesense.org';
-  const password = process.env.ADMIN_PASSWORD || 'admin12345';
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
+
+  if (!email || !password) {
+    console.error('❌ ADMIN_EMAIL and ADMIN_PASSWORD environment variables are required for seeding.');
+    process.exit(1);
+  }
   const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
   const client = new Client({
