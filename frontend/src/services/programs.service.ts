@@ -12,7 +12,7 @@ export async function getPublishedPrograms(): Promise<Program[]> {
 
 /** Fetch all programs including drafts — for admin dashboard. */
 export async function getAllPrograms(): Promise<Program[]> {
-  return apiFetch<Program[]>("/api/admin/programs", { auth: true });
+  return apiFetch<Program[]>("/api/programs/admin", { auth: true });
 }
 
 export interface CreateProgramPayload {
@@ -44,7 +44,7 @@ export interface CreateProgramPayload {
 export async function createProgram(
   payload: CreateProgramPayload
 ): Promise<Program> {
-  return apiFetch<Program>("/api/admin/programs", {
+  return apiFetch<Program>("/api/programs/admin", {
     method: "POST",
     auth: true,
     headers: { "Content-Type": "application/json" },
@@ -54,7 +54,7 @@ export async function createProgram(
 
 /** Delete a program by ID. */
 export async function deleteProgram(id: string): Promise<void> {
-  return apiFetch<void>(`/api/admin/programs/${id}`, {
+  return apiFetch<void>(`/api/programs/admin/${id}`, {
     method: "DELETE",
     auth: true,
   });
