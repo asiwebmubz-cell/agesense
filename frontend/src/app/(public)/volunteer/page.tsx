@@ -1,21 +1,70 @@
 "use client";
 
 import { useState } from "react";
+import { submitVolunteerApplication } from "@/services/volunteers.service";
 
 export default function VolunteerPage() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [showCustomSkill, setShowCustomSkill] = useState(false);
-  const [customSkill, setCustomSkill] = useState("");
   const totalSteps = 3;
 
-  const handleNext = () => {
+  const [form, setForm] = useState({
+    full_name: "",
+    email: "",
+    phone: "",
+    notes: "",
+  });
+
+  const [skills, setSkills] = useState<Record<string, boolean>>({
+    "Digital Literacy": false,
+    "Companionship": false,
+    "Logistics": false,
+    "Graphics Designer": false,
+    "RND": false,
+  });
+
+  const [showCustomSkill, setShowCustomSkill] = useState(false);
+  const [customSkill, setCustomSkill] = useState("");
+  const [availability, setAvailability] = useState<string[]>([]);
+  
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const toggleAvailability = (option: string) => {
+    setAvailability(prev => 
+      prev.includes(option) ? prev.filter(a => a !== option) : [...prev, option]
+    );
+  };
+
+  const handleNext = async () => {
     if (currentStep < totalSteps) {
       setCurrentStep(prev => prev + 1);
       window.scrollTo({ top: document.getElementById('registration-form')?.offsetTop ? document.getElementById('registration-form')!.offsetTop - 100 : 0, behavior: 'smooth' });
     } else {
-      alert('Thank you for joining AgeSense! We will contact you soon.');
-      // Reset form or redirect
-      setCurrentStep(1);
+      setSubmitting(true);
+      setError(null);
+      try {
+        const selectedSkills = Object.keys(skills).filter(k => skills[k]);
+        if (showCustomSkill && customSkill.trim()) {
+          selectedSkills.push(customSkill.trim());
+        }
+
+        await submitVolunteerApplication({
+          full_name: form.full_name,
+          email: form.email,
+          phone: form.phone || undefined,
+          form_data: {
+            skills: selectedSkills.length > 0 ? selectedSkills : ["General"],
+            availability: availability.length > 0 ? availability : ["Flexible"],
+            notes: form.notes || undefined
+          }
+        });
+        setSubmitted(true);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Failed to submit application.");
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -24,6 +73,34 @@ export default function VolunteerPage() {
       setCurrentStep(prev => prev - 1);
     }
   };
+
+  if (submitted) {
+    return (
+      <div className="py-32 flex flex-col items-center justify-center text-center px-4">
+        <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mb-6">
+          <span className="material-symbols-outlined text-green-600 text-6xl">check_circle</span>
+        </div>
+        <h1 className="text-4xl font-bold text-on-surface mb-4">Application Submitted!</h1>
+        <p className="text-xl text-on-surface-variant max-w-md mb-8">
+          Thank you for joining the AgeSense Initiative. We will review your application and contact you soon.
+        </p>
+        <button 
+          onClick={() => {
+            setSubmitted(false);
+            setCurrentStep(1);
+            setForm({ full_name: "", email: "", phone: "", notes: "" });
+            setSkills({ "Digital Literacy": false, "Companionship": false, "Logistics": false, "Graphics Designer": false, "RND": false });
+            setShowCustomSkill(false);
+            setCustomSkill("");
+            setAvailability([]);
+          }}
+          className="px-8 py-3 bg-primary text-white rounded-full font-bold hover:shadow-lg transition-all"
+        >
+          Submit Another Application
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -92,15 +169,15 @@ export default function VolunteerPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-on-surface-variant">Full Name</label>
-                      <input required={currentStep === 1} className="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="e.g. John Doe" type="text" />
+                      <input value={form.full_name} onChange={e => setForm({...form, full_name: e.target.value})} required={currentStep === 1} className="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="e.g. John Doe" type="text" />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-on-surface-variant">Email Address</label>
-                      <input required={currentStep === 1} className="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="john@example.com" type="email" />
+                      <input value={form.email} onChange={e => setForm({...form, email: e.target.value})} required={currentStep === 1} className="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="john@example.com" type="email" />
                     </div>
                     <div className="space-y-2 md:col-span-2">
                       <label className="text-sm font-medium text-on-surface-variant">Phone Number</label>
-                      <input required={currentStep === 1} className="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="+1 (555) 000-0000" type="tel" />
+                      <input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} required={currentStep === 1} className="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="+1 (555) 000-0000" type="tel" />
                     </div>
                   </div>
                 </div>
@@ -110,41 +187,17 @@ export default function VolunteerPage() {
                   <h3 className="text-3xl font-semibold text-on-surface mb-6">Skills & Interests</h3>
                   <p className="text-base text-on-surface-variant mb-6">How would you like to contribute to our community?</p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    <label className="cursor-pointer group">
-                      <input className="hidden peer" type="checkbox" />
-                      <div className="p-6 rounded-xl border border-outline-variant bg-surface group-hover:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container peer-checked:border-primary transition-all flex flex-col items-center text-center gap-3 h-full">
-                        <span className="material-symbols-outlined text-4xl">devices</span>
-                        <span className="text-sm font-medium">Digital Literacy</span>
-                      </div>
-                    </label>
-                    <label className="cursor-pointer group">
-                      <input className="hidden peer" type="checkbox" />
-                      <div className="p-6 rounded-xl border border-outline-variant bg-surface group-hover:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container peer-checked:border-primary transition-all flex flex-col items-center text-center gap-3 h-full">
-                        <span className="material-symbols-outlined text-4xl">volunteer_activism</span>
-                        <span className="text-sm font-medium">Companionship</span>
-                      </div>
-                    </label>
-                    <label className="cursor-pointer group">
-                      <input className="hidden peer" type="checkbox" />
-                      <div className="p-6 rounded-xl border border-outline-variant bg-surface group-hover:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container peer-checked:border-primary transition-all flex flex-col items-center text-center gap-3 h-full">
-                        <span className="material-symbols-outlined text-4xl">local_shipping</span>
-                        <span className="text-sm font-medium">Logistics</span>
-                      </div>
-                    </label>
-                    <label className="cursor-pointer group">
-                      <input className="hidden peer" type="checkbox" />
-                      <div className="p-6 rounded-xl border border-outline-variant bg-surface group-hover:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container peer-checked:border-primary transition-all flex flex-col items-center text-center gap-3 h-full">
-                        <span className="material-symbols-outlined text-4xl">palette</span>
-                        <span className="text-sm font-medium">Graphics Designer</span>
-                      </div>
-                    </label>
-                    <label className="cursor-pointer group">
-                      <input className="hidden peer" type="checkbox" />
-                      <div className="p-6 rounded-xl border border-outline-variant bg-surface group-hover:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container peer-checked:border-primary transition-all flex flex-col items-center text-center gap-3 h-full">
-                        <span className="material-symbols-outlined text-4xl">science</span>
-                        <span className="text-sm font-medium">RND</span>
-                      </div>
-                    </label>
+                    {Object.keys(skills).map(skill => (
+                      <label key={skill} className="cursor-pointer group">
+                        <input checked={skills[skill]} onChange={e => setSkills({...skills, [skill]: e.target.checked})} className="hidden peer" type="checkbox" />
+                        <div className="p-6 rounded-xl border border-outline-variant bg-surface group-hover:border-primary peer-checked:bg-primary-container peer-checked:text-on-primary-container peer-checked:border-primary transition-all flex flex-col items-center text-center gap-3 h-full">
+                          <span className="material-symbols-outlined text-4xl">
+                            {skill === "Digital Literacy" ? "devices" : skill === "Companionship" ? "volunteer_activism" : skill === "Logistics" ? "local_shipping" : skill === "Graphics Designer" ? "palette" : "science"}
+                          </span>
+                          <span className="text-sm font-medium">{skill}</span>
+                        </div>
+                      </label>
+                    ))}
                     <label className="cursor-pointer group">
                       <input 
                         className="hidden peer" 
@@ -163,7 +216,7 @@ export default function VolunteerPage() {
                       <label className="text-sm font-medium text-on-surface-variant block">Please specify your other skills</label>
                       <input 
                         type="text" 
-                        required
+                        required={showCustomSkill}
                         value={customSkill}
                         onChange={(e) => setCustomSkill(e.target.value)}
                         className="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" 
@@ -179,32 +232,49 @@ export default function VolunteerPage() {
                   <div className="space-y-4">
                     <label className="text-sm font-medium text-on-surface-variant block">Weekly Commitment</label>
                     <div className="flex flex-wrap gap-3">
-                      <button className="rounded-full px-6 py-2 border-2 border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-all focus:bg-primary focus:text-on-primary focus:border-primary" type="button">Weekends</button>
-                      <button className="rounded-full px-6 py-2 border-2 border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-all focus:bg-primary focus:text-on-primary focus:border-primary" type="button">Weekday Mornings</button>
-                      <button className="rounded-full px-6 py-2 border-2 border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-all focus:bg-primary focus:text-on-primary focus:border-primary" type="button">Weekday Evenings</button>
-                      <button className="rounded-full px-6 py-2 border-2 border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-all focus:bg-primary focus:text-on-primary focus:border-primary" type="button">Flexible</button>
+                      {["Weekends", "Weekday Mornings", "Weekday Evenings", "Flexible"].map(opt => (
+                        <button 
+                          key={opt}
+                          onClick={() => toggleAvailability(opt)}
+                          className={`rounded-full px-6 py-2 border-2 transition-all ${availability.includes(opt) ? 'bg-primary border-primary text-on-primary' : 'border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary'}`} 
+                          type="button"
+                        >
+                          {opt}
+                        </button>
+                      ))}
                     </div>
                     <div className="mt-8">
                       <label className="text-sm font-medium text-on-surface-variant block mb-2">Additional Notes</label>
-                      <textarea className="w-full p-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="Anything else we should know?" rows={4}></textarea>
+                      <textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} className="w-full p-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="Anything else we should know?" rows={4}></textarea>
                     </div>
                   </div>
+                  {error && (
+                    <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-lg flex items-center gap-2">
+                      <span className="material-symbols-outlined">error</span>
+                      {error}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-between pt-8 border-t border-outline-variant">
                   <button 
                     onClick={handlePrev} 
-                    disabled={currentStep === 1}
-                    className={`rounded-full px-8 py-3 text-sm font-medium border-2 border-primary text-primary transition-all ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'hover:bg-primary/5'}`} 
+                    disabled={currentStep === 1 || submitting}
+                    className={`rounded-full px-8 py-3 text-sm font-medium border-2 border-primary text-primary transition-all ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'hover:bg-primary/5'} ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`} 
                     type="button"
                   >
                     Previous
                   </button>
                   <button 
-                    className={`rounded-full px-8 py-3 text-sm font-medium transition-all ${currentStep === totalSteps ? 'bg-secondary text-on-secondary hover:bg-secondary/90' : 'bg-primary text-on-primary hover:bg-primary/90'}`} 
+                    disabled={submitting}
+                    className={`rounded-full px-8 py-3 text-sm font-medium transition-all ${currentStep === totalSteps ? 'bg-secondary text-on-secondary hover:bg-secondary/90' : 'bg-primary text-on-primary hover:bg-primary/90'} ${submitting ? 'opacity-70 cursor-not-allowed flex items-center gap-2' : ''}`} 
                     type="submit"
                   >
-                    {currentStep === totalSteps ? 'Complete Registration' : 'Next Step'}
+                    {submitting ? (
+                      <><span className="material-symbols-outlined animate-spin">progress_activity</span> Submitting...</>
+                    ) : (
+                      currentStep === totalSteps ? 'Complete Registration' : 'Next Step'
+                    )}
                   </button>
                 </div>
               </form>

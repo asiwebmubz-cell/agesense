@@ -52,6 +52,19 @@ export async function createProgram(
   });
 }
 
+/** Update an existing program. */
+export async function updateProgram(
+  id: string,
+  payload: Partial<CreateProgramPayload>
+): Promise<Program> {
+  return apiFetch<Program>(`/api/programs/admin/${id}`, {
+    method: "PUT",
+    auth: true,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
 /** Delete a program by ID. */
 export async function deleteProgram(id: string): Promise<void> {
   return apiFetch<void>(`/api/programs/admin/${id}`, {

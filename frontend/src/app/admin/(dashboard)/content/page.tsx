@@ -5,17 +5,22 @@ import type { Program, ProgramType } from "@/types";
 import {
   getAllPrograms,
   createProgram,
+  updateProgram,
   deleteProgram,
   uploadImage,
   uploadMultipleImages,
 } from "@/services/programs.service";
 
 export default function ContentAdminPage() {
+  const [editId, setEditId] = useState<string | null>(null);
+
   const [title, setTitle] = useState("");
   const [contentBody, setContentBody] = useState("");
   const [postType, setPostType] = useState<ProgramType>("Our Programs");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string>("");
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [existingGalleryUrls, setExistingGalleryUrls] = useState<string[]>([]);
 
   // Program details states
   const [subtitle, setSubtitle] = useState("");
@@ -54,11 +59,66 @@ export default function ContentAdminPage() {
     loadContent();
   }, [loadContent]);
 
+  const handleEdit = (item: Program) => {
+    setEditId(item.id);
+    setTitle(item.title);
+    setContentBody(item.description);
+    setPostType(item.type);
+    
+    // Images
+    setImageFile(null);
+    setExistingImageUrl(item.image_url || "");
+    setGalleryFiles([]);
+    setExistingGalleryUrls(item.images || []);
+
+    // Details
+    setSubtitle(item.subtitle || "");
+    setVideoUrl(item.video_url || "");
+    setGoals(item.goals || "");
+    setBeneficiaries(item.beneficiaries || "");
+    setExpenseCategories(item.expense_categories || "");
+    setProjectAreas(item.project_areas || "");
+    setDuration(item.duration || "");
+    setActiveYears(item.active_years || "");
+    setPackagesDistributed(item.packages_distributed || "");
+    setGalleryTitle1(item.gallery_title_1 || "");
+    setGalleryLink1(item.gallery_link_1 || "");
+    setGalleryTitle2(item.gallery_title_2 || "");
+    setGalleryLink2(item.gallery_link_2 || "");
+    setGalleryDescription(item.gallery_description || "");
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const resetForm = () => {
+    setEditId(null);
+    setTitle("");
+    setContentBody("");
+    setImageFile(null);
+    setExistingImageUrl("");
+    setGalleryFiles([]);
+    setExistingGalleryUrls([]);
+    setSubtitle("");
+    setVideoUrl("");
+    setGoals("");
+    setBeneficiaries("");
+    setExpenseCategories("");
+    setProjectAreas("");
+    setDuration("");
+    setActiveYears("");
+    setPackagesDistributed("");
+    setGalleryTitle1("");
+    setGalleryLink1("");
+    setGalleryTitle2("");
+    setGalleryLink2("");
+    setGalleryDescription("");
+    setError("");
+  };
+
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    // ── Pre-flight validation (mirrors createProgramSchema rules) ──────────────
     if (title.trim().length < 3) {
       setError("Title must be at least 3 characters.");
       return;
@@ -69,7 +129,7 @@ export default function ContentAdminPage() {
     }
 
     const isValidUrl = (val: string) => {
-      if (!val) return true; // empty is fine (optional)
+      if (!val) return true;
       try { new URL(val); return true; } catch { return false; }
     };
 
@@ -77,39 +137,28 @@ export default function ContentAdminPage() {
       setError("Video URL must be a valid URL (e.g. https://example.com/video.mp4).");
       return;
     }
-    if (galleryLink1 && !isValidUrl(galleryLink1)) {
-      setError("Gallery Item 1 Link must be a valid URL.");
-      return;
-    }
-    if (galleryLink2 && !isValidUrl(galleryLink2)) {
-      setError("Gallery Item 2 Link must be a valid URL.");
-      return;
-    }
-    // ── End pre-flight ─────────────────────────────────────────────────────────
 
     setIsPublishing(true);
 
     try {
-      let image_url = "";
-      let images: string[] = [];
+      let image_url = existingImageUrl;
+      let images: string[] = [...existingGalleryUrls];
 
-      // 1. Upload featured image if selected
       if (imageFile) {
         image_url = await uploadImage(imageFile);
       }
 
-      // 2. Upload gallery images if selected
       if (galleryFiles.length > 0) {
-        images = await uploadMultipleImages(galleryFiles);
+        const newImages = await uploadMultipleImages(galleryFiles);
+        images = [...images, ...newImages];
       }
 
-      // 3. Publish post
-      await createProgram({
+      const payloadData = {
         type: postType,
         title,
         description: contentBody,
         image_url: image_url || undefined,
-        status: "Published",
+        status: "Published" as const,
         images,
         ...(postType === "Our Programs" ? {
           subtitle,
@@ -127,29 +176,18 @@ export default function ContentAdminPage() {
           gallery_link_2: galleryLink2 || undefined,
           gallery_description: galleryDescription,
         } : {}),
-      });
+      };
+
+      if (editId) {
+        await updateProgram(editId, payloadData);
+      } else {
+        await createProgram(payloadData);
+      }
 
       setIsPublishing(false);
       setIsPublished(true);
 
-      setTitle("");
-      setContentBody("");
-      setImageFile(null);
-      setGalleryFiles([]);
-      setSubtitle("");
-      setVideoUrl("");
-      setGoals("");
-      setBeneficiaries("");
-      setExpenseCategories("");
-      setProjectAreas("");
-      setDuration("");
-      setActiveYears("");
-      setPackagesDistributed("");
-      setGalleryTitle1("");
-      setGalleryLink1("");
-      setGalleryTitle2("");
-      setGalleryLink2("");
-      setGalleryDescription("");
+      resetForm();
       loadContent();
 
       setTimeout(() => {
@@ -162,6 +200,7 @@ export default function ContentAdminPage() {
   };
 
   const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this content?")) return;
     try {
       await deleteProgram(id);
       loadContent();
@@ -172,18 +211,28 @@ export default function ContentAdminPage() {
 
   return (
     <div className="max-w-5xl mx-auto w-full">
-      <header className="mb-10">
-        <h1 className="text-3xl font-semibold text-on-surface mb-2">Content Management</h1>
-        <p className="text-lg text-on-surface-variant max-w-2xl">Create and manage content for the &apos;Our Programs&apos;, &apos;Our Work&apos;, and &apos;Impact Stories&apos; sections on the public website. Ensure high-quality imagery and clear, impactful messaging.</p>
+      <header className="mb-10 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-semibold text-on-surface mb-2">Content Management</h1>
+          <p className="text-lg text-on-surface-variant max-w-2xl">Create and manage content for the &apos;Our Programs&apos;, &apos;Our Work&apos;, and &apos;Impact Stories&apos; sections on the public website. Ensure high-quality imagery and clear, impactful messaging.</p>
+        </div>
+        {editId && (
+          <button 
+            onClick={resetForm}
+            className="px-4 py-2 border border-outline-variant rounded-lg font-semibold hover:bg-surface-container transition-colors text-on-surface-variant"
+          >
+            Cancel Edit Mode
+          </button>
+        )}
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Editor Section */}
         <div className="lg:col-span-2 space-y-6">
-          <section className="bg-surface-container-low rounded-xl p-8 border border-outline-variant shadow-sm">
-            <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 text-primary">
-              <span className="material-symbols-outlined">edit_square</span>
-              Create New Post
+          <section className={`bg-surface-container-low rounded-xl p-8 border shadow-sm transition-all ${editId ? 'border-primary shadow-primary/10' : 'border-outline-variant'}`}>
+            <h2 className={`text-xl font-semibold mb-6 flex items-center gap-2 ${editId ? 'text-primary' : 'text-primary'}`}>
+              <span className="material-symbols-outlined">{editId ? 'edit' : 'edit_square'}</span>
+              {editId ? 'Edit Post' : 'Create New Post'}
             </h2>
             <form className="space-y-6" onSubmit={handlePublish}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -230,7 +279,7 @@ export default function ContentAdminPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-on-surface-variant">Featured Image</label>
                   <div 
-                    className="relative border-2 border-dashed border-outline-variant rounded-xl p-8 bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group flex flex-col items-center justify-center text-center h-[180px]"
+                    className="relative border-2 border-dashed border-outline-variant rounded-xl p-8 bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer group flex flex-col items-center justify-center text-center h-[180px] overflow-hidden"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <input 
@@ -244,10 +293,24 @@ export default function ContentAdminPage() {
                         }
                       }}
                     />
-                    <span className="material-symbols-outlined text-4xl text-primary mb-2">add_photo_alternate</span>
-                    <p className="text-base text-on-surface truncate max-w-full px-2">
-                      {imageFile ? `Selected: ${imageFile.name}` : 'Featured image'}
-                    </p>
+                    {imageFile || existingImageUrl ? (
+                      <>
+                        <img 
+                          src={imageFile ? URL.createObjectURL(imageFile) : existingImageUrl} 
+                          alt="Featured Preview" 
+                          className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
+                        />
+                        <div className="relative z-10 flex flex-col items-center text-on-surface font-semibold bg-white/80 px-4 py-2 rounded-lg">
+                          <span className="material-symbols-outlined text-primary mb-1">refresh</span>
+                          Change Image
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <span className="material-symbols-outlined text-4xl text-primary mb-2">add_photo_alternate</span>
+                        <p className="text-base text-on-surface truncate max-w-full px-2">Featured image</p>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -267,7 +330,7 @@ export default function ContentAdminPage() {
                       onChange={(e) => {
                         if (e.target.files) {
                           const filesArray = Array.from(e.target.files);
-                          if (filesArray.length + galleryFiles.length > 20) {
+                          if (filesArray.length + galleryFiles.length + existingGalleryUrls.length > 20) {
                             alert("You can upload a maximum of 20 gallery images.");
                             return;
                           }
@@ -277,24 +340,48 @@ export default function ContentAdminPage() {
                     />
                     <span className="material-symbols-outlined text-4xl text-primary mb-2">collections</span>
                     <p className="text-base text-on-surface">
-                      {galleryFiles.length > 0 ? `${galleryFiles.length} images selected` : 'Select gallery images'}
+                      {(galleryFiles.length + existingGalleryUrls.length) > 0 
+                        ? `${galleryFiles.length + existingGalleryUrls.length} images selected` 
+                        : 'Select gallery images'}
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* Gallery Image Previews */}
-              {galleryFiles.length > 0 && (
+              {(galleryFiles.length > 0 || existingGalleryUrls.length > 0) && (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-on-surface-variant">Selected Gallery Previews ({galleryFiles.length})</label>
+                  <label className="text-sm font-medium text-on-surface-variant">Selected Gallery Previews ({galleryFiles.length + existingGalleryUrls.length})</label>
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 p-3 bg-surface-container rounded-xl border border-outline-variant max-h-48 overflow-y-auto">
+                    {/* Existing Gallery Images */}
+                    {existingGalleryUrls.map((url, idx) => (
+                      <div key={`existing-${idx}`} className="relative aspect-square bg-surface-container-high rounded overflow-hidden group">
+                        <img
+                          src={url}
+                          alt={`existing-preview-${idx}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExistingGalleryUrls(prev => prev.filter((_, i) => i !== idx));
+                          }}
+                          className="absolute inset-0 bg-black/50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <span className="material-symbols-outlined text-lg">delete</span>
+                        </button>
+                      </div>
+                    ))}
+                    {/* New Gallery Images */}
                     {galleryFiles.map((file, idx) => (
-                      <div key={idx} className="relative aspect-square bg-surface-container-high rounded overflow-hidden group">
+                      <div key={`new-${idx}`} className="relative aspect-square bg-surface-container-high rounded overflow-hidden group">
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`preview-${idx}`}
                           className="w-full h-full object-cover"
                         />
+                        <div className="absolute top-1 left-1 bg-primary text-white text-[10px] px-1 rounded font-bold">NEW</div>
                         <button
                           type="button"
                           onClick={(e) => {
@@ -350,7 +437,7 @@ export default function ContentAdminPage() {
                         placeholder="Ensuring food security...&#10;Providing specialized..."
                         rows={3}
                         className="w-full p-3 rounded-lg border border-outline-variant bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none resize-none" 
-                      />
+                        />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-on-surface-variant">Beneficiaries (one per line)</label>
@@ -360,7 +447,7 @@ export default function ContentAdminPage() {
                         placeholder="Elderly-led families facing...&#10;Low-income households..."
                         rows={3}
                         className="w-full p-3 rounded-lg border border-outline-variant bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none resize-none" 
-                      />
+                        />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-on-surface-variant">Expense Categories (one per line)</label>
@@ -370,7 +457,7 @@ export default function ContentAdminPage() {
                         placeholder="Procurement of specialized...&#10;Packaging and logistics..."
                         rows={3}
                         className="w-full p-3 rounded-lg border border-outline-variant bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none resize-none" 
-                      />
+                        />
                     </div>
                   </div>
 
@@ -487,11 +574,11 @@ export default function ContentAdminPage() {
                   type="submit"
                 >
                   {isPublishing ? (
-                    <><span className="material-symbols-outlined animate-spin">sync</span> Publishing...</>
+                    <><span className="material-symbols-outlined animate-spin">sync</span> {editId ? 'Updating...' : 'Publishing...'}</>
                   ) : isPublished ? (
-                    <><span className="material-symbols-outlined">check_circle</span> Published!</>
+                    <><span className="material-symbols-outlined">check_circle</span> {editId ? 'Updated!' : 'Published!'}</>
                   ) : (
-                    "Publish to Website"
+                    editId ? "Update Content" : "Publish to Website"
                   )}
                 </button>
               </div>
@@ -526,7 +613,7 @@ export default function ContentAdminPage() {
             </h3>
             <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
               {recentContent.map((item) => (
-                <div key={item.id} className="flex justify-between items-start group hover:bg-surface p-2 -mx-2 rounded transition-colors">
+                <div key={item.id} className={`flex justify-between items-start group hover:bg-surface p-2 -mx-2 rounded transition-colors ${editId === item.id ? 'bg-surface border border-primary/20' : ''}`}>
                   <div className="flex items-center gap-3 cursor-pointer overflow-hidden">
                     <div className={`w-10 h-10 rounded flex-shrink-0 flex items-center justify-center ${item.status === 'Published' ? 'bg-primary/10' : 'bg-secondary/10'}`}>
                       <span className={`material-symbols-outlined text-sm ${item.status === 'Published' ? 'text-primary' : 'text-secondary'}`}>
@@ -534,17 +621,26 @@ export default function ContentAdminPage() {
                       </span>
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-bold text-on-surface group-hover:text-primary transition-colors truncate">{item.title}</p>
+                      <p className={`text-sm font-bold group-hover:text-primary transition-colors truncate ${editId === item.id ? 'text-primary' : 'text-on-surface'}`}>{item.title}</p>
                       <p className="text-[12px] text-outline truncate">{item.type} • {item.created_at ? new Date(item.created_at).toLocaleDateString() : ''}</p>
                     </div>
                   </div>
-                  <button 
-                    onClick={() => handleDelete(item.id)}
-                    className="opacity-0 group-hover:opacity-100 p-2 text-error hover:bg-error/10 rounded transition-all flex-shrink-0"
-                    title="Delete Content"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">delete</span>
-                  </button>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0">
+                    <button 
+                      onClick={() => handleEdit(item)}
+                      className="p-2 text-primary hover:bg-primary/10 rounded transition-colors"
+                      title="Edit Content"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">edit</span>
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(item.id)}
+                      className="p-2 text-error hover:bg-error/10 rounded transition-colors"
+                      title="Delete Content"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">delete</span>
+                    </button>
+                  </div>
                 </div>
               ))}
               {recentContent.length === 0 && (

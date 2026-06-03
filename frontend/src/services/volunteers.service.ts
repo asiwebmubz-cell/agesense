@@ -18,3 +18,14 @@ export async function updateVolunteerStatusAdmin(
     body: JSON.stringify({ status }),
   });
 }
+
+/** Submit a new volunteer application. */
+export async function submitVolunteerApplication(
+  payload: { full_name: string; email: string; phone?: string; form_data?: Record<string, any> }
+): Promise<Volunteer> {
+  return apiFetch<Volunteer>("/api/volunteers", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
