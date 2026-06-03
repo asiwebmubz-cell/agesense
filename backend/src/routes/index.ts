@@ -5,6 +5,7 @@ import programsRouter from './programs.routes';
 import volunteersRouter from './volunteers.routes';
 import donorsRouter from './donors.routes';
 import statsRouter from './stats.routes';
+import partnershipsRouter from './partnerships.routes';
 import { dbHealthCheck } from '../controllers/db-health.controller';
 import { handleImageUpload, handleMultipleImagesUpload, upload } from '../controllers/upload.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
@@ -30,6 +31,8 @@ const router = Router();
  * Donors:           POST /api/donors             (public)
  *                   GET  /api/donors/admin        (auth)
  * Stats:            GET  /api/stats              (public)
+ * Partnerships:     POST /api/partnerships        (public)
+ *                   CRUD /api/partnerships/admin  (auth)
  */
 router.use('/health', healthRouter);
 router.get('/db-health', dbHealthCheck);
@@ -41,5 +44,6 @@ router.use('/programs', programsRouter);
 router.use('/volunteers', volunteersRouter);
 router.use('/donors', donorsRouter);
 router.use('/stats', statsRouter);
+router.use('/partnerships', partnershipsRouter);
 
 export default router;
