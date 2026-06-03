@@ -10,7 +10,10 @@ import ErrorMessage from "@/components/ui/ErrorMessage";
 export default function Home() {
   const { data: allPrograms, loading, error, refetch } = useApi(getPublishedPrograms);
   const { data: stats, loading: statsLoading } = useApi(getStats);
-  const programs = allPrograms?.slice(0, 3) ?? [];
+  // Exclude Impact Stories from the programs grid — they belong in the Impact section
+  const programs = allPrograms?.filter(p => p.type !== "Impact Stories").slice(0, 3) ?? [];
+  // Latest 3 Impact Stories for the homepage section
+  const impactStories = allPrograms?.filter(p => p.type === "Impact Stories").slice(0, 3) ?? [];
 
   return (
     <>
@@ -125,7 +128,44 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Impact Stories Section — dynamic from Admin CMS */}
+      {!loading && impactStories.length > 0 && (
+        <section className="py-24 bg-surface" id="impact-stories">
+          <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+              <div className="max-w-xl space-y-4">
+                <h2 className="text-3xl font-semibold text-primary">Stories of Change</h2>
+                <p className="text-base text-on-surface-variant">Real voices, real impact. Hear directly from the elders and volunteers we serve.</p>
+              </div>
+              <Link href="/impact" className="text-primary text-xl font-semibold border-b-2 border-primary-container flex items-center gap-2 hover:gap-4 transition-all">
+                View All Stories <span className="material-symbols-outlined">arrow_forward</span>
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {impactStories.map((story) => (
+                <div key={story.id} className="bg-surface-container-low rounded-xl border border-outline-variant shadow-[var(--shadow-card)] flex flex-col overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                  {story.image_url && (
+                    <div className="h-44 overflow-hidden">
+                      <img src={story.image_url} alt={story.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                    </div>
+                  )}
+                  <div className="p-6 flex flex-col flex-grow">
+                    <span className="material-symbols-outlined text-primary-container text-3xl mb-3" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
+                    <p className="text-base italic text-on-surface-variant leading-relaxed flex-grow mb-4">&ldquo;{story.description}&rdquo;</p>
+                    <div className="text-base font-semibold text-on-surface mt-auto">— {story.title}</div>
+                    {story.created_at && (
+                      <p className="text-xs text-outline mt-1">{new Date(story.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Impact & Get Involved Section */}
+
       <section className="py-24 bg-surface" id="impact">
         <div className="max-w-[1200px] mx-auto px-4 md:px-8">
           <div className="text-center mb-16">

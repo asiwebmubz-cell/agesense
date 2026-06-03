@@ -51,11 +51,12 @@ export default function ImpactPage() {
   const { data: stats, loading: statsLoading } = useApi(getStats);
   const { data: allPrograms, loading: programsLoading } = useApi(getPublishedPrograms);
 
-  const dynamicStories = allPrograms?.filter(item => item.type === "Impact Stories") ?? [];
+  // Filter to only published Impact Stories, API already orders by created_at DESC
+  const impactStories = allPrograms?.filter(item => item.type === "Impact Stories") ?? [];
 
   return (
     <>
-      {/* Key Metrics Bento Grid */}
+      {/* Key Metrics */}
       <section className="py-24 bg-surface px-4 md:px-8 max-w-[1200px] mx-auto">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-semibold text-primary mb-4">2023 at a Glance</h2>
@@ -74,73 +75,104 @@ export default function ImpactPage() {
         )}
       </section>
 
-      {/* Success Stories */}
+      {/* Impact Stories — fully dynamic from Admin CMS */}
       <section className="py-24 bg-surface-container-low">
         <div className="px-4 md:px-8 max-w-[1200px] mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
             <div className="max-w-xl">
               <h2 className="text-3xl font-semibold text-primary mb-4">Stories of Change</h2>
-              <p className="text-lg text-on-surface-variant">Real connections, real transformation. Meet the people at the heart of AgeSense Initiative.</p>
+              <p className="text-lg text-on-surface-variant">
+                Real connections, real transformation. Meet the people at the heart of AgeSense Initiative.
+              </p>
             </div>
-            <button className="text-sm font-bold text-primary flex items-center gap-2 hover:underline">
-              View All Stories <span className="material-symbols-outlined">chevron_right</span>
-            </button>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* Dynamic Stories from Admin */}
-            {programsLoading ? (
-              <div className="lg:col-span-12">
-                <LoadingSpinner count={1} message="Loading stories..." />
-              </div>
-            ) : (
-              dynamicStories.map((story) => (
-                <div key={story.id} className="lg:col-span-12 bg-white rounded-2xl overflow-hidden border border-outline-variant shadow-[var(--shadow-card)]">
-                  <div className="p-8 md:p-12">
-                    <div className="bg-primary-fixed text-on-primary-fixed text-[10px] font-bold px-2 py-1 rounded mb-4 inline-block w-fit">NEW STORY</div>
-                    <span className="material-symbols-outlined text-primary-container text-4xl mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
-                    <p className="text-lg italic text-on-surface mb-6">"{story.description}"</p>
-                    <div className="text-xl font-semibold">— {story.title}</div>
-                    <p className="text-sm text-outline mt-2">{story.created_at ? new Date(story.created_at).toLocaleDateString() : ''}</p>
-                  </div>
-                </div>
-              ))
-            )}
 
-            {/* Featured Story */}
-            <div className="lg:col-span-7 bg-white rounded-2xl overflow-hidden border border-outline-variant shadow-[var(--shadow-card)]">
-              <div className="grid md:grid-cols-2 h-full">
-                <div className="relative h-64 md:h-full">
-                  <img className="absolute inset-0 w-full h-full object-cover" alt="Martha and Arthur" src="/img/IMG-20250318-WA0076.jpg" />
-                </div>
-                <div className="p-8 flex flex-col justify-center">
-                  <div className="bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold px-2 py-1 rounded mb-4 inline-block w-fit">SENIOR SPOTLIGHT</div>
-                  <span className="material-symbols-outlined text-primary-container text-4xl mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
-                  <p className="text-lg italic text-on-surface mb-6">"I didn't just get help with my phone; I gained a grandson. Arthur visits me every Tuesday, and we share stories over tea. I feel young again."</p>
-                  <div className="text-xl font-semibold">— Martha, 82</div>
-                </div>
-              </div>
+          {programsLoading ? (
+            <LoadingSpinner count={1} message="Loading stories..." />
+          ) : impactStories.length === 0 ? (
+            <div className="text-center py-20 text-on-surface-variant">
+              <span className="material-symbols-outlined text-5xl mb-4 block opacity-40">auto_stories</span>
+              <p className="text-lg italic opacity-60">No stories published yet. Check back soon.</p>
             </div>
-            {/* Secondary Story */}
-            <div className="lg:col-span-5 flex flex-col gap-8">
-              <div className="bg-white p-8 rounded-2xl border border-outline-variant shadow-[var(--shadow-card)]">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center flex-shrink-0 text-outline-variant">
-                    <span className="material-symbols-outlined text-3xl text-on-surface-variant">person</span>
-                  </div>
-                  <div>
-                    <div className="text-xl font-semibold">Arthur, 19</div>
-                    <div className="text-sm font-medium text-primary">Volunteer Lead</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {impactStories.map((story) => (
+                <div
+                  key={story.id}
+                  className="bg-white rounded-2xl overflow-hidden border border-outline-variant shadow-[var(--shadow-card)] flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                >
+                  {/* Story image */}
+                  {story.image_url && (
+                    <div className="h-52 overflow-hidden">
+                      <img
+                        src={story.image_url}
+                        alt={story.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  )}
+
+                  <div className="p-8 flex flex-col flex-grow">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
+                        Impact Story
+                      </span>
+                      {story.created_at && (
+                        <span className="text-xs text-outline">
+                          {new Date(story.created_at).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </span>
+                      )}
+                    </div>
+
+                    <span
+                      className="material-symbols-outlined text-primary-container text-3xl mb-3"
+                      style={{ fontVariationSettings: "'FILL' 1" }}
+                    >
+                      format_quote
+                    </span>
+
+                    <p className="text-base italic text-on-surface leading-relaxed flex-grow mb-4">
+                      &ldquo;{story.description}&rdquo;
+                    </p>
+
+                    <div className="text-lg font-semibold text-on-surface mt-auto">— {story.title}</div>
+
+                    {/* Gallery images if available */}
+                    {story.images && story.images.length > 0 && (
+                      <div className="mt-4 grid grid-cols-3 gap-2">
+                        {story.images.slice(0, 3).map((imgUrl, idx) => (
+                          <div key={idx} className="h-16 rounded-lg overflow-hidden">
+                            <img
+                              src={imgUrl}
+                              alt={`${story.title} gallery ${idx + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
-                <p className="text-base text-on-surface-variant italic mb-0">"Volunteering with AgeSense changed my career path. I've learned that wisdom has no expiration date. It's the most rewarding part of my week."</p>
-              </div>
-              <div className="bg-primary text-white p-8 rounded-2xl border border-outline-variant flex flex-col items-center justify-center text-center">
-                <h4 className="text-xl font-semibold mb-2">Want to make an impact?</h4>
-                <p className="text-base opacity-80 mb-6">Join 1,200+ youth making a difference.</p>
-                <Link href="/volunteer" className="w-full bg-white text-primary font-bold py-3 rounded-lg hover:bg-surface-bright transition-colors">Become a Volunteer</Link>
-              </div>
+              ))}
             </div>
+          )}
+
+          {/* CTA */}
+          <div className="mt-16 bg-primary text-white p-10 rounded-2xl border border-outline-variant flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <h4 className="text-xl font-semibold mb-1">Want to make an impact?</h4>
+              <p className="text-base opacity-80">Join our growing community of youth making a difference.</p>
+            </div>
+            <Link
+              href="/volunteer"
+              className="shrink-0 bg-white text-primary font-bold py-3 px-8 rounded-lg hover:bg-surface-bright transition-colors"
+            >
+              Become a Volunteer
+            </Link>
           </div>
         </div>
       </section>
