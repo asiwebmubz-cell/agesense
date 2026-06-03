@@ -507,63 +507,6 @@ export default function ContentAdminPage() {
                     </div>
                   </div>
 
-                  <div className="border-t border-outline-variant/20 pt-4 space-y-4">
-                    <h4 className="text-sm font-bold text-on-surface">Gallery Settings (Legacy Options)</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-on-surface-variant">Gallery Item 1 Title</label>
-                        <input 
-                          value={galleryTitle1} 
-                          onChange={(e) => setGalleryTitle1(e.target.value)}
-                          placeholder="e.g. Ushnota 1.0"
-                          className="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none" 
-                          type="text" 
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-on-surface-variant">Gallery Item 1 Link (optional)</label>
-                        <input 
-                          value={galleryLink1} 
-                          onChange={(e) => setGalleryLink1(e.target.value)}
-                          placeholder="e.g. https://example.com/gallery1"
-                          className="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none" 
-                          type="text" 
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-on-surface-variant">Gallery Item 2 Title</label>
-                        <input 
-                          value={galleryTitle2} 
-                          onChange={(e) => setGalleryTitle2(e.target.value)}
-                          placeholder="e.g. Ihsan 2.0"
-                          className="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none" 
-                          type="text" 
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-on-surface-variant">Gallery Item 2 Link (optional)</label>
-                        <input 
-                          value={galleryLink2} 
-                          onChange={(e) => setGalleryLink2(e.target.value)}
-                          placeholder="e.g. https://example.com/gallery2"
-                          className="w-full h-12 px-4 rounded-lg border border-outline-variant bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none" 
-                          type="text" 
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-on-surface-variant">Gallery Section Description</label>
-                      <textarea 
-                        value={galleryDescription} 
-                        onChange={(e) => setGalleryDescription(e.target.value)}
-                        placeholder="Describe the gallery images or add a general note..."
-                        rows={3}
-                        className="w-full p-3 rounded-lg border border-outline-variant bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none resize-none" 
-                      />
-                    </div>
-                  </div>
                 </div>
               )}
               {error && <p className="text-sm font-semibold text-error">{error}</p>}
