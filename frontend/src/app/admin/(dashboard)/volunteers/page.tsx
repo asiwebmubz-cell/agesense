@@ -10,9 +10,12 @@ import { API_BASE_URL, getAuthHeaders } from "@/lib/api";
 export default function VolunteersAdminPage() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("Volunteer approved successfully.");
-  const [activeTab, setActiveTab] = useState<'pending' | 'accepted'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const [searchTerm, setSearchTerm] = useState("");
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
+  // Detail modal state
+  const [selectedVolunteer, setSelectedVolunteer] = useState<any>(null);
 
   const { data: volunteers, loading, error, refetch } = useApi(getAllVolunteersAdmin);
 
@@ -22,6 +25,8 @@ export default function VolunteersAdminPage() {
       setToastMessage("Volunteer approved successfully.");
       setShowToast(true);
       refetch();
+      // If the approved record is the one open in the detail modal, close it
+      if (selectedVolunteer?.id === id) setSelectedVolunteer(null);
       setTimeout(() => setShowToast(false), 3000);
     } catch (err) {
       console.error("Failed to approve volunteer:", err);
@@ -34,6 +39,8 @@ export default function VolunteersAdminPage() {
       setToastMessage("Volunteer application rejected.");
       setShowToast(true);
       refetch();
+      // If the rejected record is the one open in the detail modal, close it
+      if (selectedVolunteer?.id === id) setSelectedVolunteer(null);
       setTimeout(() => setShowToast(false), 3000);
     } catch (err) {
       console.error("Failed to reject volunteer:", err);
@@ -79,11 +86,35 @@ export default function VolunteersAdminPage() {
     return ["General"];
   };
 
-  const applications = volunteers?.filter(v => v.status === 'Pending') || [];
-  const acceptedVolunteers = volunteers?.filter(v => v.status === 'Approved') || [];
-  const rawDisplayData = activeTab === 'pending' ? applications : acceptedVolunteers;
+  const getAvailability = (v: any): string[] => {
+    if (Array.isArray(v.form_data_json?.availability)) return v.form_data_json.availability;
+    return [];
+  };
 
-  const displayData = rawDisplayData.filter(v => 
+  const getNotes = (v: any): string => {
+    return v.form_data_json?.notes || "";
+  };
+
+  const formatDate = (dateStr: string) =>
+    dateStr
+      ? new Date(dateStr).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      : "—";
+
+  // Split records by status — all three tabs are always populated
+  const applications      = volunteers?.filter(v => v.status === 'Pending')  || [];
+  const acceptedVolunteers = volunteers?.filter(v => v.status === 'Approved') || [];
+  const rejectedVolunteers = volunteers?.filter(v => v.status === 'Rejected') || [];
+
+  const rawDisplayData =
+    activeTab === 'pending'  ? applications :
+    activeTab === 'approved' ? acceptedVolunteers :
+    rejectedVolunteers;
+
+  const displayData = rawDisplayData.filter(v =>
     v.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     v.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -170,7 +201,7 @@ export default function VolunteersAdminPage() {
             </div>
           </div>
           
-          {/* Tabs */}
+          {/* Tabs — now 3 tabs including Rejected */}
           <div className="flex gap-6 mt-2">
             <button 
               onClick={() => setActiveTab('pending')}
@@ -179,10 +210,17 @@ export default function VolunteersAdminPage() {
               Pending Applications ({applications.length})
             </button>
             <button 
-              onClick={() => setActiveTab('accepted')}
-              className={`pb-3 font-semibold text-sm transition-all border-b-2 ${activeTab === 'accepted' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-on-surface'}`}
+              onClick={() => setActiveTab('approved')}
+              className={`pb-3 font-semibold text-sm transition-all border-b-2 ${activeTab === 'approved' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-on-surface'}`}
             >
               Approved Volunteers ({acceptedVolunteers.length})
+            </button>
+            {/* NEW: Rejected tab — shows count even when 0 */}
+            <button 
+              onClick={() => setActiveTab('rejected')}
+              className={`pb-3 font-semibold text-sm transition-all border-b-2 ${activeTab === 'rejected' ? 'border-error text-error' : 'border-transparent text-on-surface-variant hover:text-on-surface'}`}
+            >
+              Rejected ({rejectedVolunteers.length})
             </button>
           </div>
         </div>
@@ -201,6 +239,7 @@ export default function VolunteersAdminPage() {
               <thead>
                 <tr className="bg-surface-container-low text-on-surface-variant">
                   <th className="px-6 py-4 text-sm font-medium">Name</th>
+                  <th className="px-6 py-4 text-sm font-medium">Applied At</th>
                   <th className="px-6 py-4 text-sm font-medium">Email</th>
                   <th className="px-6 py-4 text-sm font-medium">Phone</th>
                   <th className="px-6 py-4 text-sm font-medium">Skills</th>
@@ -218,6 +257,10 @@ export default function VolunteersAdminPage() {
                         </div>
                         <span className="font-bold text-on-surface">{person.full_name}</span>
                       </div>
+                    </td>
+                    {/* NEW: Applied At column */}
+                    <td className="px-6 py-4 text-sm text-on-surface-variant whitespace-nowrap">
+                      {formatDate(person.created_at)}
                     </td>
                     <td className="px-6 py-4 text-base text-on-surface-variant">{person.email}</td>
                     <td className="px-6 py-4 text-base text-on-surface-variant">{person.phone || "—"}</td>
@@ -243,6 +286,14 @@ export default function VolunteersAdminPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {/* NEW: View Details button — always visible on hover */}
+                        <button
+                          onClick={() => setSelectedVolunteer(person)}
+                          className="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors"
+                          title="View Details"
+                        >
+                          <span className="material-symbols-outlined">info</span>
+                        </button>
                         {person.status === 'Pending' && (
                           <>
                             <button onClick={() => handleApprove(person.id)} className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors" title="Approve">
@@ -264,7 +315,7 @@ export default function VolunteersAdminPage() {
                 ))}
                 {displayData.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-6 py-8 text-center text-on-surface-variant">
+                    <td colSpan={7} className="px-6 py-8 text-center text-on-surface-variant">
                       No records found.
                     </td>
                   </tr>
@@ -346,6 +397,129 @@ export default function VolunteersAdminPage() {
               >
                 Close Logs
               </button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+      {/* ─── NEW: View Details Modal ──────────────────────────────────────────── */}
+      {selectedVolunteer && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setSelectedVolunteer(null); }}
+        >
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden animate-fade-in">
+            {/* Modal Header */}
+            <header className="p-6 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg bg-primary-container text-on-primary-container">
+                  {getInitials(selectedVolunteer.full_name)}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-on-surface">{selectedVolunteer.full_name}</h3>
+                  <p className="text-sm text-on-surface-variant">{selectedVolunteer.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedVolunteer(null)}
+                className="p-2 hover:bg-surface-variant/20 rounded-full transition-colors text-on-surface-variant"
+                aria-label="Close volunteer detail modal"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </header>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-5 overflow-y-auto max-h-[60vh]">
+              {/* Status badge */}
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-semibold text-on-surface-variant w-28">Status</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                  selectedVolunteer.status === 'Pending'
+                    ? 'bg-yellow-100 text-yellow-700'
+                    : selectedVolunteer.status === 'Approved'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'
+                }`}>
+                  {selectedVolunteer.status}
+                </span>
+              </div>
+
+              {/* Phone */}
+              <div className="flex items-start gap-3">
+                <span className="text-sm font-semibold text-on-surface-variant w-28 flex-shrink-0">Phone</span>
+                <span className="text-sm text-on-surface">{selectedVolunteer.phone || "Not provided"}</span>
+              </div>
+
+              {/* Application Date */}
+              <div className="flex items-start gap-3">
+                <span className="text-sm font-semibold text-on-surface-variant w-28 flex-shrink-0">Applied At</span>
+                <span className="text-sm text-on-surface">{formatDate(selectedVolunteer.created_at)}</span>
+              </div>
+
+              {/* Skills */}
+              <div className="flex items-start gap-3">
+                <span className="text-sm font-semibold text-on-surface-variant w-28 flex-shrink-0">Skills</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {getSkills(selectedVolunteer).map((skill: string) => (
+                    <span key={skill} className="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed-variant rounded text-xs font-bold">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Availability */}
+              {getAvailability(selectedVolunteer).length > 0 && (
+                <div className="flex items-start gap-3">
+                  <span className="text-sm font-semibold text-on-surface-variant w-28 flex-shrink-0">Availability</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {getAvailability(selectedVolunteer).map((slot: string) => (
+                      <span key={slot} className="px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded text-xs font-semibold">
+                        {slot}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Notes */}
+              {getNotes(selectedVolunteer) && (
+                <div className="flex items-start gap-3">
+                  <span className="text-sm font-semibold text-on-surface-variant w-28 flex-shrink-0">Notes</span>
+                  <p className="text-sm text-on-surface leading-relaxed italic">
+                    &ldquo;{getNotes(selectedVolunteer)}&rdquo;
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer — action buttons only shown if status is Pending */}
+            <footer className="p-6 border-t border-outline-variant bg-surface-container-low flex justify-end gap-3">
+              <button
+                onClick={() => setSelectedVolunteer(null)}
+                className="px-4 py-2 border border-outline-variant hover:bg-surface rounded-lg text-sm font-bold transition-all"
+              >
+                Close
+              </button>
+              {selectedVolunteer.status === 'Pending' && (
+                <>
+                  <button
+                    onClick={() => handleReject(selectedVolunteer.id)}
+                    className="px-4 py-2 border border-error text-error hover:bg-error/10 rounded-lg text-sm font-bold transition-all flex items-center gap-1"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">cancel</span>
+                    Reject
+                  </button>
+                  <button
+                    onClick={() => handleApprove(selectedVolunteer.id)}
+                    className="px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-bold hover:shadow-md transition-all flex items-center gap-1"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                    Approve
+                  </button>
+                </>
+              )}
             </footer>
           </div>
         </div>

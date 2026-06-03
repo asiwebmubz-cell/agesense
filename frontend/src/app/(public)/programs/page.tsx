@@ -32,18 +32,25 @@ export default function ProgramsPage() {
         </div>
 
         <div className="space-y-6">
-          {loading ? (
-            <LoadingSpinner count={4} message="Loading programs..." />
-          ) : error ? (
-            <ErrorMessage message={error} onRetry={refetch} />
-          ) : !items || items.length === 0 ? (
-            <EmptyState
-              icon="category"
-              title="No programs yet"
-              description="Our programs will appear here once they are published by the team."
-            />
-          ) : (
-            items.map((item) => (
+          {(() => {
+            // Filter: only show "Our Programs" and "Our Work" on this page.
+            // "Impact Stories" have their own dedicated /impact page.
+            const programItems = items?.filter(
+              (item) => item.type === "Our Programs" || item.type === "Our Work"
+            ) ?? [];
+
+            if (loading) return <LoadingSpinner count={4} message="Loading programs..." />;
+            if (error) return <ErrorMessage message={error} onRetry={refetch} />;
+            if (programItems.length === 0)
+              return (
+                <EmptyState
+                  icon="category"
+                  title="No programs yet"
+                  description="Our programs will appear here once they are published by the team."
+                />
+              );
+
+            return programItems.map((item) => (
               <div key={item.id} className="bg-surface-container-low rounded-xl p-6 md:p-8 flex flex-col md:flex-row gap-8 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 border border-outline-variant/30">
                 <div className="w-full md:w-1/3 aspect-[4/3] overflow-hidden rounded-lg shadow-sm bg-primary/10 flex items-center justify-center relative">
                   {item.image_url ? (
@@ -66,8 +73,8 @@ export default function ProgramsPage() {
                   </Link>
                 </div>
               </div>
-            ))
-          )}
+            ));
+          })()}
         </div>
       </section>
 

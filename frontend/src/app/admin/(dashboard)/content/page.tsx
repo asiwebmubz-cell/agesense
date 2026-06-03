@@ -855,10 +855,13 @@ export default function ContentAdminPage() {
                       </span>
                     </div>
                     <div className="min-w-0">
+                      {/* Clicking the title opens Preview; clicking the icon or the row opens Edit */}
                       <p
-                        className={`text-sm font-bold group-hover:text-primary transition-colors truncate ${
+                        onClick={(e) => { e.stopPropagation(); handleSidebarPreview(item); }}
+                        className={`text-sm font-bold hover:text-primary hover:underline cursor-pointer transition-colors truncate ${
                           editId === item.id ? "text-primary" : "text-on-surface"
                         }`}
+                        title="Click to preview"
                       >
                         {item.title}
                       </p>
