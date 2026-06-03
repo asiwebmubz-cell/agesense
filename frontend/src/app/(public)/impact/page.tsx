@@ -64,38 +64,11 @@ export default function ImpactPage() {
         {statsLoading ? (
           <LoadingSpinner count={1} message="Loading live statistics..." />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {/* Large Card */}
-            <div className="md:col-span-2 bg-surface-container-low p-8 rounded-xl border border-outline-variant shadow-[var(--shadow-card)] flex flex-col justify-between">
-              <div>
-                <span className="material-symbols-outlined text-primary text-4xl mb-4">groups</span>
-                <AnimatedCounter target={stats?.approvedVolunteers || 0} suffix="+" />
-                <p className="text-xl font-semibold text-on-surface-variant">Approved Volunteers</p>
-              </div>
-              <p className="text-base mt-6 opacity-75">Dedicated young leaders working across multiple initiatives to bridge generational gaps.</p>
-            </div>
-            {/* Vertical Tall Card */}
-            <div className="bg-secondary-container p-8 rounded-xl border border-outline-variant shadow-[var(--shadow-card)] flex flex-col justify-center items-center text-center">
-              <span className="material-symbols-outlined text-on-secondary-container text-5xl mb-4">schedule</span>
+          <div className="flex justify-center">
+            <div className="bg-secondary-container p-12 rounded-2xl border border-outline-variant shadow-[var(--shadow-card)] flex flex-col justify-center items-center text-center w-full max-w-sm">
+              <span className="material-symbols-outlined text-on-secondary-container text-6xl mb-6">grid_view</span>
               <AnimatedCounter target={stats?.publishedProgramsCount || 0} suffix="+" />
-              <p className="text-sm font-bold uppercase tracking-wider text-on-secondary-container">Active Programs</p>
-            </div>
-            {/* Split Cards */}
-            <div className="flex flex-col gap-6">
-              <div className="bg-surface-container-highest p-6 rounded-xl flex-1 border border-outline-variant flex items-center gap-4">
-                <div className="p-3 bg-white rounded-lg"><span className="material-symbols-outlined text-primary">volunteer_activism</span></div>
-                <div>
-                  <AnimatedCounter target={stats?.totalDonors || 0} suffix="+" />
-                  <div className="text-sm font-medium">Verified Donors</div>
-                </div>
-              </div>
-              <div className="bg-primary p-6 rounded-xl flex-1 text-white border border-outline-variant flex items-center gap-4">
-                <div className="p-3 bg-primary-container rounded-lg"><span className="material-symbols-outlined">payments</span></div>
-                <div>
-                  <AnimatedCounter target={stats?.totalDonationsAmount || 0} suffix=" BDT" />
-                  <div className="text-sm font-medium">Total BDT Raised</div>
-                </div>
-              </div>
+              <p className="text-sm font-bold uppercase tracking-wider text-on-secondary-container mt-3">Total Programs</p>
             </div>
           </div>
         )}
