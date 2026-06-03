@@ -293,7 +293,7 @@ export default function PartnershipsAdminPage() {
               <span className="material-symbols-outlined text-[20px]">{card.icon}</span>
             </div>
             <div className="text-2xl font-bold text-on-surface">
-              {stats ? (stats as Record<string, number>)[card.key] ?? 0 : "—"}
+              {stats ? stats[card.key] ?? 0 : "—"}
             </div>
             <div className="text-xs font-medium text-on-surface-variant mt-1">{card.label}</div>
           </div>
