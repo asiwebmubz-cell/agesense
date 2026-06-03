@@ -13,6 +13,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Volunteers", path: "/admin/volunteers", icon: "group" },
     { name: "Donors", path: "/admin/donors", icon: "volunteer_activism" },
     { name: "Content Management", path: "/admin/content", icon: "edit_note" },
+    { name: "Partner With Us", path: "/admin/partnerships", icon: "handshake" },
   ];
 
   return (
