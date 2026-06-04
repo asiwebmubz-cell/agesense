@@ -9,6 +9,7 @@ export default function DonateForm() {
   const [phone, setPhone] = useState("");
   const [amount, setAmount] = useState("");
   const [trxId, setTrxId] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<'bKash' | 'Nagad' | 'Rocket' | 'Bank Transfer'>("bKash");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -23,12 +24,14 @@ export default function DonateForm() {
       await submitDonationVerification({
         name: fullName,
         email,
+        phone,
         amount: parseFloat(amount),
+        payment_method: paymentMethod,
         transaction_id: trxId,
         payment_status: "Pending",
       });
       setIsSuccess(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : "Submission failed.");
     } finally {
       setIsSubmitting(false);
@@ -73,6 +76,7 @@ export default function DonateForm() {
             <input 
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              required
               className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" 
               id="phone" 
               placeholder="+880 1XXX-XXXXXX" 
@@ -106,6 +110,21 @@ export default function DonateForm() {
               type="text" 
             />
           </div>
+        </div>
+        <div className="space-y-2 group">
+          <label className="text-sm font-medium text-on-surface group-focus-within:text-primary transition-colors" htmlFor="payment_method">Payment Method</label>
+          <select 
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value as 'bKash' | 'Nagad' | 'Rocket' | 'Bank Transfer')}
+            required 
+            className="w-full px-4 py-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all outline-none" 
+            id="payment_method"
+          >
+            <option value="bKash">bKash</option>
+            <option value="Nagad">Nagad</option>
+            <option value="Rocket">Rocket</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+          </select>
         </div>
       </div>
       <div className="pt-4">

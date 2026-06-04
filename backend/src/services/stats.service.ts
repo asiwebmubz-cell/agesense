@@ -23,7 +23,7 @@ export interface StatsResponse {
 export const statsService = {
   async getMetrics(): Promise<StatsResponse> {
     const volunteersResult = await db.query('SELECT COUNT(*)::int as total, COUNT(*) FILTER (WHERE status = \'Approved\')::int as approved FROM volunteers');
-    const donorsResult = await db.query('SELECT COUNT(*)::int as total, COALESCE(SUM(amount), 0)::float as amount FROM donors WHERE payment_status = \'Completed\'');
+    const donorsResult = await db.query('SELECT COUNT(*)::int as total, COALESCE(SUM(amount), 0)::float as amount FROM donors WHERE payment_status = \'Verified\'');
     const programsResult = await db.query('SELECT COUNT(*) FILTER (WHERE type = \'Our Programs\' AND status = \'Published\')::int as programs, COUNT(*) FILTER (WHERE type = \'Our Work\' AND status = \'Published\')::int as work, COUNT(*) FILTER (WHERE type = \'Impact Stories\' AND status = \'Published\')::int as stories FROM programs');
 
     return {

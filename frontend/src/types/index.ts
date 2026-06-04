@@ -56,16 +56,23 @@ export interface Volunteer {
   created_at: string;
 }
 
-export type PaymentStatus = "Pending" | "Completed" | "Failed";
+export type PaymentStatus = "Pending" | "Verified" | "Rejected";
 
 export interface Donor {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  payment_method?: string;
   amount: number;
   payment_status: PaymentStatus;
   transaction_id?: string;
+  admin_notes?: string;
+  verified_by?: string;
+  verified_at?: string;
+  last_status_change_at?: string;
   created_at: string;
+  updated_at: string;
 }
 
 // ─── Auth types ───────────────────────────────────────────────────────────────

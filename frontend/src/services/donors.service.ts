@@ -4,9 +4,11 @@ import type { Donor } from "@/types";
 export interface CreateDonorPayload {
   name: string;
   email: string;
+  phone: string;
   amount: number;
+  payment_method: 'bKash' | 'Nagad' | 'Rocket' | 'Bank Transfer';
   transaction_id: string;
-  payment_status?: 'Pending' | 'Completed' | 'Failed';
+  payment_status?: 'Pending' | 'Verified' | 'Rejected';
 }
 
 export async function submitDonationVerification(payload: CreateDonorPayload): Promise<Donor> {
@@ -20,5 +22,18 @@ export async function submitDonationVerification(payload: CreateDonorPayload): P
 /** Fetch all donor records for the admin dashboard. */
 export async function getAllDonorsAdmin(): Promise<Donor[]> {
   return apiFetch<Donor[]>("/api/donors/admin", { auth: true });
+}
+
+/** Update the verification status of a donation. Admin only. */
+export async function updateDonorStatusAdmin(
+  id: string,
+  payload: { status: 'Pending' | 'Verified' | 'Rejected'; admin_notes?: string }
+): Promise<Donor> {
+  return apiFetch<Donor>(`/api/donors/admin/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    auth: true,
+  });
 }
 
