@@ -30,6 +30,9 @@ import apiRouter from './routes/index';
 export function createApp(): Application {
   const app = express();
 
+  // Trust Render's proxy layer for accurate client IP tracking
+  app.set('trust proxy', 1);
+
   // ─── 1. Security headers ───────────────────────────────────────────────────
   app.use(
     helmet({

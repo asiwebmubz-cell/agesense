@@ -11,7 +11,22 @@ import { handleImageUpload, handleMultipleImagesUpload, upload } from '../contro
 import { authMiddleware } from '../middleware/auth.middleware';
 import { cloudinaryHealthCheck } from '../controllers/cloudinary-health.controller';
 
+import multer from 'multer';
+
 const router = Router();
+
+const handleUploadMiddleware = (uploadField: any) => {
+  return (req: any, res: any, next: any) => {
+    uploadField(req, res, (err: any) => {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ success: false, message: `Upload error: ${err.message}` });
+      } else if (err) {
+        return next(err);
+      }
+      next();
+    });
+  };
+};
 
 /**
  * API Route Registry
@@ -38,8 +53,8 @@ router.use('/health', healthRouter);
 router.get('/db-health', dbHealthCheck);
 router.get('/cloudinary-health', cloudinaryHealthCheck);
 router.use('/auth', authRouter);
-router.post('/admin/upload', authMiddleware, upload.single('image'), handleImageUpload);
-router.post('/admin/upload-multiple', authMiddleware, upload.array('images', 20), handleMultipleImagesUpload);
+router.post('/admin/upload', authMiddleware, handleUploadMiddleware(upload.single('image')), handleImageUpload);
+router.post('/admin/upload-multiple', authMiddleware, handleUploadMiddleware(upload.array('images', 20)), handleMultipleImagesUpload);
 router.use('/programs', programsRouter);
 router.use('/volunteers', volunteersRouter);
 router.use('/donors', donorsRouter);
