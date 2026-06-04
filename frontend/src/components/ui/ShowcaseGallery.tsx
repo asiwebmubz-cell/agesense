@@ -8,6 +8,22 @@ interface ShowcaseGalleryProps {
   title: string;
 }
 
+// Cloudinary optimization utility
+const getOptimizedUrl = (url: string, width: number, isThumbnail = false) => {
+  if (!url) return "";
+  if (url.includes("res.cloudinary.com")) {
+    const uploadIndex = url.indexOf("/upload/");
+    if (uploadIndex !== -1) {
+      const insertPos = uploadIndex + 8; // length of "/upload/"
+      const params = isThumbnail 
+        ? `f_auto,q_auto,w_${width},h_120,c_fill/` 
+        : `f_auto,q_auto,w_${width}/`;
+      return url.slice(0, insertPos) + params + url.slice(insertPos);
+    }
+  }
+  return url;
+};
+
 export default function ShowcaseGallery({ images, title }: ShowcaseGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -161,22 +177,33 @@ export default function ShowcaseGallery({ images, title }: ShowcaseGalleryProps)
     >
       {/* Large Showcase Image */}
       <div 
-        className="relative w-full aspect-video md:aspect-[21/9] lg:aspect-[2.5/1] overflow-hidden rounded-2xl bg-surface-container-highest shadow-md group touch-pan-y"
+        className="relative w-full aspect-[4/3] md:aspect-[16/10] lg:aspect-[16/9] overflow-hidden rounded-2xl bg-surface-container-highest shadow-md group touch-pan-y"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
+        {/* Ambient Blurred Background (Matches color space of active image) */}
+        <div className="absolute inset-0 pointer-events-none select-none overflow-hidden z-0">
+          <Image
+            src={getOptimizedUrl(images[activeIndex], 800)}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover blur-2xl opacity-40 scale-105 pointer-events-none"
+          />
+        </div>
+
         <button
           onClick={() => setIsLightboxOpen(true)}
-          className="absolute inset-0 w-full h-full text-left"
+          className="absolute inset-0 w-full h-full text-left z-10"
           aria-label={`View enlarged image ${activeIndex + 1} of ${images.length}`}
         >
           <Image
-            src={images[activeIndex]}
+            src={getOptimizedUrl(images[activeIndex], 1200)}
             alt={`${title} - image ${activeIndex + 1}`}
             fill
             sizes="(max-width: 768px) 100vw, 1200px"
             priority={activeIndex === 0}
-            className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+            className="object-contain transition-transform duration-700 group-hover:scale-[1.01]"
           />
         </button>
 
@@ -185,14 +212,14 @@ export default function ShowcaseGallery({ images, title }: ShowcaseGalleryProps)
           <>
             <button
               onClick={(e) => { e.stopPropagation(); handleManualPrev(); }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md transition-all hover:scale-105 opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 outline-none focus:ring-2 focus:ring-primary z-10"
+              className="absolute left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md transition-all hover:scale-105 opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 outline-none focus:ring-2 focus:ring-primary z-20"
               aria-label="Previous Image"
             >
               <span className="material-symbols-outlined text-2xl flex">chevron_left</span>
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); handleManualNext(); }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md transition-all hover:scale-105 opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 outline-none focus:ring-2 focus:ring-primary z-10"
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md transition-all hover:scale-105 opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100 outline-none focus:ring-2 focus:ring-primary z-20"
               aria-label="Next Image"
             >
               <span className="material-symbols-outlined text-2xl flex">chevron_right</span>
@@ -201,14 +228,14 @@ export default function ShowcaseGallery({ images, title }: ShowcaseGalleryProps)
         )}
 
         {/* Counter */}
-        <div className="absolute top-4 right-4 bg-black/65 text-white backdrop-blur-sm px-4 py-1 rounded-full text-sm font-bold shadow z-10 flex items-center gap-1.5 font-mono">
+        <div className="absolute top-4 right-4 bg-black/65 text-white backdrop-blur-sm px-4 py-1 rounded-full text-sm font-bold shadow z-20 flex items-center gap-1.5 font-mono">
           <span className="material-symbols-outlined text-[16px]">photo_library</span>
           {currentFormatted} / {totalFormatted}
         </div>
 
         {/* Autoplay Progress Bar */}
         {images.length > 1 && (
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20 z-10">
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20 z-20">
             <div 
               className="h-full bg-primary transition-all duration-50 ease-linear"
               style={{ width: `${progress}%` }}
@@ -255,10 +282,11 @@ export default function ShowcaseGallery({ images, title }: ShowcaseGalleryProps)
                 aria-label={`Select thumbnail ${idx + 1}`}
               >
                 <Image
-                  src={img}
+                  src={getOptimizedUrl(img, 240, true)}
                   alt={`Thumbnail ${idx + 1}`}
                   fill
                   sizes="(max-width: 640px) 80px, 128px"
+                  loading="lazy"
                   className="object-cover"
                 />
               </button>
@@ -316,7 +344,7 @@ export default function ShowcaseGallery({ images, title }: ShowcaseGalleryProps)
               onClick={(e) => e.stopPropagation()}
             >
               <Image
-                src={images[activeIndex]}
+                src={getOptimizedUrl(images[activeIndex], 1600)}
                 alt={`${title} - enlarged view`}
                 fill
                 sizes="(max-width: 1200px) 100vw, 1200px"
@@ -341,6 +369,26 @@ export default function ShowcaseGallery({ images, title }: ShowcaseGalleryProps)
             <span className="material-symbols-outlined text-[16px]">zoom_in</span>
             Double-click or pinch to zoom. Esc to exit.
           </div>
+        </div>
+      )}
+
+      {/* Lightweight adjacent image prefetching in DOM background */}
+      {images.length > 1 && (
+        <div className="hidden" aria-hidden="true">
+          <Image 
+            src={getOptimizedUrl(images[(activeIndex + 1) % images.length], 1200)}
+            alt="" 
+            width={1} 
+            height={1} 
+            priority
+          />
+          <Image 
+            src={getOptimizedUrl(images[(activeIndex - 1 + images.length) % images.length], 1200)}
+            alt="" 
+            width={1} 
+            height={1} 
+            priority
+          />
         </div>
       )}
 
