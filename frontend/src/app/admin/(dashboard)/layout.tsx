@@ -75,10 +75,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </h2>
           </div>
           <div className="flex items-center gap-6">
-            <div className="hidden lg:flex items-center gap-2 text-on-surface-variant">
-              <span className="material-symbols-outlined text-[20px]">calendar_today</span>
-              <span className="text-sm font-medium">October 24, 2023</span>
-            </div>
             <button 
               onClick={() => {
                 logout();
