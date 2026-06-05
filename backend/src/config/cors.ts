@@ -1,27 +1,59 @@
 import type { CorsOptions } from 'cors';
 import { env } from './env';
 
+// Helper to normalize origins: trim spaces and strip trailing slashes
+const normalizeOrigin = (url: string): string => {
+  return url.trim().replace(/\/+$/, '');
+};
+
+// Build the base whitelist of static origins
+const getStaticOrigins = (): string[] => {
+  const list = [
+    env.FRONTEND_URL,
+    'https://agesense.org',
+    'https://www.agesense.org',
+    'https://agesense.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:3001',
+  ];
+
+  // If ALLOWED_ORIGINS is provided, parse and append it
+  if (env.ALLOWED_ORIGINS) {
+    const dynamicOrigins = env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean);
+    list.push(...dynamicOrigins);
+  }
+
+  return list.map(normalizeOrigin);
+};
+
+// RegEx to securely match Vercel preview deployments (e.g., https://agesense-git-main.vercel.app)
+const vercelPreviewRegex = /^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/;
+
 export const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = [
-      env.FRONTEND_URL,
-      'http://localhost:3000',
-      'http://localhost:3001',
-    ];
-
-    // Allow non-browser requests (curl, Postman, server-to-server, Render health checks)
+    // 1. Allow non-browser requests (e.g., server-to-server, Curl, Postman, Render health checks)
     if (!origin) {
       return callback(null, true);
     }
 
-    if (origin && allowedOrigins.includes(origin)) {
+    const normalizedOrigin = normalizeOrigin(origin);
+    const allowedOrigins = getStaticOrigins();
+
+    // 2. Check direct whitelist matches
+    if (allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true);
     }
 
-    callback(new Error(`CORS policy does not allow origin: ${origin}`));
+    // 3. Check Vercel preview subdomains pattern matches
+    if (vercelPreviewRegex.test(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    // Reject all other origins
+    return callback(new Error(`CORS policy does not allow origin: ${origin}`));
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   credentials: true,
   optionsSuccessStatus: 204,
 };
