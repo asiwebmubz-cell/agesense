@@ -276,7 +276,7 @@ export default function DonatePage() {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center px-4">
             <p className="text-2xl md:text-3xl font-semibold text-on-primary-fixed bg-primary-fixed/80 backdrop-blur-sm px-8 py-4 rounded-full inline-block shadow">
-              100% of donations go directly to senior care.
+              Check Our Fund Usage Policy
             </p>
           </div>
         </div>
