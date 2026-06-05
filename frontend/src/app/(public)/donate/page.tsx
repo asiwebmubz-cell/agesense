@@ -197,10 +197,10 @@ export default function DonatePage() {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <p className="text-xs font-semibold text-on-surface-variant uppercase">Account Number</p>
-                    <p className="font-mono font-bold text-lg text-on-surface mt-0.5">1077272370001</p>
+                    <p className="font-mono font-bold text-lg text-on-surface mt-0.5">0392050042149</p>
                   </div>
                   <button
-                    onClick={() => handleCopy("1077272370001", "b1")}
+                    onClick={() => handleCopy("0392050042149", "b1")}
                     className="p-2 bg-surface-container-highest border border-outline-variant rounded-lg text-on-surface-variant hover:bg-outline-variant/20 transition-colors"
                     title="Copy Account Number"
                   >
@@ -212,41 +212,25 @@ export default function DonatePage() {
 
                 <div>
                   <p className="text-xs font-semibold text-on-surface-variant uppercase">Bank Name</p>
-                  <p className="font-bold text-lg text-on-surface mt-0.5">BRAC Bank PLC</p>
+                  <p className="font-bold text-lg text-on-surface mt-0.5">One Bank PLC</p>
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-on-surface-variant uppercase">Branch Name</p>
-                  <p className="font-bold text-lg text-on-surface mt-0.5">SOUTH BONOSREE SUB BRANCH</p>
+                  <p className="font-bold text-lg text-on-surface mt-0.5">Banasree Branch</p>
                 </div>
 
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <p className="text-xs font-semibold text-on-surface-variant uppercase">Routing Number</p>
-                    <p className="font-mono font-bold text-lg text-on-surface mt-0.5">060260727</p>
+                    <p className="font-mono font-bold text-lg text-on-surface mt-0.5">165260727</p>
                   </div>
                   <button
-                    onClick={() => handleCopy("060260727", "b2")}
+                    onClick={() => handleCopy("165260727", "b2")}
                     className="p-2 bg-surface-container-highest border border-outline-variant rounded-lg text-on-surface-variant hover:bg-outline-variant/20 transition-colors"
                     title="Copy Routing Number"
                   >
                     <span className="material-symbols-outlined text-[18px]">
                       {copiedLabel === "b2" ? "done" : "content_copy"}
-                    </span>
-                  </button>
-                </div>
-
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="text-xs font-semibold text-on-surface-variant uppercase">SWIFT Code</p>
-                    <p className="font-mono font-bold text-lg text-on-surface mt-0.5">BRAKBDDH</p>
-                  </div>
-                  <button
-                    onClick={() => handleCopy("BRAKBDDH", "b3")}
-                    className="p-2 bg-surface-container-highest border border-outline-variant rounded-lg text-on-surface-variant hover:bg-outline-variant/20 transition-colors"
-                    title="Copy SWIFT Code"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">
-                      {copiedLabel === "b3" ? "done" : "content_copy"}
                     </span>
                   </button>
                 </div>
