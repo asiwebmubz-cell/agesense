@@ -20,6 +20,8 @@ const envSchema = z.object({
 
   // Database connection string
   DATABASE_URL: z.string({ required_error: 'DATABASE_URL is required' }).min(1),
+  SUPABASE_URL: z.string({ required_error: 'SUPABASE_URL is required' }).min(1),
+  SUPABASE_SERVICE_ROLE_KEY: z.string({ required_error: 'SUPABASE_SERVICE_ROLE_KEY is required' }).min(1),
 
   // Cloudinary
   CLOUDINARY_CLOUD_NAME: z.string({ required_error: 'CLOUDINARY_CLOUD_NAME is required' }).min(1),

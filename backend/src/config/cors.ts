@@ -8,19 +8,18 @@ const normalizeOrigin = (url: string): string => {
 
 // Build the base whitelist of static origins
 const getStaticOrigins = (): string[] => {
-  const list = [
-    env.FRONTEND_URL,
-    'https://agesense.org',
-    'https://www.agesense.org',
-    'https://agesense.vercel.app',
-    'http://localhost:3000',
-    'http://localhost:3001',
-  ];
+  const list = [env.FRONTEND_URL];
 
   // If ALLOWED_ORIGINS is provided, parse and append it
   if (env.ALLOWED_ORIGINS) {
     const dynamicOrigins = env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean);
     list.push(...dynamicOrigins);
+  }
+
+  // Add localhost if in dev mode
+  if (env.NODE_ENV === 'development') {
+    list.push('http://localhost:3000');
+    list.push('http://localhost:3001');
   }
 
   return list.map(normalizeOrigin);

@@ -15,17 +15,17 @@ export const createVolunteerSchema = z.object({
     .regex(/^\+?[\d\s\-().]{7,20}$/, 'phone must be a valid phone number.')
     .optional(),
   form_data: z.record(z.unknown()).optional(),
-});
+}).strict();
 
 export const updateVolunteerStatusSchema = z.object({
   status: z.enum(['Pending', 'Approved', 'Rejected'], {
     errorMap: () => ({ message: 'status must be Pending, Approved, or Rejected.' }),
   }),
-});
+}).strict();
 
 export const volunteerIdSchema = z.object({
   id: z.string().uuid('Volunteer ID must be a valid UUID.'),
-});
+}).strict();
 
 export type CreateVolunteerInput = z.infer<typeof createVolunteerSchema>;
 export type UpdateVolunteerStatusInput = z.infer<typeof updateVolunteerStatusSchema>;

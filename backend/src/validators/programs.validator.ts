@@ -37,7 +37,7 @@ export const createProgramSchema = z.object({
   gallery_link_2: z.string().url('gallery_link_2 must be a valid URL.').or(z.literal('')).optional(),
   gallery_description: z.string().optional(),
   images: z.array(z.string()).optional(),
-});
+}).strict();
 
 export const updateProgramSchema = createProgramSchema.partial().refine(
   (data) => Object.keys(data).length > 0,
@@ -46,7 +46,7 @@ export const updateProgramSchema = createProgramSchema.partial().refine(
 
 export const programIdSchema = z.object({
   id: z.string().uuid('Program ID must be a valid UUID.'),
-});
+}).strict();
 
 export type CreateProgramInput = z.infer<typeof createProgramSchema>;
 export type UpdateProgramInput = z.infer<typeof updateProgramSchema>;

@@ -8,6 +8,7 @@ import { env } from './config/env';
 import { generalLimiter } from './middleware/rateLimiter';
 import { notFoundMiddleware } from './middleware/notFound.middleware';
 import { errorMiddleware } from './middleware/error.middleware';
+import { sanitizeMiddleware } from './middleware/sanitize.middleware';
 import { morganStream } from './utils/logger';
 import apiRouter from './routes/index';
 
@@ -37,6 +38,18 @@ export function createApp(): Application {
   app.use(
     helmet({
       crossOriginResourcePolicy: { policy: 'cross-origin' },
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", "data:", "https:"]
+        }
+      },
+      hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+      xFrameOptions: { action: 'deny' },
+      xContentTypeOptions: true,
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
     })
   );
 
@@ -48,9 +61,10 @@ export function createApp(): Application {
   const morganFormat = env.NODE_ENV === 'production' ? 'combined' : 'dev';
   app.use(morgan(morganFormat, { stream: morganStream }));
 
-  // ─── 4. Body parsing ───────────────────────────────────────────────────────
-  app.use(express.json({ limit: '1mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+  // ─── 4. Body parsing & Sanitization ─────────────────────────────────────────
+  app.use(express.json({ limit: '2mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '2mb' }));
+  app.use(sanitizeMiddleware);
 
   // ─── 5. Global rate limiting ───────────────────────────────────────────────
   app.use(generalLimiter);
