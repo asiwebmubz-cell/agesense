@@ -7,6 +7,7 @@ import {
   getPartnershipStats,
 } from '../controllers/partnerships.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
+import { requireRole } from '../middleware/rbac.middleware';
 import { validate } from '../middleware/validate.middleware';
 import { strictLimiter } from '../middleware/rateLimiter';
 import {
@@ -28,12 +29,13 @@ router.post(
 
 // ─── Admin routes (auth required) ─────────────────────────────────────────────
 // Stats must be registered before /:id to avoid route conflict
-router.get('/admin/stats', authMiddleware, getPartnershipStats);
-router.get('/admin', authMiddleware, getAllPartnerships);
+router.get('/admin/stats', authMiddleware, requireRole(['super_admin', 'admin']), getPartnershipStats);
+router.get('/admin', authMiddleware, requireRole(['super_admin', 'admin']), getAllPartnerships);
 
 router.get(
   '/admin/:id',
   authMiddleware,
+  requireRole(['super_admin', 'admin']),
   validate(partnershipIdSchema, 'params'),
   getPartnershipById
 );
@@ -41,6 +43,7 @@ router.get(
 router.put(
   '/admin/:id',
   authMiddleware,
+  requireRole(['super_admin', 'admin']),
   validate(partnershipIdSchema, 'params'),
   validate(updatePartnershipStatusSchema),
   updatePartnershipStatus

@@ -6,6 +6,7 @@ import {
   exportVolunteers,
 } from '../controllers/volunteers.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
+import { requireRole } from '../middleware/rbac.middleware';
 import { validate } from '../middleware/validate.middleware';
 import { strictLimiter } from '../middleware/rateLimiter';
 import {
@@ -26,12 +27,13 @@ router.post(
 );
 
 // ─── Admin routes ──────────────────────────────────────────────────────────────
-router.get('/admin', authMiddleware, getAllVolunteers);
-router.get('/admin/export', authMiddleware, exportVolunteers);
+router.get('/admin', authMiddleware, requireRole(['super_admin', 'admin']), getAllVolunteers);
+router.get('/admin/export', authMiddleware, requireRole(['super_admin', 'admin']), exportVolunteers);
 
 router.put(
   '/admin/:id',
   authMiddleware,
+  requireRole(['super_admin', 'admin']),
   validate(volunteerIdSchema, 'params'),
   validate(updateVolunteerStatusSchema),
   updateVolunteerStatus

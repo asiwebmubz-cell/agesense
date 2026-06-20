@@ -5,6 +5,7 @@ import cron from 'node-cron';
 import { createApp } from './app';
 import { env } from './config/env';
 import { logger } from './utils/logger';
+import { initCronJobs } from './utils/cron';
 
 const app = createApp();
 const PORT = parseInt(env.PORT, 10);
@@ -62,5 +63,8 @@ cron.schedule('*/12 * * * *', () => {
       logger.warn(`[Cron] Self-ping failed: ${err.message}`);
     });
 });
+
+// Initialize database cleanup cron tasks
+initCronJobs();
 
 export default app;

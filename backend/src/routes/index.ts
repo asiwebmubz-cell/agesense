@@ -9,6 +9,7 @@ import partnershipsRouter from './partnerships.routes';
 import { dbHealthCheck } from '../controllers/db-health.controller';
 import { handleImageUpload, handleMultipleImagesUpload, upload } from '../controllers/upload.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
+import { requireRole } from '../middleware/rbac.middleware';
 import { cloudinaryHealthCheck } from '../controllers/cloudinary-health.controller';
 
 import multer from 'multer';
@@ -53,8 +54,8 @@ router.use('/health', healthRouter);
 router.get('/db-health', dbHealthCheck);
 router.get('/cloudinary-health', cloudinaryHealthCheck);
 router.use('/auth', authRouter);
-router.post('/admin/upload', authMiddleware, handleUploadMiddleware(upload.single('image')), handleImageUpload);
-router.post('/admin/upload-multiple', authMiddleware, handleUploadMiddleware(upload.array('images', 20)), handleMultipleImagesUpload);
+router.post('/admin/upload', authMiddleware, requireRole(['super_admin', 'admin', 'content_manager']), handleUploadMiddleware(upload.single('image')), handleImageUpload);
+router.post('/admin/upload-multiple', authMiddleware, requireRole(['super_admin', 'admin', 'content_manager']), handleUploadMiddleware(upload.array('images', 20)), handleMultipleImagesUpload);
 router.use('/programs', programsRouter);
 router.use('/volunteers', volunteersRouter);
 router.use('/donors', donorsRouter);

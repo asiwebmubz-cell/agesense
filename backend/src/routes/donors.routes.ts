@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getAllDonors, createDonor, exportDonors, updateDonorStatus } from '../controllers/donors.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
+import { requireRole } from '../middleware/rbac.middleware';
 import { validate } from '../middleware/validate.middleware';
 import { strictLimiter } from '../middleware/rateLimiter';
 import { createDonorSchema, donorIdSchema, updateDonorStatusSchema } from '../validators/donors.validator';
@@ -16,11 +17,12 @@ router.post(
 );
 
 // ─── Admin routes ──────────────────────────────────────────────────────────────
-router.get('/admin', authMiddleware, getAllDonors);
-router.get('/admin/export', authMiddleware, exportDonors);
+router.get('/admin', authMiddleware, requireRole(['super_admin', 'admin']), getAllDonors);
+router.get('/admin/export', authMiddleware, requireRole(['super_admin', 'admin']), exportDonors);
 router.put(
   '/admin/:id',
   authMiddleware,
+  requireRole(['super_admin', 'admin']),
   validate(donorIdSchema, 'params'),
   validate(updateDonorStatusSchema),
   updateDonorStatus

@@ -7,6 +7,7 @@ import {
   deleteProgram,
 } from '../controllers/programs.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
+import { requireRole } from '../middleware/rbac.middleware';
 import { validate } from '../middleware/validate.middleware';
 import {
   createProgramSchema,
@@ -20,11 +21,12 @@ const router = Router();
 router.get('/', getPublishedPrograms);
 
 // ─── Admin routes (require auth) ──────────────────────────────────────────────
-router.get('/admin', authMiddleware, getAllPrograms);
+router.get('/admin', authMiddleware, requireRole(['super_admin', 'admin', 'content_manager']), getAllPrograms);
 
 router.post(
   '/admin',
   authMiddleware,
+  requireRole(['super_admin', 'admin', 'content_manager']),
   validate(createProgramSchema),
   createProgram
 );
@@ -32,6 +34,7 @@ router.post(
 router.put(
   '/admin/:id',
   authMiddleware,
+  requireRole(['super_admin', 'admin', 'content_manager']),
   validate(programIdSchema, 'params'),
   validate(updateProgramSchema),
   updateProgram
@@ -40,6 +43,7 @@ router.put(
 router.delete(
   '/admin/:id',
   authMiddleware,
+  requireRole(['super_admin', 'admin', 'content_manager']),
   validate(programIdSchema, 'params'),
   deleteProgram
 );

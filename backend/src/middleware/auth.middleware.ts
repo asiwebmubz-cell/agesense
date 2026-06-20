@@ -8,6 +8,8 @@ export interface AuthenticatedRequest extends Request {
   user?: {
     id?: string;
     email: string;
+    role?: string;
+    jti?: string;
     iat?: number;
     exp?: number;
   };
@@ -21,11 +23,11 @@ export interface AuthenticatedRequest extends Request {
  * NOTE: Currently validates token structure only.
  * Database admin lookup will be wired in a future sprint.
  */
-export const authMiddleware = (
+export const authMiddleware = async (
   req: AuthenticatedRequest,
   _res: Response,
   next: NextFunction
-): void => {
+): Promise<void> => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -36,6 +38,17 @@ export const authMiddleware = (
 
   try {
     const decoded = jwt.verify(token, env.JWT_SECRET) as AuthenticatedRequest['user'];
+    
+    // Check if token has been revoked
+    if (decoded.jti) {
+      const revoked = await import('../database').then(m => 
+        m.db.query('SELECT 1 FROM revoked_tokens WHERE token_jti = $1 LIMIT 1', [decoded.jti])
+      );
+      if (revoked.length > 0) {
+        return next(new ApiError(401, 'Token has been revoked. Please sign in again.'));
+      }
+    }
+    
     req.user = decoded;
     next();
   } catch (err) {
