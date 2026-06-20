@@ -59,7 +59,7 @@ export default function ImpactPage() {
       {/* Key Metrics */}
       <section className="py-24 bg-surface px-4 md:px-8 max-w-[1200px] mx-auto">
         <div className="mb-12 text-center">
-          <h2 className="text-3xl font-semibold text-primary mb-4">2023 at a Glance</h2>
+          <h2 className="text-3xl font-semibold text-primary mb-4">Our Impact at a Glance</h2>
           <div className="h-1 w-20 bg-primary-container mx-auto rounded-full"></div>
         </div>
         {statsLoading ? (
