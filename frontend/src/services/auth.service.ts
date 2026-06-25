@@ -17,7 +17,7 @@ export async function login(
     body: JSON.stringify({ email, password }),
   });
 
-  const accessToken = data.accessToken;
+  const accessToken = data.accessToken || (data as any).token;
   if (!accessToken) {
     throw new Error("Authentication response did not include an access token.");
   }
