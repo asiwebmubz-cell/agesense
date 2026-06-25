@@ -17,9 +17,14 @@ export async function login(
     body: JSON.stringify({ email, password }),
   });
 
+  const accessToken = data.accessToken;
+  if (!accessToken) {
+    throw new Error("Authentication response did not include an access token.");
+  }
+
   // Persist token — cookie for Next.js middleware, localStorage for client headers
-  document.cookie = `admin_token=${data.token}; path=/; max-age=28800; SameSite=Strict`;
-  localStorage.setItem("admin_token", data.token);
+  document.cookie = `admin_token=${accessToken}; path=/; max-age=28800; SameSite=Strict`;
+  localStorage.setItem("admin_token", accessToken);
 
   return data;
 }

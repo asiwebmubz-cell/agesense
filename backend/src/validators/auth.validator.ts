@@ -10,4 +10,12 @@ export const loginSchema = z.object({
     .min(6, 'password must be at least 6 characters.'),
 }).strict();
 
+export const refreshSchema = z.object({
+  refreshToken: z.string({ required_error: 'refreshToken is required.' }).min(1),
+}).strict();
+
+export const logoutSchema = z.object({
+  refreshToken: z.string().optional(),
+}).strict();
+
 export type LoginInput = z.infer<typeof loginSchema>;

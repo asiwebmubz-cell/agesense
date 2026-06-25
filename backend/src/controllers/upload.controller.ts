@@ -117,8 +117,21 @@ export const handleMultipleImagesUpload = asyncHandler(
     };
 
     try {
-      const uploadPromises = files.map((file) => uploadStream(file.buffer));
-      const results = await Promise.all(uploadPromises);
+      const concurrency = 4;
+      const results: Array<{ secure_url: string }> = new Array(files.length);
+      let nextIndex = 0;
+
+      const worker = async (): Promise<void> => {
+        while (nextIndex < files.length) {
+          const currentIndex = nextIndex;
+          nextIndex += 1;
+          const file = files[currentIndex];
+          const result = await uploadStream(file.buffer);
+          results[currentIndex] = result;
+        }
+      };
+
+      await Promise.all(Array(Math.min(concurrency, files.length)).fill(null).map(() => worker()));
       const imageUrls = results.map((result) => result.secure_url);
 
       res.status(200).json({

@@ -16,14 +16,37 @@ export const sanitizeHtml = (dirtyHtml: string): string => {
 /**
  * Deep sanitizes all string properties in an object.
  */
-export const sanitizeObject = <T extends Record<string, any>>(obj: T): T => {
-  const sanitized = { ...obj };
-  for (const key of Object.keys(sanitized)) {
-    if (typeof sanitized[key] === 'string') {
-      sanitized[key] = sanitizeHtml(sanitized[key] as string) as any;
-    } else if (typeof sanitized[key] === 'object' && sanitized[key] !== null) {
-      sanitized[key] = sanitizeObject(sanitized[key]);
-    }
+const sanitizeValue = (value: unknown, seen: WeakSet<object>): unknown => {
+  if (typeof value === 'string') {
+    return sanitizeHtml(value);
   }
-  return sanitized;
+
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizeValue(item, seen));
+  }
+
+  if (value && typeof value === 'object') {
+    return sanitizeObject(value as Record<string, unknown>, seen);
+  }
+
+  return value;
+};
+
+export const sanitizeObject = <T extends Record<string, unknown>>(
+  obj: T,
+  seen = new WeakSet<object>()
+): T => {
+  if (seen.has(obj)) {
+    return obj;
+  }
+
+  seen.add(obj);
+
+  const sanitized: any = Array.isArray(obj) ? [] : {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    sanitized[key] = sanitizeValue(value, seen);
+  }
+
+  return sanitized as T;
 };

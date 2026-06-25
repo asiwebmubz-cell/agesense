@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
 import { ApiError } from '../utils/ApiError';
+import { db } from '../database';
 
 // ─── Extend Express Request type ─────────────────────────────────────────────
 export interface AuthenticatedRequest extends Request {
@@ -37,18 +38,19 @@ export const authMiddleware = async (
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, env.JWT_SECRET) as AuthenticatedRequest['user'];
-    
+    const decoded = jwt.verify(token, env.JWT_SECRET) as AuthenticatedRequest['user'] | undefined;
+    if (!decoded || typeof decoded === 'string') {
+      return next(new ApiError(403, 'Invalid authentication token.'));
+    }
+
     // Check if token has been revoked
     if (decoded.jti) {
-      const revoked = await import('../database').then(m => 
-        m.db.query('SELECT 1 FROM revoked_tokens WHERE token_jti = $1 LIMIT 1', [decoded.jti])
-      );
+      const revoked = await db.query('SELECT 1 FROM revoked_tokens WHERE token_jti = $1 LIMIT 1', [decoded.jti]);
       if (revoked.length > 0) {
         return next(new ApiError(401, 'Token has been revoked. Please sign in again.'));
       }
     }
-    
+
     req.user = decoded;
     next();
   } catch (err) {

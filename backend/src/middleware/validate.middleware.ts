@@ -23,14 +23,6 @@ export const validate = (
 
     if (!result.success) {
       const formatted = formatZodErrors(result.error);
-      console.log('❌ Zod Validation Failed:');
-      result.error.issues.forEach(issue => {
-        console.log(JSON.stringify({
-          field: issue.path.join('.'),
-          value: req[target][issue.path[0]],
-          error: issue.message
-        }, null, 2));
-      });
       return next(new ApiError(400, 'Validation failed.', formatted));
     }
 
