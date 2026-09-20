@@ -1,12 +1,12 @@
 # Graph Report - AgeSense  (2026-09-20)
 
 ## Corpus Check
-- 190 files · ~559,591 words
+- 190 files · ~559,619 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 8 file(s) not represented in the graph (top: (none) 4, .example 2, .ico 1)
 
 ## Summary
-- 928 nodes · 1834 edges · 65 communities (56 shown, 9 thin omitted)
+- 931 nodes · 1842 edges · 75 communities (64 shown, 11 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 30 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
@@ -16,17 +16,17 @@
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- apiFetch
+- users/page.tsx
 - app.ts
 - ApiError
 - frontend/package.json
 - dependencies
-- partnerships.routes.ts
-- programs.routes.ts
+- backend/src/services/partnerships.service.ts
+- programs.validator.ts
 - partnerships/page.tsx
 - users
 - compilerOptions
-- volunteers.routes.ts
+- volunteers.controller.ts
 - test_login.js
 - compilerOptions
 - seed-admin.ts
@@ -46,16 +46,16 @@
 - frontend/src/services/site-content.service.ts
 - annual-reports.routes.ts
 - auth.controller.ts
-- branches.routes.ts
+- branches.controller.ts
 - donors.routes.ts
 - auth.service.ts
 - AgeSense Initiative
-- auth.middleware.ts
+- site-content.routes.ts
 - react
 - Database Migration Documentation
-- routes/index.ts
+- express
 - System Architecture & Design Document
-- api.ts
+- types/index.ts
 - 15_roles_permissions.sql
 - graphify reference: extra exports and benchmark
 - Supabase Database Guide - AgeSense PostgreSQL
@@ -79,6 +79,16 @@
 - AGENTS.md
 - extraction-spec.md
 - app/layout.tsx
+- routes/index.ts
+- frontend/src/services/programs.service.ts
+- frontend/src/services/annual-reports.service.ts
+- frontend/src/services/policies.service.ts
+- apiFetch
+- frontend/src/services/branches.service.ts
+- (public)/layout.tsx
+- volunteers/page.tsx
+- api.ts
+- health.controller.ts
 
 ## God Nodes (most connected - your core abstractions)
 1. `apiFetch()` - 67 edges
@@ -93,33 +103,33 @@
 10. `asyncHandler()` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `createApp()` --indirect_call--> `sanitizeMiddleware()`  [INFERRED]
-  backend/src/app.ts → backend/src/middleware/sanitize.middleware.ts
-- `forgotPassword()` --calls--> `apiFetch()`  [EXTRACTED]
-  frontend/src/services/auth.service.ts → frontend/src/lib/api.ts
-- `createApp()` --indirect_call--> `errorMiddleware()`  [INFERRED]
-  backend/src/app.ts → backend/src/middleware/error.middleware.ts
 - `createApp()` --indirect_call--> `notFoundMiddleware()`  [INFERRED]
   backend/src/app.ts → backend/src/middleware/notFound.middleware.ts
-- `login` --calls--> `ApiError`  [EXTRACTED]
-  backend/src/controllers/auth.controller.ts → backend/src/utils/ApiError.ts
+- `createApp()` --indirect_call--> `sanitizeMiddleware()`  [INFERRED]
+  backend/src/app.ts → backend/src/middleware/sanitize.middleware.ts
+- `requireSiteContentPermission()` --calls--> `ApiError`  [EXTRACTED]
+  backend/src/routes/site-content.routes.ts → backend/src/utils/ApiError.ts
+- `assertAllPermissionsExist()` --calls--> `ApiError`  [EXTRACTED]
+  backend/src/services/roles.service.ts → backend/src/utils/ApiError.ts
+- `forgotPassword()` --calls--> `apiFetch()`  [EXTRACTED]
+  frontend/src/services/auth.service.ts → frontend/src/lib/api.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (65 total, 9 thin omitted)
+## Communities (75 total, 11 thin omitted)
 
-### Community 0 - "apiFetch"
-Cohesion: 0.06
-Nodes (75): AnnualReportsAdminPage(), BranchesAdminPage(), ContentAdminPage(), PoliciesAdminPage(), TeamAdminPage(), UsersAdminPage(), AnnualReportsPage(), metadata (+67 more)
+### Community 0 - "users/page.tsx"
+Cohesion: 0.18
+Nodes (19): UsersAdminPage(), CATEGORY_LABELS, KNOWN_GROUPS, RolesSection(), createRole(), CreateRolePayload, deleteRole(), getRoles() (+11 more)
 
 ### Community 1 - "app.ts"
-Cohesion: 0.13
-Nodes (16): createApp(), corsOptions, getStaticOrigins(), normalizeOrigin(), env, envSchema, errorMiddleware(), notFoundMiddleware() (+8 more)
+Cohesion: 0.14
+Nodes (15): createApp(), corsOptions, getStaticOrigins(), normalizeOrigin(), env, envSchema, errorMiddleware(), generalLimiter (+7 more)
 
 ### Community 2 - "ApiError"
-Cohesion: 0.18
-Nodes (13): handleImageUpload, handleMultipleImagesUpload, storage, upload, requireAnyPermission(), requirePermission(), requireRole(), formatZodErrors() (+5 more)
+Cohesion: 0.24
+Nodes (9): handleImageUpload, handleMultipleImagesUpload, storage, upload, notFoundMiddleware(), formatZodErrors(), validate(), ValidationTarget (+1 more)
 
 ### Community 3 - "frontend/package.json"
 Cohesion: 0.06
@@ -129,13 +139,13 @@ Nodes (33): eslintConfig, dependencies, lucide-react, next, react, react-dom, de
 Cohesion: 0.08
 Nodes (26): dependencies, argon2, cloudinary, cors, dotenv, express, express-rate-limit, helmet (+18 more)
 
-### Community 5 - "partnerships.routes.ts"
-Cohesion: 0.14
-Nodes (20): createPartnership, getAllPartnerships, getPartnershipById, getPartnershipStats, updatePartnershipStatus, router, PartnershipActivity, PartnershipInquiry (+12 more)
+### Community 5 - "backend/src/services/partnerships.service.ts"
+Cohesion: 0.12
+Nodes (19): createPartnership, getAllPartnerships, getPartnershipById, getPartnershipStats, updatePartnershipStatus, PartnershipActivity, PartnershipInquiry, partnershipsService (+11 more)
 
-### Community 6 - "programs.routes.ts"
-Cohesion: 0.14
-Nodes (17): createProgram, deleteProgram, getAllPrograms, getPublishedPrograms, updateProgram, router, Program, programsService (+9 more)
+### Community 6 - "programs.validator.ts"
+Cohesion: 0.16
+Nodes (11): Program, programsService, CreateProgramInput, createProgramSchema, PROGRAM_STATUSES, PROGRAM_TYPES, programIdSchema, UpdateProgramInput (+3 more)
 
 ### Community 7 - "partnerships/page.tsx"
 Cohesion: 0.15
@@ -149,9 +159,9 @@ Nodes (23): donors, programs, users, volunteers, program_images, idx_refresh_tok
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
-### Community 10 - "volunteers.routes.ts"
-Cohesion: 0.24
-Nodes (12): createVolunteer, exportVolunteers, getAllVolunteers, updateVolunteerStatus, router, Volunteer, volunteersService, CreateVolunteerInput (+4 more)
+### Community 10 - "volunteers.controller.ts"
+Cohesion: 0.21
+Nodes (11): createVolunteer, exportVolunteers, getAllVolunteers, updateVolunteerStatus, Volunteer, volunteersService, CreateVolunteerInput, createVolunteerSchema (+3 more)
 
 ### Community 11 - "test_login.js"
 Cohesion: 0.12
@@ -174,36 +184,36 @@ Cohesion: 0.52
 Nodes (6): idx_partnership_activity_inquiry, idx_partnership_created_at, idx_partnership_status, idx_partnership_type, partnership_activity, partnership_inquiries
 
 ### Community 16 - "next"
-Cohesion: 0.10
-Nodes (8): nextConfig, Footer(), Navbar(), getOptimizedUrl(), ShowcaseGallery(), ShowcaseGalleryProps, config, next
+Cohesion: 0.11
+Nodes (7): nextConfig, EmptyState(), getOptimizedUrl(), ShowcaseGallery(), ShowcaseGalleryProps, config, next
 
 ### Community 17 - "roles.routes.ts"
-Cohesion: 0.25
-Nodes (12): createRole, deleteRole, getAllRoles, getRoleById, updateRole, rolesService, RoleWithPermissions, CreateRoleInput (+4 more)
+Cohesion: 0.21
+Nodes (14): createRole, deleteRole, getAllRoles, getRoleById, updateRole, router, assertAllPermissionsExist(), rolesService (+6 more)
 
 ### Community 21 - "What You Must Do When Invoked"
 Cohesion: 0.08
 Nodes (24): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+16 more)
 
 ### Community 22 - "database/index.ts"
-Cohesion: 0.13
-Nodes (16): db, pool, app, PORT, server, NOTE: Elders Helped, Aid Delivered, and Voluntary Hours have no verified, StatsResponse, statsService (+8 more)
+Cohesion: 0.14
+Nodes (15): dbHealthCheck(), db, pool, app, PORT, server, NOTE: Elders Helped, Aid Delivered, and Voluntary Hours have no verified, StatsResponse (+7 more)
 
 ### Community 23 - "policies.routes.ts"
-Cohesion: 0.22
-Nodes (14): createPolicy, deletePolicy, getAllPolicies, getPolicyById, getPublishedPolicies, updatePolicy, router, policiesService (+6 more)
+Cohesion: 0.20
+Nodes (15): createPolicy, deletePolicy, getAllPolicies, getPolicyById, getPublishedPolicies, updatePolicy, router, policiesService (+7 more)
 
 ### Community 24 - "users.routes.ts"
-Cohesion: 0.21
-Nodes (14): createUser, deleteUser, getAllUsers, getUserById, updateUser, usersService, UserSummary, CreateUserInput (+6 more)
+Cohesion: 0.19
+Nodes (15): createUser, deleteUser, getAllUsers, getUserById, updateUser, router, usersService, UserSummary (+7 more)
 
 ### Community 25 - "useApi"
-Cohesion: 0.23
-Nodes (12): ImpactPage(), Home(), ProgramDetailPage(), ProgramsPage(), EmptyState(), ErrorMessage(), LoadingSpinner(), useApi() (+4 more)
+Cohesion: 0.27
+Nodes (11): ImpactPage(), Home(), ProgramDetailPage(), ProgramsPage(), ErrorMessage(), LoadingSpinner(), useApi(), UseApiState (+3 more)
 
 ### Community 26 - "backend/package.json"
-Cohesion: 0.11
-Nodes (17): author, description, @types/node, typescript, keywords, license, main, name (+9 more)
+Cohesion: 0.10
+Nodes (19): author, description, @types/node, typescript, keywords, license, main, name (+11 more)
 
 ### Community 27 - "team.routes.ts"
 Cohesion: 0.20
@@ -214,16 +224,16 @@ Cohesion: 0.17
 Nodes (14): CMS_ITEMS, ContentItemConfig, SiteContentAdminPage(), FoundersStatementPage(), metadata, metadata, OurStoryPage(), metadata (+6 more)
 
 ### Community 29 - "annual-reports.routes.ts"
-Cohesion: 0.24
-Nodes (13): createAnnualReport, deleteAnnualReport, getAllAnnualReports, getAnnualReportById, getPublishedAnnualReports, updateAnnualReport, AnnualReport, annualReportsService (+5 more)
+Cohesion: 0.22
+Nodes (14): createAnnualReport, deleteAnnualReport, getAllAnnualReports, getAnnualReportById, getPublishedAnnualReports, updateAnnualReport, router, AnnualReport (+6 more)
 
 ### Community 30 - "auth.controller.ts"
 Cohesion: 0.19
 Nodes (17): forgotPassword, login, logout, NOTE: never log the raw reset token — it grants password-reset access., refresh, resetPassword, router, logSecurityEvent() (+9 more)
 
-### Community 31 - "branches.routes.ts"
-Cohesion: 0.22
-Nodes (14): createBranch, deleteBranch, getActiveBranches, getAllBranches, getBranchById, updateBranch, router, Branch (+6 more)
+### Community 31 - "branches.controller.ts"
+Cohesion: 0.17
+Nodes (13): createBranch, deleteBranch, getActiveBranches, getAllBranches, getBranchById, updateBranch, Branch, branchesService (+5 more)
 
 ### Community 32 - "donors.routes.ts"
 Cohesion: 0.23
@@ -237,9 +247,9 @@ Nodes (8): AdminLayout(), AdminLoginPage(), ResetPasswordForm(), forgotPassword(
 Cohesion: 0.14
 Nodes (13): 1. Clone & Setup Workspace, 2. Configure Environment Variables, 3. Run the Backend Server, 4. Run the Frontend Client, AgeSense Initiative, ⚙️ Available Scripts, Backend (`/backend`), 🚀 Deployment Playbook (+5 more)
 
-### Community 35 - "auth.middleware.ts"
+### Community 35 - "site-content.routes.ts"
 Cohesion: 0.20
-Nodes (13): getAllSiteContent, getSiteContentByKey, updateSiteContentByKey, AuthenticatedRequest, authMiddleware(), NOTE: Currently validates token structure only., SITE_CONTENT_PERMISSIONS, SiteContent (+5 more)
+Nodes (13): getAllSiteContent, getSiteContentByKey, updateSiteContentByKey, AuthenticatedRequest, requireAnyPermission(), requireSiteContentPermission(), router, SITE_CONTENT_PERMISSIONS (+5 more)
 
 ### Community 36 - "react"
 Cohesion: 0.28
@@ -249,17 +259,17 @@ Nodes (8): DonorsAdminPage(), DonateForm(), CreateDonorPayload, getAllDonorsAdmi
 Cohesion: 0.17
 Nodes (11): 1. Overview of the Migration, 2. PostgreSQL Connection Pool Settings, 3. Database Schema Layout, 4. Admin Seeding Script, 5. Health Monitoring, Database Migration Documentation, `donors` table, `programs` table (+3 more)
 
-### Community 38 - "routes/index.ts"
-Cohesion: 0.14
-Nodes (14): cloudinaryHealthCheck(), dbHealthCheck(), healthCheck(), getStats, router, router, UPLOAD_ROLES, router (+6 more)
+### Community 38 - "express"
+Cohesion: 0.25
+Nodes (10): createProgram, deleteProgram, getAllPrograms, getPublishedPrograms, updateProgram, getStats, router, router (+2 more)
 
 ### Community 39 - "System Architecture & Design Document"
 Cohesion: 0.18
 Nodes (10): 1. System Overview, 2. Tech Stack Specification, 3. Database Schema Blueprint, 4. Security Framework, Backend, `donors`, Frontend, `programs` (+2 more)
 
-### Community 40 - "api.ts"
-Cohesion: 0.22
-Nodes (12): VolunteersAdminPage(), VolunteerPage(), API_BASE_URL, FetchOptions, getAuthHeaders(), getToken(), getAllVolunteersAdmin(), submitVolunteerApplication() (+4 more)
+### Community 40 - "types/index.ts"
+Cohesion: 0.16
+Nodes (15): metadata, RegionalChaptersPage(), metadata, TeamPage(), VolunteerPage(), getActiveBranches(), getActiveTeam(), submitVolunteerApplication() (+7 more)
 
 ### Community 41 - "15_roles_permissions.sql"
 Cohesion: 0.60
@@ -333,25 +343,57 @@ Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphif
 Cohesion: 0.40
 Nodes (3): frontend_src_app_globals, inter, metadata
 
+### Community 64 - "routes/index.ts"
+Cohesion: 0.25
+Nodes (10): cloudinaryHealthCheck(), authMiddleware(), NOTE: Currently validates token structure only., strictLimiter, requirePermission(), requireRole(), router, UPLOAD_ROLES (+2 more)
+
+### Community 65 - "frontend/src/services/programs.service.ts"
+Cohesion: 0.33
+Nodes (11): ContentAdminPage(), ProgramDetailView(), ProgramDetailViewProps, createProgram(), CreateProgramPayload, deleteProgram(), getAllPrograms(), updateProgram() (+3 more)
+
+### Community 67 - "frontend/src/services/annual-reports.service.ts"
+Cohesion: 0.29
+Nodes (10): AnnualReportsAdminPage(), AnnualReportsPage(), metadata, AnnualReportPayload, createAnnualReport(), deleteAnnualReport(), getAllAnnualReports(), getPublishedAnnualReports() (+2 more)
+
+### Community 68 - "frontend/src/services/policies.service.ts"
+Cohesion: 0.29
+Nodes (10): PoliciesAdminPage(), metadata, PoliciesPage(), createPolicy(), deletePolicy(), getAllPolicies(), getPublishedPolicies(), PolicyPayload (+2 more)
+
+### Community 69 - "apiFetch"
+Cohesion: 0.44
+Nodes (9): TeamAdminPage(), apiFetch(), createTeamMember(), deleteTeamMember(), getAllTeam(), getTeamMemberById(), TeamMemberPayload, updateTeamMember() (+1 more)
+
+### Community 70 - "frontend/src/services/branches.service.ts"
+Cohesion: 0.40
+Nodes (8): BranchesAdminPage(), BranchPayload, createBranch(), deleteBranch(), getAllBranches(), getBranchById(), updateBranch(), Branch
+
+### Community 72 - "volunteers/page.tsx"
+Cohesion: 0.60
+Nodes (4): VolunteersAdminPage(), API_BASE_URL, getAllVolunteersAdmin(), updateVolunteerStatusAdmin()
+
+### Community 73 - "api.ts"
+Cohesion: 0.50
+Nodes (4): FetchOptions, getAuthHeaders(), getToken(), ApiError
+
 ## Knowledge Gaps
-- **300 isolated node(s):** `name`, `version`, `description`, `main`, `dev` (+295 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 356 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **302 isolated node(s):** `name`, `version`, `description`, `main`, `dev` (+297 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 358 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `express` connect `routes/index.ts` to `donors.routes.ts`, `app.ts`, `ApiError`, `auth.middleware.ts`, `partnerships.routes.ts`, `programs.routes.ts`, `volunteers.routes.ts`, `sanitize.middleware.ts`, `roles.routes.ts`, `policies.routes.ts`, `users.routes.ts`, `backend/package.json`, `team.routes.ts`, `annual-reports.routes.ts`, `auth.controller.ts`, `branches.routes.ts`?**
+- **Why does `express` connect `express` to `routes/index.ts`, `app.ts`, `donors.routes.ts`, `site-content.routes.ts`, `ApiError`, `backend/src/services/partnerships.service.ts`, `health.controller.ts`, `volunteers.controller.ts`, `sanitize.middleware.ts`, `roles.routes.ts`, `database/index.ts`, `policies.routes.ts`, `users.routes.ts`, `backend/package.json`, `team.routes.ts`, `annual-reports.routes.ts`, `auth.controller.ts`, `branches.controller.ts`?**
   _High betweenness centrality (0.051) - this node is a cross-community bridge._
+- **Why does `react` connect `react` to `users/page.tsx`, `frontend/src/services/programs.service.ts`, `auth.service.ts`, `frontend/src/services/annual-reports.service.ts`, `frontend/package.json`, `frontend/src/services/policies.service.ts`, `frontend/src/services/branches.service.ts`, `partnerships/page.tsx`, `apiFetch`, `volunteers/page.tsx`, `types/index.ts`, `(public)/layout.tsx`, `next`, `useApi`, `frontend/src/services/site-content.service.ts`?**
+  _High betweenness centrality (0.022) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `dependencies` to `backend/package.json`?**
   _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `react` connect `react` to `apiFetch`, `auth.service.ts`, `frontend/package.json`, `partnerships/page.tsx`, `api.ts`, `next`, `useApi`, `frontend/src/services/site-content.service.ts`?**
-  _High betweenness centrality (0.021) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `description` to the rest of the system?**
-  _300 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `apiFetch` be split into smaller, more focused modules?**
-  _Cohesion score 0.05755879059350504 - nodes in this community are weakly interconnected._
+  _302 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `app.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1422924901185771 - nodes in this community are weakly interconnected._
 - **Should `frontend/package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected._
+- **Should `dependencies` be split into smaller, more focused modules?**
+  _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._

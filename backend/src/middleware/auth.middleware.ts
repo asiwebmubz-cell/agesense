@@ -57,8 +57,9 @@ export const authMiddleware = async (
     // Load role permissions for the current request (from DB, so permission
     // changes take effect immediately without re-issuing tokens).
     // super_admin is always granted '*' (full bypass in requirePermission).
-    // Fail-open with an empty list if the roles tables don't exist yet, so
-    // deployments that haven't run Migration 15 keep working via role checks.
+    // FAIL CLOSED: if the permission lookup fails for ANY reason (missing
+    // tables, DB error, malformed data), the request is REJECTED — a lookup
+    // failure must never result in access being granted.
     try {
       if (decoded.role === 'super_admin') {
         (req as AuthenticatedRequest).permissions = ['*'];
@@ -73,11 +74,11 @@ export const authMiddleware = async (
         );
         (req as AuthenticatedRequest).permissions = permRows.map((row) => row.key);
       } else {
+        // Token without a role claim: no permissions can be resolved.
         (req as AuthenticatedRequest).permissions = [];
       }
     } catch {
-      // Roles/permissions tables not migrated yet — role-string checks still apply.
-      (req as AuthenticatedRequest).permissions = [];
+      return next(new ApiError(403, 'Authorization lookup failed. Access denied.'));
     }
 
     req.user = decoded;

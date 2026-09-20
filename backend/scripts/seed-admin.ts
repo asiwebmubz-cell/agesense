@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import crypto from 'crypto';
+import * as argon2 from 'argon2';
 import { Client } from 'pg';
 
 /**
@@ -7,8 +7,11 @@ import { Client } from 'pg';
  *
  * SECURITY:
  * - Credentials come ONLY from environment variables. Never hardcode them.
- * - Passwords are stored as SHA-256 hex (the platform's legacy convention) and
- *   are auto-migrated to Argon2id by the login controller on first login.
+ * - Passwords are hashed directly with Argon2id (the same implementation and
+ *   configuration as the normal user-creation flow). No plaintext or SHA-256
+ *   hashes are ever written by this script.
+ * - The login controller's legacy SHA-256 -> Argon2id auto-migration for
+ *   pre-existing old accounts is untouched.
  * - Seeding is idempotent: existing accounts are updated, not duplicated.
  * - The Rajshahi account is linked to the Rajshahi branch by name lookup.
  */
@@ -92,7 +95,7 @@ async function seed() {
         branchId = branchRows.rows[0].id;
       }
 
-      const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+      const hashedPassword = await argon2.hash(password, { type: argon2.argon2id });
 
       const checkUser = await client.query('SELECT id FROM users WHERE email = $1', [email]);
       if (checkUser.rows.length > 0) {

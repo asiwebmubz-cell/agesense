@@ -1206,9 +1206,9 @@
     "semantic_hash": ""
   },
   "frontend/src/app/admin/(dashboard)/users/roles-section.tsx": {
-    "mtime": 1789908975.5775461,
-    "seen": 1789908985.0858634,
-    "ast_hash": "c420da192706861cd7e42abd6934c848",
+    "mtime": 1789909129.51415,
+    "seen": 1789909155.440081,
+    "ast_hash": "7b32681fc63a3cfccfe72d77e2ec9a9e",
     "semantic_hash": ""
   },
   "frontend/src/services/roles.service.ts": {
