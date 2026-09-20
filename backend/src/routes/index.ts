@@ -12,10 +12,11 @@ import annualReportsRouter from './annual-reports.routes';
 import policiesRouter from './policies.routes';
 import siteContentRouter from './site-content.routes';
 import usersRouter from './users.routes';
+import rolesRouter from './roles.routes';
 import { dbHealthCheck } from '../controllers/db-health.controller';
 import { handleImageUpload, handleMultipleImagesUpload, upload } from '../controllers/upload.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { requireRole } from '../middleware/rbac.middleware';
+import { requireRole, requirePermission } from '../middleware/rbac.middleware';
 import { cloudinaryHealthCheck } from '../controllers/cloudinary-health.controller';
 
 import multer from 'multer';
@@ -47,8 +48,8 @@ router.use('/auth', authRouter);
 
 // Uploads: open to super_admin, marketing, branch_manager (and legacy roles)
 const UPLOAD_ROLES = ['super_admin', 'marketing', 'branch_manager', 'admin', 'content_manager'];
-router.post('/admin/upload', authMiddleware, requireRole(UPLOAD_ROLES), handleUploadMiddleware(upload.single('image')), handleImageUpload);
-router.post('/admin/upload-multiple', authMiddleware, requireRole(UPLOAD_ROLES), handleUploadMiddleware(upload.array('images', 20)), handleMultipleImagesUpload);
+router.post('/admin/upload', authMiddleware, requireRole(UPLOAD_ROLES), requirePermission('upload_images'), handleUploadMiddleware(upload.single('image')), handleImageUpload);
+router.post('/admin/upload-multiple', authMiddleware, requireRole(UPLOAD_ROLES), requirePermission('upload_images'), handleUploadMiddleware(upload.array('images', 20)), handleMultipleImagesUpload);
 
 router.use('/programs', programsRouter);
 router.use('/volunteers', volunteersRouter);
@@ -61,6 +62,7 @@ router.use('/annual-reports', annualReportsRouter);
 router.use('/policies', policiesRouter);
 router.use('/site-content', siteContentRouter);
 router.use('/users/admin', usersRouter);
+router.use('/roles/admin', rolesRouter);
 
 export default router;
 

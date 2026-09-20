@@ -13,7 +13,7 @@ export interface CreateUserPayload {
   name: string;
   email: string;
   password: string;
-  role: 'super_admin' | 'marketing' | 'branch_manager';
+  role: string;
   branch_id?: string | null;
   is_active?: boolean;
 }
@@ -22,7 +22,7 @@ export interface UpdateUserPayload {
   name?: string;
   email?: string;
   password?: string;
-  role?: 'super_admin' | 'marketing' | 'branch_manager' | 'admin' | 'content_manager';
+  role?: string;
   branch_id?: string | null;
   is_active?: boolean;
 }

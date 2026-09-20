@@ -9,10 +9,14 @@ import {
   deleteUser,
 } from "@/services/users.service";
 import { getAllBranches } from "@/services/branches.service";
+import { getRoles, type RoleWithPermissions } from "@/services/roles.service";
+import RolesSection from "./roles-section";
 
 export default function UsersAdminPage() {
+  const [tab, setTab] = useState<"users" | "roles">("users");
   const [users, setUsers] = useState<AppUser[]>([]);
   const [branches, setBranches] = useState<Branch[]>([]);
+  const [roleOptions, setRoleOptions] = useState<RoleWithPermissions[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -22,7 +26,7 @@ export default function UsersAdminPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<'super_admin' | 'marketing' | 'branch_manager'>("marketing");
+  const [role, setRole] = useState<string>("marketing");
   const [branchId, setBranchId] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -34,12 +38,14 @@ export default function UsersAdminPage() {
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const [usersData, branchData] = await Promise.all([
+      const [usersData, branchData, rolesData] = await Promise.all([
         getAllUsers(),
         getAllBranches().catch(() => []),
+        getRoles().catch(() => []),
       ]);
       setUsers(usersData);
       setBranches(branchData);
+      setRoleOptions(rolesData.filter((r) => r.assignable));
     } catch (err: any) {
       setError(err?.message || "Failed to load user accounts.");
     } finally {
@@ -67,11 +73,7 @@ export default function UsersAdminPage() {
     setName(u.name || "");
     setEmail(u.email);
     setPassword(""); // Leave blank unless changing
-    setRole(
-      u.role === "branch_manager" || u.role === "super_admin" || u.role === "marketing"
-        ? u.role
-        : "marketing"
-    );
+    setRole(u.role);
     setBranchId(u.branch_id || "");
     setIsActive(u.is_active);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -171,6 +173,29 @@ export default function UsersAdminPage() {
         </div>
       )}
 
+      {/* Tabs */}
+      <div className="flex gap-2 border-b border-outline-variant">
+        {([
+          { key: "users", label: "Users", icon: "group" },
+          { key: "roles", label: "Roles & Permissions", icon: "admin_panel_settings" },
+        ] as const).map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`px-4 py-2.5 text-sm font-semibold flex items-center gap-2 border-b-2 transition-colors ${
+              tab === t.key
+                ? "border-primary text-primary"
+                : "border-transparent text-surface-variant hover:text-on-surface"
+            }`}
+          >
+            <span className="material-symbols-outlined text-[18px]">{t.icon}</span>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {tab === "users" && (
+      <>
       {/* Form Card */}
       <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 shadow-sm">
         <h2 className="text-lg font-bold text-on-surface mb-4">
@@ -230,12 +255,22 @@ export default function UsersAdminPage() {
               </label>
               <select
                 value={role}
-                onChange={(e) => setRole(e.target.value as any)}
+                onChange={(e) => setRole(e.target.value)}
                 className="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
               >
-                <option value="super_admin">Super Admin (Full System Control)</option>
-                <option value="marketing">Marketing (Org-Wide Content Management)</option>
-                <option value="branch_manager">Branch Manager (Branch-Scoped Only)</option>
+                {roleOptions.length === 0 && (
+                  <>
+                    <option value="super_admin">Super Admin (Full System Control)</option>
+                    <option value="marketing">Marketing (Org-Wide Content Management)</option>
+                    <option value="branch_manager">Branch Manager (Branch-Scoped Only)</option>
+                  </>
+                )}
+                {roleOptions.map((r) => (
+                  <option key={r.id} value={r.name}>
+                    {r.name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                    {r.name === "super_admin" ? " (Full System Control)" : ""}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -415,6 +450,10 @@ export default function UsersAdminPage() {
           </div>
         </div>
       )}
+      </>
+      )}
+
+      {tab === "roles" && <RolesSection />}
     </div>
   );
 }

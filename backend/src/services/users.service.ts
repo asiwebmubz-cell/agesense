@@ -40,11 +40,57 @@ export const usersService = {
     return rows[0];
   },
 
-  async create(input: CreateUserInput): Promise<UserSummary> {
+  /**
+   * Validates that a role exists in the roles table.
+   * For new users the role must also be assignable (legacy roles are not).
+   */
+  async validateRole(role: string, opts?: { forNewUser?: boolean }): Promise<void> {
+    const rows = await db.query<{ name: string; assignable: boolean }>(
+      'SELECT name, assignable FROM roles WHERE name = $1',
+      [role]
+    );
+    if (rows.length === 0) {
+      throw new ApiError(400, `Role '${role}' does not exist.`);
+    }
+    if (opts?.forNewUser && !rows[0].assignable) {
+      throw new ApiError(400, `Role '${role}' is a legacy role and cannot be assigned to new users.`);
+    }
+  },
+
+  /**
+   * Only callers whose own role is super_admin may grant the super_admin role.
+   * This prevents a holder of manage_users-style permissions from escalating.
+   */
+  assertCanAssignRole(role: string, callerRole?: string): void {
+    if (role === 'super_admin' && callerRole !== 'super_admin') {
+      throw new ApiError(403, 'Only a Super Admin can create or assign the Super Admin role.');
+    }
+  },
+
+  /**
+   * Ensures the platform always keeps at least one active super_admin account.
+   * targetUserId is excluded from the count (it is the account being changed).
+   */
+  async assertRemainingSuperAdmin(targetUserId: string): Promise<void> {
+    const others = await db.query(
+      `SELECT 1 FROM users
+       WHERE role = 'super_admin' AND is_active = true AND id <> $1
+       LIMIT 1`,
+      [targetUserId]
+    );
+    if (others.length === 0) {
+      throw new ApiError(400, 'This is the last active Super Admin account. Create or reactivate another Super Admin first.');
+    }
+  },
+
+  async create(input: CreateUserInput, callerRole?: string): Promise<UserSummary> {
     const existing = await db.query('SELECT 1 FROM users WHERE email = $1', [input.email]);
     if (existing.length > 0) {
       throw new ApiError(400, 'A user with this email address already exists.');
     }
+
+    await this.validateRole(input.role, { forNewUser: true });
+    this.assertCanAssignRole(input.role, callerRole);
 
     if (input.branch_id) {
       const branchExists = await db.query('SELECT 1 FROM branches WHERE id = $1', [input.branch_id]);
@@ -72,7 +118,7 @@ export const usersService = {
     return this.getById(rows[0].id);
   },
 
-  async update(id: string, input: UpdateUserInput, currentUserId?: string): Promise<UserSummary> {
+  async update(id: string, input: UpdateUserInput, currentUserId?: string, callerRole?: string): Promise<UserSummary> {
     const existing = await this.getById(id);
 
     if (input.email && input.email !== existing.email) {
@@ -80,6 +126,11 @@ export const usersService = {
       if (checkEmail.length > 0) {
         throw new ApiError(400, 'A user with this email address already exists.');
       }
+    }
+
+    if (input.role) {
+      await this.validateRole(input.role);
+      this.assertCanAssignRole(input.role, callerRole);
     }
 
     if (input.branch_id) {
@@ -94,9 +145,18 @@ export const usersService = {
       if (input.is_active === false) {
         throw new ApiError(400, 'You cannot deactivate your own account.');
       }
-      if (input.role && input.role !== 'super_admin') {
+      if (input.role && input.role !== 'super_admin' && existing.role === 'super_admin') {
         throw new ApiError(400, 'You cannot change your own super_admin role.');
       }
+    }
+
+    // Protect the last active super_admin account
+    const losingSuperAdmin =
+      existing.role === 'super_admin' &&
+      existing.is_active &&
+      ((input.is_active === false) || (input.role !== undefined && input.role !== 'super_admin'));
+    if (losingSuperAdmin) {
+      await this.assertRemainingSuperAdmin(id);
     }
 
     let passwordHash = null;
@@ -141,6 +201,12 @@ export const usersService = {
     }
 
     const existing = await this.getById(id);
+
+    // Protect the last active super_admin account
+    if (existing.role === 'super_admin' && existing.is_active) {
+      await this.assertRemainingSuperAdmin(id);
+    }
+
     await db.query('DELETE FROM refresh_tokens WHERE user_id = $1', [id]);
     await db.query('DELETE FROM password_reset_tokens WHERE user_id = $1', [id]);
     await db.query('DELETE FROM users WHERE id = $1', [id]);

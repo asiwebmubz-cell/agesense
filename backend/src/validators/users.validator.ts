@@ -1,9 +1,12 @@
 import { z } from 'zod';
 
-// Active roles for new users are super_admin, marketing, branch_manager
-// Legacy roles admin and content_manager are allowed only for existing user validation
-const ACTIVE_ROLES = ['super_admin', 'marketing', 'branch_manager'] as const;
-const ALL_ROLES = ['super_admin', 'marketing', 'branch_manager', 'admin', 'content_manager'] as const;
+// Role values are validated against the `roles` table in the service layer
+// (supports the three active roles plus future custom roles).
+// Legacy roles (admin, content_manager) exist in the roles table but are
+// marked non-assignable, so they cannot be given to NEW users.
+const roleSchema = z
+  .string({ required_error: 'role is required.' })
+  .regex(/^[a-z][a-z_]{1,49}$/, 'role must be a lowercase identifier (letters and underscores).');
 
 export const createUserSchema = z.object({
   name: z
@@ -18,9 +21,7 @@ export const createUserSchema = z.object({
   password: z
     .string({ required_error: 'password is required.' })
     .min(8, 'password must be at least 8 characters.'),
-  role: z.enum(ACTIVE_ROLES, {
-    errorMap: () => ({ message: `role must be one of: ${ACTIVE_ROLES.join(', ')}` }),
-  }),
+  role: roleSchema,
   branch_id: z.string().uuid('branch_id must be a valid UUID.').optional().nullable(),
   is_active: z.boolean().default(true),
 }).superRefine((data, ctx) => {
@@ -37,7 +38,7 @@ export const updateUserSchema = z.object({
   name: z.string().min(2).max(150).trim().optional(),
   email: z.string().email().trim().optional(),
   password: z.string().min(8).optional(),
-  role: z.enum(ALL_ROLES).optional(),
+  role: roleSchema.optional(),
   branch_id: z.string().uuid().optional().nullable(),
   is_active: z.boolean().optional(),
 }).refine(

@@ -8,7 +8,7 @@ import {
   deleteBranch,
 } from '../controllers/branches.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
-import { requireRole } from '../middleware/rbac.middleware';
+import { requireRole, requirePermission } from '../middleware/rbac.middleware';
 import { validate } from '../middleware/validate.middleware';
 import {
   createBranchSchema,
@@ -23,12 +23,13 @@ router.get('/', getActiveBranches);
 router.get('/:id', validate(branchIdSchema, 'params'), getBranchById);
 
 // Admin routes (super_admin only for branch structure management)
-router.get('/admin/all', authMiddleware, requireRole(['super_admin']), getAllBranches);
+router.get('/admin/all', authMiddleware, requireRole(['super_admin']), requirePermission('view_branches'), getAllBranches);
 
 router.post(
   '/admin',
   authMiddleware,
   requireRole(['super_admin']),
+  requirePermission('create_branches'),
   validate(createBranchSchema),
   createBranch
 );
@@ -37,6 +38,7 @@ router.put(
   '/admin/:id',
   authMiddleware,
   requireRole(['super_admin']),
+  requirePermission('edit_branches'),
   validate(branchIdSchema, 'params'),
   validate(updateBranchSchema),
   updateBranch
@@ -46,6 +48,7 @@ router.delete(
   '/admin/:id',
   authMiddleware,
   requireRole(['super_admin']),
+  requirePermission('delete_branches'),
   validate(branchIdSchema, 'params'),
   deleteBranch
 );

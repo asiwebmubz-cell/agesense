@@ -17,14 +17,14 @@ export const getUserById = asyncHandler(async (req: AuthenticatedRequest, res: R
 
 export const createUser = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
   const input = req.body as CreateUserInput;
-  const user = await usersService.create(input);
+  const user = await usersService.create(input, req.user?.role);
   res.status(201).json(user);
 });
 
 export const updateUser = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
   const { id } = req.params;
   const input = req.body as UpdateUserInput;
-  const updated = await usersService.update(id, input, req.user?.id);
+  const updated = await usersService.update(id, input, req.user?.id, req.user?.role);
   res.status(200).json(updated);
 });
 

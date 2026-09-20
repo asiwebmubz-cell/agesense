@@ -14,16 +14,17 @@ import {
   updateUserSchema,
   userIdSchema,
 } from '../validators/users.validator';
+import { requirePermission } from '../middleware/rbac.middleware';
 
 const router = Router();
 
 // All user management routes strictly require super_admin
 router.use(authMiddleware, requireRole(['super_admin']));
 
-router.get('/', getAllUsers);
-router.get('/:id', validate(userIdSchema, 'params'), getUserById);
-router.post('/', validate(createUserSchema), createUser);
-router.put('/:id', validate(userIdSchema, 'params'), validate(updateUserSchema), updateUser);
-router.delete('/:id', validate(userIdSchema, 'params'), deleteUser);
+router.get('/', requirePermission('view_users'), getAllUsers);
+router.get('/:id', validate(userIdSchema, 'params'), requirePermission('view_users'), getUserById);
+router.post('/', validate(createUserSchema), requirePermission('create_users'), createUser);
+router.put('/:id', validate(userIdSchema, 'params'), validate(updateUserSchema), requirePermission('edit_users'), updateUser);
+router.delete('/:id', validate(userIdSchema, 'params'), requirePermission('delete_users'), deleteUser);
 
 export default router;

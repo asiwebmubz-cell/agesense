@@ -159,7 +159,7 @@ export interface AppUser {
   id: string;
   name?: string | null;
   email: string;
-  role: 'super_admin' | 'marketing' | 'branch_manager' | 'admin' | 'content_manager';
+  role: string;
   branch_id?: string | null;
   branch_name?: string | null;
   is_active: boolean;
