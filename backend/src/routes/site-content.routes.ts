@@ -21,6 +21,7 @@ const SITE_CONTENT_PERMISSIONS: Record<string, string> = {
   our_story: 'edit_our_story',
   values: 'edit_values',
   founder_statement: 'edit_founder_statement',
+  impact_metrics: 'edit_impact_metrics',
 };
 
 /** Permission guard for a specific CMS key (super_admin bypasses via '*'). */
@@ -50,7 +51,7 @@ router.get('/:key', validate(siteContentKeySchema, 'params'), getSiteContentByKe
 router.get(
   '/admin/all',
   authMiddleware,
-  requireAnyPermission(['edit_our_story', 'edit_values', 'edit_founder_statement']),
+  requireAnyPermission(['edit_our_story', 'edit_values', 'edit_founder_statement', 'edit_impact_metrics']),
   getAllSiteContent
 );
 

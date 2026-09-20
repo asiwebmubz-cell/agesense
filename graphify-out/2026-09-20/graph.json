@@ -160,19 +160,6 @@
       "source_location": "L124"
     },
     {
-      "id": "frontend_src_types_index_apierror",
-      "label": "ApiError",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "apiFetch",
-      "file_type": "code",
-      "norm_label": "apierror",
-      "source_file": "frontend/src/types/index.ts",
-      "source_location": "L172"
-    },
-    {
       "id": "frontend_src_types_index_appuser",
       "label": "AppUser",
       "_callable": true,
@@ -303,32 +290,6 @@
       "source_location": "L108"
     },
     {
-      "id": "frontend_src_types_index_volunteer",
-      "label": "Volunteer",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "apiFetch",
-      "file_type": "code",
-      "norm_label": "volunteer",
-      "source_file": "frontend/src/types/index.ts",
-      "source_location": "L49"
-    },
-    {
-      "id": "frontend_src_types_index_volunteerstatus",
-      "label": "VolunteerStatus",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "apiFetch",
-      "file_type": "code",
-      "norm_label": "volunteerstatus",
-      "source_file": "frontend/src/types/index.ts",
-      "source_location": "L47"
-    },
-    {
       "id": "backend_src_config_env_env",
       "label": "env",
       "_callable": true,
@@ -387,7 +348,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "testresult",
       "source_file": "backend/scripts/run-full-qa.ts",
@@ -400,7 +361,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "seeduser",
       "source_file": "backend/scripts/seed-admin.ts",
@@ -452,11 +413,24 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
       "norm_label": "apierror",
       "source_file": "backend/src/utils/ApiError.ts",
       "source_location": "L8"
+    },
+    {
+      "id": "backend_src_services_stats_service_statsresponse",
+      "label": "StatsResponse",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 22,
+      "community_name": "database/index.ts",
+      "file_type": "code",
+      "norm_label": "statsresponse",
+      "source_file": "backend/src/services/stats.service.ts",
+      "source_location": "L9"
     },
     {
       "id": "backend_src_services_policies_service_policy",
@@ -639,6 +613,19 @@
       "norm_label": "sitecontent",
       "source_file": "frontend/src/types/index.ts",
       "source_location": "L148"
+    },
+    {
+      "id": "backend_src_middleware_validate_middleware_validationtarget",
+      "label": "ValidationTarget",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "annual-reports.routes.ts",
+      "file_type": "code",
+      "norm_label": "validationtarget",
+      "source_file": "backend/src/middleware/validate.middleware.ts",
+      "source_location": "L5"
     },
     {
       "id": "backend_src_services_annual_reports_service_annualreport",
@@ -875,6 +862,19 @@
       "source_location": "L4"
     },
     {
+      "id": "frontend_src_types_index_apierror",
+      "label": "ApiError",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 36,
+      "community_name": "api.ts",
+      "file_type": "code",
+      "norm_label": "apierror",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L172"
+    },
+    {
       "id": "frontend_src_types_index_donor",
       "label": "Donor",
       "_callable": true,
@@ -888,17 +888,30 @@
       "source_location": "L61"
     },
     {
-      "id": "backend_src_services_stats_service_statsresponse",
-      "label": "StatsResponse",
+      "id": "frontend_src_types_index_volunteer",
+      "label": "Volunteer",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 38,
-      "community_name": "express",
+      "community": 40,
+      "community_name": "volunteers/page.tsx",
       "file_type": "code",
-      "norm_label": "statsresponse",
-      "source_file": "backend/src/services/stats.service.ts",
-      "source_location": "L9"
+      "norm_label": "volunteer",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L49"
+    },
+    {
+      "id": "frontend_src_types_index_volunteerstatus",
+      "label": "VolunteerStatus",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 40,
+      "community_name": "volunteers/page.tsx",
+      "file_type": "code",
+      "norm_label": "volunteerstatus",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L47"
     },
     {
       "id": "backend_src_services_partnerships_service_partnershipactivity",
@@ -1042,19 +1055,6 @@
       "norm_label": "showcasegalleryprops",
       "source_file": "frontend/src/components/ui/ShowcaseGallery.tsx",
       "source_location": "L6"
-    },
-    {
-      "id": "backend_src_middleware_validate_middleware_validationtarget",
-      "label": "ValidationTarget",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "validate.middleware.ts",
-      "file_type": "code",
-      "norm_label": "validationtarget",
-      "source_file": "backend/src/middleware/validate.middleware.ts",
-      "source_location": "L5"
     },
     {
       "id": "frontend_src_services_partnerships_service_createpartnershippayload",
@@ -1832,12 +1832,24 @@
       "source_location": "L8"
     },
     {
+      "id": "backend_scripts_check_accounts_lock_checkaccountstatus",
+      "label": "checkAccountStatus()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "dotenv",
+      "file_type": "code",
+      "norm_label": "checkaccountstatus()",
+      "source_file": "backend/scripts/check-accounts-lock.ts",
+      "source_location": "L7"
+    },
+    {
       "id": "backend_scripts_check_online_db_checkdb",
       "label": "checkDb()",
       "_callable": true,
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "checkdb()",
       "source_file": "backend/scripts/check-online-db.ts",
@@ -1849,7 +1861,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "migrate()",
       "source_file": "backend/scripts/migrate.ts",
@@ -1861,7 +1873,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "apicall()",
       "source_file": "backend/scripts/run-full-qa.ts",
@@ -1873,7 +1885,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "record()",
       "source_file": "backend/scripts/run-full-qa.ts",
@@ -1885,7 +1897,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "runqa()",
       "source_file": "backend/scripts/run-full-qa.ts",
@@ -1897,7 +1909,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "seed()",
       "source_file": "backend/scripts/seed-admin.ts",
@@ -1909,11 +1921,35 @@
       "_callable": true,
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "run()",
       "source_file": "backend/scripts/test_delete_cascade.js",
       "source_location": "L8"
+    },
+    {
+      "id": "backend_scripts_test_online_backend_testonlinebackend",
+      "label": "testOnlineBackend()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "dotenv",
+      "file_type": "code",
+      "norm_label": "testonlinebackend()",
+      "source_file": "backend/scripts/test-online-backend.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "backend_scripts_verify_db_pooler_testconnections",
+      "label": "testConnections()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "dotenv",
+      "file_type": "code",
+      "norm_label": "testconnections()",
+      "source_file": "backend/scripts/verify-db-pooler.ts",
+      "source_location": "L6"
     },
     {
       "id": "kilo_plugins_graphify_graphifyplugin",
@@ -1921,7 +1957,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "graphifyplugin()",
       "source_file": ".kilo/plugins/graphify.js",
@@ -2036,16 +2072,16 @@
       "source_location": "L4"
     },
     {
-      "id": "backend_src_services_roles_service_assertallpermissionsexist",
-      "label": "assertAllPermissionsExist()",
+      "id": "backend_src_middleware_rbac_middleware_requireanypermission",
+      "label": "requireAnyPermission()",
       "_callable": true,
       "_origin": "ast",
-      "community": 17,
-      "community_name": "roles.routes.ts",
+      "community": 2,
+      "community_name": "ApiError",
       "file_type": "code",
-      "norm_label": "assertallpermissionsexist()",
-      "source_file": "backend/src/services/roles.service.ts",
-      "source_location": "L20"
+      "norm_label": "requireanypermission()",
+      "source_file": "backend/src/middleware/rbac.middleware.ts",
+      "source_location": "L56"
     },
     {
       "id": "backend_src_middleware_rbac_middleware_requirepermission",
@@ -2053,23 +2089,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
       "norm_label": "requirepermission()",
       "source_file": "backend/src/middleware/rbac.middleware.ts",
       "source_location": "L34"
     },
     {
-      "id": "backend_src_routes_index_handleuploadmiddleware",
-      "label": "handleUploadMiddleware()",
+      "id": "backend_src_middleware_rbac_middleware_requirerole",
+      "label": "requireRole()",
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
-      "norm_label": "handleuploadmiddleware()",
-      "source_file": "backend/src/routes/index.ts",
-      "source_location": "L26"
+      "norm_label": "requirerole()",
+      "source_file": "backend/src/middleware/rbac.middleware.ts",
+      "source_location": "L11"
     },
     {
       "id": "backend_src_routes_site_content_routes_requiresitecontentpermission",
@@ -2077,11 +2113,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
       "norm_label": "requiresitecontentpermission()",
       "source_file": "backend/src/routes/site-content.routes.ts",
       "source_location": "L27"
+    },
+    {
+      "id": "backend_src_services_roles_service_assertallpermissionsexist",
+      "label": "assertAllPermissionsExist()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "ApiError",
+      "file_type": "code",
+      "norm_label": "assertallpermissionsexist()",
+      "source_file": "backend/src/services/roles.service.ts",
+      "source_location": "L20"
     },
     {
       "id": "backend_src_utils_apierror_apierror_constructor",
@@ -2089,23 +2137,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "backend/src/utils/ApiError.ts",
       "source_location": "L13"
-    },
-    {
-      "id": "backend_src_controllers_db_health_controller_dbhealthcheck",
-      "label": "dbHealthCheck()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 22,
-      "community_name": "database/index.ts",
-      "file_type": "code",
-      "norm_label": "dbhealthcheck()",
-      "source_file": "backend/src/controllers/db-health.controller.ts",
-      "source_location": "L8"
     },
     {
       "id": "backend_src_server_shutdown",
@@ -2336,6 +2372,30 @@
       "source_location": "L18"
     },
     {
+      "id": "backend_src_middleware_validate_middleware_formatzoderrors",
+      "label": "formatZodErrors()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "annual-reports.routes.ts",
+      "file_type": "code",
+      "norm_label": "formatzoderrors()",
+      "source_file": "backend/src/middleware/validate.middleware.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "backend_src_middleware_validate_middleware_validate",
+      "label": "validate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "annual-reports.routes.ts",
+      "file_type": "code",
+      "norm_label": "validate()",
+      "source_file": "backend/src/middleware/validate.middleware.ts",
+      "source_location": "L17"
+    },
+    {
       "id": "backend_src_utils_securitylogger_logsecurityevent",
       "label": "logSecurityEvent()",
       "_callable": true,
@@ -2346,30 +2406,6 @@
       "norm_label": "logsecurityevent()",
       "source_file": "backend/src/utils/securityLogger.ts",
       "source_location": "L4"
-    },
-    {
-      "id": "backend_src_middleware_rbac_middleware_requirerole",
-      "label": "requireRole()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 32,
-      "community_name": "donors.routes.ts",
-      "file_type": "code",
-      "norm_label": "requirerole()",
-      "source_file": "backend/src/middleware/rbac.middleware.ts",
-      "source_location": "L11"
-    },
-    {
-      "id": "backend_src_utils_asynchandler_asynchandler",
-      "label": "asyncHandler()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 32,
-      "community_name": "donors.routes.ts",
-      "file_type": "code",
-      "norm_label": "asynchandler()",
-      "source_file": "backend/src/utils/asyncHandler.ts",
-      "source_location": "L15"
     },
     {
       "id": "frontend_src_app_admin_dashboard_layout_adminlayout",
@@ -2492,18 +2528,6 @@
       "source_location": "L30"
     },
     {
-      "id": "backend_src_middleware_rbac_middleware_requireanypermission",
-      "label": "requireAnyPermission()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "auth.middleware.ts",
-      "file_type": "code",
-      "norm_label": "requireanypermission()",
-      "source_file": "backend/src/middleware/rbac.middleware.ts",
-      "source_location": "L56"
-    },
-    {
       "id": "frontend_src_app_admin_dashboard_donors_page_donorsadminpage",
       "label": "DonorsAdminPage()",
       "_callable": true,
@@ -2569,10 +2593,22 @@
       "_callable": true,
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
       "norm_label": "cloudinaryhealthcheck()",
       "source_file": "backend/src/controllers/cloudinary-health.controller.ts",
+      "source_location": "L8"
+    },
+    {
+      "id": "backend_src_controllers_db_health_controller_dbhealthcheck",
+      "label": "dbHealthCheck()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "routes/index.ts",
+      "file_type": "code",
+      "norm_label": "dbhealthcheck()",
+      "source_file": "backend/src/controllers/db-health.controller.ts",
       "source_location": "L8"
     },
     {
@@ -2581,11 +2617,35 @@
       "_callable": true,
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
       "norm_label": "healthcheck()",
       "source_file": "backend/src/controllers/health.controller.ts",
       "source_location": "L8"
+    },
+    {
+      "id": "backend_src_routes_index_handleuploadmiddleware",
+      "label": "handleUploadMiddleware()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "routes/index.ts",
+      "file_type": "code",
+      "norm_label": "handleuploadmiddleware()",
+      "source_file": "backend/src/routes/index.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "backend_src_utils_asynchandler_asynchandler",
+      "label": "asyncHandler()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "routes/index.ts",
+      "file_type": "code",
+      "norm_label": "asynchandler()",
+      "source_file": "backend/src/utils/asyncHandler.ts",
+      "source_location": "L15"
     },
     {
       "id": "frontend_src_app_admin_dashboard_volunteers_page_volunteersadminpage",
@@ -2790,30 +2850,6 @@
       "norm_label": "submitdonationverification()",
       "source_file": "frontend/src/services/donors.service.ts",
       "source_location": "L14"
-    },
-    {
-      "id": "backend_src_middleware_validate_middleware_formatzoderrors",
-      "label": "formatZodErrors()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "validate.middleware.ts",
-      "file_type": "code",
-      "norm_label": "formatzoderrors()",
-      "source_file": "backend/src/middleware/validate.middleware.ts",
-      "source_location": "L37"
-    },
-    {
-      "id": "backend_src_middleware_validate_middleware_validate",
-      "label": "validate()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "validate.middleware.ts",
-      "file_type": "code",
-      "norm_label": "validate()",
-      "source_file": "backend/src/middleware/validate.middleware.ts",
-      "source_location": "L17"
     },
     {
       "id": "frontend_src_app_admin_dashboard_partnerships_page_detailmodal",
@@ -3298,17 +3334,6 @@
       "source_location": "L1"
     },
     {
-      "id": "backend_src_middleware_ratelimiter",
-      "label": "rateLimiter.ts",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "app.ts",
-      "file_type": "code",
-      "norm_label": "ratelimiter.ts",
-      "source_file": "backend/src/middleware/rateLimiter.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "backend_src_middleware_ratelimiter_generallimiter",
       "label": "generalLimiter",
       "_origin": "ast",
@@ -3320,15 +3345,15 @@
       "source_location": "L8"
     },
     {
-      "id": "backend_src_middleware_ratelimiter_strictlimiter",
-      "label": "strictLimiter",
+      "id": "backend_src_routes_index_router",
+      "label": "router",
       "_origin": "ast",
       "community": 1,
       "community_name": "app.ts",
       "file_type": "code",
-      "norm_label": "strictlimiter",
-      "source_file": "backend/src/middleware/rateLimiter.ts",
-      "source_location": "L23"
+      "norm_label": "router",
+      "source_file": "backend/src/routes/index.ts",
+      "source_location": "L24"
     },
     {
       "id": "ref_cloudinary",
@@ -3353,15 +3378,15 @@
       "source_location": "L29"
     },
     {
-      "id": "ref_express_rate_limit",
-      "label": "express-rate-limit",
+      "id": "ref_helmet",
+      "label": "helmet",
       "_origin": "ast",
       "community": 1,
       "community_name": "app.ts",
       "file_type": "concept",
-      "norm_label": "express-rate-limit",
+      "norm_label": "helmet",
       "source_file": "backend/package.json",
-      "source_location": "L32"
+      "source_location": "L33"
     },
     {
       "id": "ref_morgan",
@@ -3826,11 +3851,22 @@
       "source_location": "L14"
     },
     {
+      "id": "backend_scripts_check_accounts_lock",
+      "label": "check-accounts-lock.ts",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "dotenv",
+      "file_type": "code",
+      "norm_label": "check-accounts-lock.ts",
+      "source_file": "backend/scripts/check-accounts-lock.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "backend_scripts_check_online_db",
       "label": "check-online-db.ts",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "check-online-db.ts",
       "source_file": "backend/scripts/check-online-db.ts",
@@ -3841,7 +3877,7 @@
       "label": "migrate.ts",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "migrate.ts",
       "source_file": "backend/scripts/migrate.ts",
@@ -3852,7 +3888,7 @@
       "label": "run-full-qa.ts",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "run-full-qa.ts",
       "source_file": "backend/scripts/run-full-qa.ts",
@@ -3863,7 +3899,7 @@
       "label": "results",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "results",
       "source_file": "backend/scripts/run-full-qa.ts",
@@ -3874,7 +3910,7 @@
       "label": "seed-admin.ts",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "seed-admin.ts",
       "source_file": "backend/scripts/seed-admin.ts",
@@ -3885,7 +3921,7 @@
       "label": "seedUsers",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "seedusers",
       "source_file": "backend/scripts/seed-admin.ts",
@@ -3896,7 +3932,7 @@
       "label": "test_delete_cascade.js",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "test_delete_cascade.js",
       "source_file": "backend/scripts/test_delete_cascade.js",
@@ -3907,10 +3943,54 @@
       "label": "{ Pool }",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "{ pool }",
       "source_file": "backend/scripts/test_delete_cascade.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "backend_scripts_test_online_backend",
+      "label": "test-online-backend.ts",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "dotenv",
+      "file_type": "code",
+      "norm_label": "test-online-backend.ts",
+      "source_file": "backend/scripts/test-online-backend.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "backend_scripts_test_online_backend_candidate_backends",
+      "label": "CANDIDATE_BACKENDS",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "dotenv",
+      "file_type": "code",
+      "norm_label": "candidate_backends",
+      "source_file": "backend/scripts/test-online-backend.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "backend_scripts_test_online_backend_test_accounts",
+      "label": "TEST_ACCOUNTS",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "dotenv",
+      "file_type": "code",
+      "norm_label": "test_accounts",
+      "source_file": "backend/scripts/test-online-backend.ts",
+      "source_location": "L12"
+    },
+    {
+      "id": "backend_scripts_verify_db_pooler",
+      "label": "verify-db-pooler.ts",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "dotenv",
+      "file_type": "code",
+      "norm_label": "verify-db-pooler.ts",
+      "source_file": "backend/scripts/verify-db-pooler.ts",
       "source_location": "L1"
     },
     {
@@ -3918,7 +3998,7 @@
       "label": "graphify.js",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "code",
       "norm_label": "graphify.js",
       "source_file": ".kilo/plugins/graphify.js",
@@ -3929,7 +4009,7 @@
       "label": "argon2",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "concept",
       "norm_label": "argon2",
       "source_file": "backend/package.json",
@@ -3940,7 +4020,7 @@
       "label": "dotenv",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "concept",
       "norm_label": "dotenv",
       "source_file": "backend/package.json",
@@ -3951,7 +4031,7 @@
       "label": "pg",
       "_origin": "ast",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "file_type": "concept",
       "norm_label": "pg",
       "source_file": "backend/package.json",
@@ -4343,17 +4423,6 @@
       "source_location": "L1"
     },
     {
-      "id": "backend_src_routes_roles_routes_router",
-      "label": "router",
-      "_origin": "ast",
-      "community": 17,
-      "community_name": "roles.routes.ts",
-      "file_type": "code",
-      "norm_label": "router",
-      "source_file": "backend/src/routes/roles.routes.ts",
-      "source_location": "L18"
-    },
-    {
       "id": "backend_src_services_roles_service",
       "label": "backend/src/services/roles.service.ts",
       "_origin": "ast",
@@ -4468,7 +4537,7 @@
       "label": "upload.controller.ts",
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
       "norm_label": "upload.controller.ts",
       "source_file": "backend/src/controllers/upload.controller.ts",
@@ -4479,7 +4548,7 @@
       "label": "handleImageUpload",
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
       "norm_label": "handleimageupload",
       "source_file": "backend/src/controllers/upload.controller.ts",
@@ -4490,7 +4559,7 @@
       "label": "handleMultipleImagesUpload",
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
       "norm_label": "handlemultipleimagesupload",
       "source_file": "backend/src/controllers/upload.controller.ts",
@@ -4501,7 +4570,7 @@
       "label": "storage",
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
       "norm_label": "storage",
       "source_file": "backend/src/controllers/upload.controller.ts",
@@ -4512,110 +4581,33 @@
       "label": "upload",
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
       "norm_label": "upload",
       "source_file": "backend/src/controllers/upload.controller.ts",
       "source_location": "L10"
     },
     {
-      "id": "backend_src_routes_donors_routes_router",
-      "label": "router",
+      "id": "backend_src_middleware_rbac_middleware",
+      "label": "rbac.middleware.ts",
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
-      "norm_label": "router",
-      "source_file": "backend/src/routes/donors.routes.ts",
-      "source_location": "L9"
-    },
-    {
-      "id": "backend_src_routes_index",
-      "label": "routes/index.ts",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "routes/index.ts",
-      "file_type": "code",
-      "norm_label": "routes/index.ts",
-      "source_file": "backend/src/routes/index.ts",
+      "norm_label": "rbac.middleware.ts",
+      "source_file": "backend/src/middleware/rbac.middleware.ts",
       "source_location": "L1"
     },
     {
-      "id": "backend_src_routes_index_router",
-      "label": "router",
+      "id": "backend_src_utils_apierror",
+      "label": "ApiError.ts",
       "_origin": "ast",
       "community": 2,
-      "community_name": "routes/index.ts",
+      "community_name": "ApiError",
       "file_type": "code",
-      "norm_label": "router",
-      "source_file": "backend/src/routes/index.ts",
-      "source_location": "L24"
-    },
-    {
-      "id": "backend_src_routes_index_upload_roles",
-      "label": "UPLOAD_ROLES",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "routes/index.ts",
-      "file_type": "code",
-      "norm_label": "upload_roles",
-      "source_file": "backend/src/routes/index.ts",
-      "source_location": "L50"
-    },
-    {
-      "id": "backend_src_routes_partnerships_routes_router",
-      "label": "router",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "routes/index.ts",
-      "file_type": "code",
-      "norm_label": "router",
-      "source_file": "backend/src/routes/partnerships.routes.ts",
-      "source_location": "L19"
-    },
-    {
-      "id": "backend_src_routes_policies_routes_router",
-      "label": "router",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "routes/index.ts",
-      "file_type": "code",
-      "norm_label": "router",
-      "source_file": "backend/src/routes/policies.routes.ts",
-      "source_location": "L19"
-    },
-    {
-      "id": "backend_src_routes_programs_routes_router",
-      "label": "router",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "routes/index.ts",
-      "file_type": "code",
-      "norm_label": "router",
-      "source_file": "backend/src/routes/programs.routes.ts",
-      "source_location": "L18"
-    },
-    {
-      "id": "backend_src_routes_site_content_routes_router",
-      "label": "router",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "routes/index.ts",
-      "file_type": "code",
-      "norm_label": "router",
-      "source_file": "backend/src/routes/site-content.routes.ts",
-      "source_location": "L17"
-    },
-    {
-      "id": "backend_src_routes_team_routes_router",
-      "label": "router",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "routes/index.ts",
-      "file_type": "code",
-      "norm_label": "router",
-      "source_file": "backend/src/routes/team.routes.ts",
-      "source_location": "L19"
+      "norm_label": "apierror.ts",
+      "source_file": "backend/src/utils/ApiError.ts",
+      "source_location": "L1"
     },
     {
       "id": "backend_src_database_migrations_02_update_donors_table",
@@ -5021,6 +5013,28 @@
       "source_location": "L14"
     },
     {
+      "id": "backend_src_services_stats_service",
+      "label": "backend/src/services/stats.service.ts",
+      "_origin": "ast",
+      "community": 22,
+      "community_name": "database/index.ts",
+      "file_type": "code",
+      "norm_label": "backend/src/services/stats.service.ts",
+      "source_file": "backend/src/services/stats.service.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "backend_src_services_stats_service_statsservice",
+      "label": "statsService",
+      "_origin": "ast",
+      "community": 22,
+      "community_name": "database/index.ts",
+      "file_type": "code",
+      "norm_label": "statsservice",
+      "source_file": "backend/src/services/stats.service.ts",
+      "source_location": "L23"
+    },
+    {
       "id": "backend_src_utils_cron",
       "label": "cron.ts",
       "_origin": "ast",
@@ -5120,6 +5134,17 @@
       "source_location": "L42"
     },
     {
+      "id": "backend_src_services_stats_service_rationale_37",
+      "label": "NOTE: Elders Helped, Aid Delivered, and Voluntary Hours have no verified",
+      "_origin": "ast",
+      "community": 22,
+      "community_name": "database/index.ts",
+      "file_type": "rationale",
+      "norm_label": "note: elders helped, aid delivered, and voluntary hours have no verified",
+      "source_file": "backend/src/services/stats.service.ts",
+      "source_location": "L37"
+    },
+    {
       "id": "backend_src_controllers_policies_controller",
       "label": "policies.controller.ts",
       "_origin": "ast",
@@ -5206,6 +5231,17 @@
       "norm_label": "policies.routes.ts",
       "source_file": "backend/src/routes/policies.routes.ts",
       "source_location": "L1"
+    },
+    {
+      "id": "backend_src_routes_policies_routes_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 23,
+      "community_name": "policies.routes.ts",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "backend/src/routes/policies.routes.ts",
+      "source_location": "L19"
     },
     {
       "id": "backend_src_services_policies_service",
@@ -5637,17 +5673,6 @@
       "source_location": "L41"
     },
     {
-      "id": "ref_helmet",
-      "label": "helmet",
-      "_origin": "ast",
-      "community": 26,
-      "community_name": "backend/package.json",
-      "file_type": "concept",
-      "norm_label": "helmet",
-      "source_file": "backend/package.json",
-      "source_location": "L33"
-    },
-    {
       "id": "ref_jsonwebtoken",
       "label": "jsonwebtoken",
       "_origin": "ast",
@@ -5657,17 +5682,6 @@
       "norm_label": "jsonwebtoken",
       "source_file": "backend/package.json",
       "source_location": "L35"
-    },
-    {
-      "id": "ref_multer",
-      "label": "multer",
-      "_origin": "ast",
-      "community": 26,
-      "community_name": "backend/package.json",
-      "file_type": "concept",
-      "norm_label": "multer",
-      "source_file": "backend/package.json",
-      "source_location": "L37"
     },
     {
       "id": "ref_ts_node",
@@ -5844,6 +5858,17 @@
       "norm_label": "team.routes.ts",
       "source_file": "backend/src/routes/team.routes.ts",
       "source_location": "L1"
+    },
+    {
+      "id": "backend_src_routes_team_routes_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 27,
+      "community_name": "team.routes.ts",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "backend/src/routes/team.routes.ts",
+      "source_location": "L19"
     },
     {
       "id": "backend_src_services_team_service",
@@ -6099,6 +6124,17 @@
       "source_location": "L28"
     },
     {
+      "id": "backend_src_middleware_validate_middleware",
+      "label": "validate.middleware.ts",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "annual-reports.routes.ts",
+      "file_type": "code",
+      "norm_label": "validate.middleware.ts",
+      "source_file": "backend/src/middleware/validate.middleware.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "backend_src_routes_annual_reports_routes",
       "label": "annual-reports.routes.ts",
       "_origin": "ast",
@@ -6108,17 +6144,6 @@
       "norm_label": "annual-reports.routes.ts",
       "source_file": "backend/src/routes/annual-reports.routes.ts",
       "source_location": "L1"
-    },
-    {
-      "id": "backend_src_routes_annual_reports_routes_router",
-      "label": "router",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "annual-reports.routes.ts",
-      "file_type": "code",
-      "norm_label": "router",
-      "source_file": "backend/src/routes/annual-reports.routes.ts",
-      "source_location": "L19"
     },
     {
       "id": "backend_src_services_annual_reports_service",
@@ -6185,6 +6210,17 @@
       "norm_label": "updateannualreportschema",
       "source_file": "backend/src/validators/annual-reports.validator.ts",
       "source_location": "L20"
+    },
+    {
+      "id": "ref_zod",
+      "label": "zod",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "annual-reports.routes.ts",
+      "file_type": "concept",
+      "norm_label": "zod",
+      "source_file": "backend/package.json",
+      "source_location": "L43"
     },
     {
       "id": "frontend_eslint_config",
@@ -6968,6 +7004,17 @@
       "source_location": "L1"
     },
     {
+      "id": "backend_src_routes_donors_routes_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 32,
+      "community_name": "donors.routes.ts",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "backend/src/routes/donors.routes.ts",
+      "source_location": "L9"
+    },
+    {
       "id": "backend_src_services_donors_service",
       "label": "backend/src/services/donors.service.ts",
       "_origin": "ast",
@@ -6988,17 +7035,6 @@
       "norm_label": "donorsservice",
       "source_file": "backend/src/services/donors.service.ts",
       "source_location": "L28"
-    },
-    {
-      "id": "backend_src_utils_asynchandler",
-      "label": "asyncHandler.ts",
-      "_origin": "ast",
-      "community": 32,
-      "community_name": "donors.routes.ts",
-      "file_type": "code",
-      "norm_label": "asynchandler.ts",
-      "source_file": "backend/src/utils/asyncHandler.ts",
-      "source_location": "L1"
     },
     {
       "id": "backend_src_validators_donors_validator",
@@ -7312,17 +7348,6 @@
       "source_location": "L1"
     },
     {
-      "id": "backend_src_middleware_rbac_middleware",
-      "label": "rbac.middleware.ts",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "auth.middleware.ts",
-      "file_type": "code",
-      "norm_label": "rbac.middleware.ts",
-      "source_file": "backend/src/middleware/rbac.middleware.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "backend_src_routes_site_content_routes",
       "label": "site-content.routes.ts",
       "_origin": "ast",
@@ -7367,17 +7392,6 @@
       "source_location": "L15"
     },
     {
-      "id": "backend_src_utils_apierror",
-      "label": "ApiError.ts",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "auth.middleware.ts",
-      "file_type": "code",
-      "norm_label": "apierror.ts",
-      "source_file": "backend/src/utils/ApiError.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "backend_src_validators_site_content_validator",
       "label": "site-content.validator.ts",
       "_origin": "ast",
@@ -7409,17 +7423,6 @@
       "norm_label": "updatesitecontentschema",
       "source_file": "backend/src/validators/site-content.validator.ts",
       "source_location": "L3"
-    },
-    {
-      "id": "ref_zod",
-      "label": "zod",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "auth.middleware.ts",
-      "file_type": "concept",
-      "norm_label": "zod",
-      "source_file": "backend/package.json",
-      "source_location": "L43"
     },
     {
       "id": "backend_src_middleware_auth_middleware_rationale_27",
@@ -7625,7 +7628,7 @@
       "label": "cloudinary-health.controller.ts",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
       "norm_label": "cloudinary-health.controller.ts",
       "source_file": "backend/src/controllers/cloudinary-health.controller.ts",
@@ -7636,7 +7639,7 @@
       "label": "health.controller.ts",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
       "norm_label": "health.controller.ts",
       "source_file": "backend/src/controllers/health.controller.ts",
@@ -7647,7 +7650,7 @@
       "label": "stats.controller.ts",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
       "norm_label": "stats.controller.ts",
       "source_file": "backend/src/controllers/stats.controller.ts",
@@ -7658,18 +7661,29 @@
       "label": "getStats",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
       "norm_label": "getstats",
       "source_file": "backend/src/controllers/stats.controller.ts",
       "source_location": "L9"
     },
     {
+      "id": "backend_src_routes_annual_reports_routes_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "routes/index.ts",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "backend/src/routes/annual-reports.routes.ts",
+      "source_location": "L19"
+    },
+    {
       "id": "backend_src_routes_health_routes",
       "label": "health.routes.ts",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
       "norm_label": "health.routes.ts",
       "source_file": "backend/src/routes/health.routes.ts",
@@ -7680,18 +7694,73 @@
       "label": "router",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
       "norm_label": "router",
       "source_file": "backend/src/routes/health.routes.ts",
       "source_location": "L4"
     },
     {
+      "id": "backend_src_routes_index",
+      "label": "routes/index.ts",
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "routes/index.ts",
+      "file_type": "code",
+      "norm_label": "routes/index.ts",
+      "source_file": "backend/src/routes/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "backend_src_routes_index_upload_roles",
+      "label": "UPLOAD_ROLES",
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "routes/index.ts",
+      "file_type": "code",
+      "norm_label": "upload_roles",
+      "source_file": "backend/src/routes/index.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "backend_src_routes_programs_routes_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "routes/index.ts",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "backend/src/routes/programs.routes.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "backend_src_routes_roles_routes_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "routes/index.ts",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "backend/src/routes/roles.routes.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "backend_src_routes_site_content_routes_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "routes/index.ts",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "backend/src/routes/site-content.routes.ts",
+      "source_location": "L17"
+    },
+    {
       "id": "backend_src_routes_stats_routes",
       "label": "stats.routes.ts",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
       "norm_label": "stats.routes.ts",
       "source_file": "backend/src/routes/stats.routes.ts",
@@ -7702,54 +7771,43 @@
       "label": "router",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
       "norm_label": "router",
       "source_file": "backend/src/routes/stats.routes.ts",
       "source_location": "L4"
     },
     {
-      "id": "backend_src_services_stats_service",
-      "label": "backend/src/services/stats.service.ts",
+      "id": "backend_src_utils_asynchandler",
+      "label": "asyncHandler.ts",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "code",
-      "norm_label": "backend/src/services/stats.service.ts",
-      "source_file": "backend/src/services/stats.service.ts",
+      "norm_label": "asynchandler.ts",
+      "source_file": "backend/src/utils/asyncHandler.ts",
       "source_location": "L1"
-    },
-    {
-      "id": "backend_src_services_stats_service_statsservice",
-      "label": "statsService",
-      "_origin": "ast",
-      "community": 38,
-      "community_name": "express",
-      "file_type": "code",
-      "norm_label": "statsservice",
-      "source_file": "backend/src/services/stats.service.ts",
-      "source_location": "L23"
     },
     {
       "id": "ref_express",
       "label": "express",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
+      "community_name": "routes/index.ts",
       "file_type": "concept",
       "norm_label": "express",
       "source_file": "backend/package.json",
       "source_location": "L31"
     },
     {
-      "id": "backend_src_services_stats_service_rationale_37",
-      "label": "NOTE: Elders Helped, Aid Delivered, and Voluntary Hours have no verified",
+      "id": "ref_multer",
+      "label": "multer",
       "_origin": "ast",
       "community": 38,
-      "community_name": "express",
-      "file_type": "rationale",
-      "norm_label": "note: elders helped, aid delivered, and voluntary hours have no verified",
-      "source_file": "backend/src/services/stats.service.ts",
+      "community_name": "routes/index.ts",
+      "file_type": "concept",
+      "norm_label": "multer",
+      "source_file": "backend/package.json",
       "source_location": "L37"
     },
     {
@@ -8852,7 +8910,7 @@
       "node_kind": "heading",
       "norm_label": "database setup workflow",
       "source_file": "deployment/render.md",
-      "source_location": "L35"
+      "source_location": "L40"
     },
     {
       "id": "deployment_render_health_check_url",
@@ -8864,7 +8922,7 @@
       "node_kind": "heading",
       "norm_label": "health check url",
       "source_file": "deployment/render.md",
-      "source_location": "L29"
+      "source_location": "L34"
     },
     {
       "id": "deployment_render_render_deployment_guide_agesense_backend",
@@ -8900,7 +8958,7 @@
       "node_kind": "heading",
       "norm_label": "troubleshooting",
       "source_file": "deployment/render.md",
-      "source_location": "L41"
+      "source_location": "L46"
     },
     {
       "id": "deployment_vercel",
@@ -9053,6 +9111,28 @@
       "source_location": "L39"
     },
     {
+      "id": "backend_src_middleware_ratelimiter",
+      "label": "rateLimiter.ts",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "partnerships.routes.ts",
+      "file_type": "code",
+      "norm_label": "ratelimiter.ts",
+      "source_file": "backend/src/middleware/rateLimiter.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "backend_src_middleware_ratelimiter_strictlimiter",
+      "label": "strictLimiter",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "partnerships.routes.ts",
+      "file_type": "code",
+      "norm_label": "strictlimiter",
+      "source_file": "backend/src/middleware/rateLimiter.ts",
+      "source_location": "L23"
+    },
+    {
       "id": "backend_src_routes_partnerships_routes",
       "label": "partnerships.routes.ts",
       "_origin": "ast",
@@ -9062,6 +9142,17 @@
       "norm_label": "partnerships.routes.ts",
       "source_file": "backend/src/routes/partnerships.routes.ts",
       "source_location": "L1"
+    },
+    {
+      "id": "backend_src_routes_partnerships_routes_router",
+      "label": "router",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "partnerships.routes.ts",
+      "file_type": "code",
+      "norm_label": "router",
+      "source_file": "backend/src/routes/partnerships.routes.ts",
+      "source_location": "L19"
     },
     {
       "id": "backend_src_services_partnerships_service",
@@ -9150,6 +9241,17 @@
       "norm_label": "updatepartnershipstatusschema",
       "source_file": "backend/src/validators/partnerships.validator.ts",
       "source_location": "L73"
+    },
+    {
+      "id": "ref_express_rate_limit",
+      "label": "express-rate-limit",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "partnerships.routes.ts",
+      "file_type": "concept",
+      "norm_label": "express-rate-limit",
+      "source_file": "backend/package.json",
+      "source_location": "L32"
     },
     {
       "id": "backend_src_services_partnerships_service_rationale_53",
@@ -10084,17 +10186,6 @@
       "source_location": "L14"
     },
     {
-      "id": "backend_src_middleware_validate_middleware",
-      "label": "validate.middleware.ts",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "validate.middleware.ts",
-      "file_type": "code",
-      "norm_label": "validate.middleware.ts",
-      "source_file": "backend/src/middleware/validate.middleware.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "backend_src_database_migrations_14_content_official_text",
       "label": "14_content_official_text.sql",
       "_origin": "ast",
@@ -10760,7 +10851,7 @@
       "label": "ref_fs",
       "_origin": "semantic",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_fs",
@@ -10772,7 +10863,7 @@
       "label": "ref_path",
       "_origin": "semantic",
       "community": 13,
-      "community_name": "run-full-qa.ts",
+      "community_name": "dotenv",
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_path",
@@ -18431,6 +18522,54 @@
       "weight": 1.0
     },
     {
+      "source": "backend_scripts_check_accounts_lock",
+      "target": "ref_path",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "backend/scripts/check-accounts-lock.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_check_accounts_lock",
+      "target": "ref_dotenv",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "backend/scripts/check-accounts-lock.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_check_accounts_lock",
+      "target": "ref_pg",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "backend/scripts/check-accounts-lock.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_check_accounts_lock",
+      "target": "ref_argon2",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "backend/scripts/check-accounts-lock.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
       "source": "backend_scripts_check_online_db",
       "target": "ref_path",
       "relation": "imports_from",
@@ -18596,6 +18735,66 @@
       "context": "import",
       "source_file": "backend/scripts/test_delete_cascade.js",
       "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_test_online_backend",
+      "target": "ref_path",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "backend/scripts/test-online-backend.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_test_online_backend",
+      "target": "ref_dotenv",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "backend/scripts/test-online-backend.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_verify_db_pooler",
+      "target": "ref_path",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "backend/scripts/verify-db-pooler.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_verify_db_pooler",
+      "target": "ref_dotenv",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "backend/scripts/verify-db-pooler.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_verify_db_pooler",
+      "target": "ref_pg",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "backend/scripts/verify-db-pooler.ts",
+      "source_location": "L4",
       "weight": 1.0
     },
     {
@@ -24385,6 +24584,17 @@
       "weight": 1.0
     },
     {
+      "source": "backend_scripts_check_accounts_lock",
+      "target": "backend_scripts_check_accounts_lock_checkaccountstatus",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/scripts/check-accounts-lock.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
       "source": "backend_scripts_check_online_db",
       "target": "backend_scripts_check_online_db_checkdb",
       "relation": "contains",
@@ -24514,6 +24724,50 @@
       "confidence_score": 1.0,
       "source_file": "backend/scripts/test_delete_cascade.js",
       "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_test_online_backend",
+      "target": "backend_scripts_test_online_backend_test_accounts",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/scripts/test-online-backend.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_test_online_backend",
+      "target": "backend_scripts_test_online_backend_testonlinebackend",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/scripts/test-online-backend.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_test_online_backend",
+      "target": "backend_scripts_test_online_backend_candidate_backends",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/scripts/test-online-backend.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_scripts_verify_db_pooler",
+      "target": "backend_scripts_verify_db_pooler_testconnections",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/scripts/verify-db-pooler.ts",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -28429,7 +28683,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "deployment/render.md",
-      "source_location": "L29",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -28440,7 +28694,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "deployment/render.md",
-      "source_location": "L35",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -28451,7 +28705,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "deployment/render.md",
-      "source_location": "L41",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -32416,5 +32670,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "066e1b0e1def484e46b20200ab7356fd1b55e370"
+  "built_at_commit": "2274de36c0808e2de04c19ce5edd92878aaeb48f"
 }

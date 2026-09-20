@@ -234,9 +234,9 @@
     "semantic_hash": ""
   },
   "backend/src/services/stats.service.ts": {
-    "mtime": 1789906641.8437831,
-    "seen": 1789906674.0265806,
-    "ast_hash": "ecfa7bfa9958d6655c719926f4bb1911",
+    "mtime": 1789920699.1878622,
+    "seen": 1789920811.7678437,
+    "ast_hash": "25f2e7637a6c352dec6c91aa8a1efc7c",
     "semantic_hash": ""
   },
   "backend/src/services/volunteers.service.ts": {
@@ -636,15 +636,15 @@
     "semantic_hash": "e3bee4bf2e6291a83706de73169021b6"
   },
   "backend/src/database/migrations/05_rbac_and_revocation.sql": {
-    "mtime": 1781931321.1448786,
-    "seen": 1789896843.1603026,
-    "ast_hash": "aa9c9f3fd29064dfeae0b1e2332c3bfd",
-    "semantic_hash": "aa9c9f3fd29064dfeae0b1e2332c3bfd"
+    "mtime": 1789920677.2750888,
+    "seen": 1789920811.7678437,
+    "ast_hash": "22966a6644900b737202083d56071f33",
+    "semantic_hash": ""
   },
   ".kilo/kilo.json": {
-    "mtime": 1789897003.3442092,
-    "seen": 1789902712.6755223,
-    "ast_hash": "50df06cacd2ae69f28c6e754eab8ea1b",
+    "mtime": 1789918931.6867137,
+    "seen": 1789920811.7678437,
+    "ast_hash": "af8823f08c5a7df060cff22bc964fd9a",
     "semantic_hash": ""
   },
   ".kilo/plugins/graphify.js": {
@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "backend/src/routes/site-content.routes.ts": {
-    "mtime": 1789907452.1909187,
-    "seen": 1789908933.990033,
-    "ast_hash": "078d42835234e0aa00be75e7d1c45d78",
+    "mtime": 1789920712.558612,
+    "seen": 1789920811.7678437,
+    "ast_hash": "184369278817b25be243f31662cb0cc9",
     "semantic_hash": ""
   },
   "backend/src/routes/team.routes.ts": {
@@ -912,9 +912,9 @@
     "semantic_hash": ""
   },
   "frontend/src/app/admin/(dashboard)/site-content/page.tsx": {
-    "mtime": 1789902220.2533984,
-    "seen": 1789902712.6755223,
-    "ast_hash": "d24ccaf38854674112014a0c3cc3bbdc",
+    "mtime": 1789920745.1495197,
+    "seen": 1789920811.7678437,
+    "ast_hash": "b18656ce24883214f83d7c1631433bea",
     "semantic_hash": ""
   },
   "frontend/src/app/admin/(dashboard)/team/page.tsx": {
@@ -1245,6 +1245,12 @@
     "mtime": 1789913862.5889885,
     "seen": 1789917286.7652185,
     "ast_hash": "88f5b59cc185861eb360923ce4bd7456",
+    "semantic_hash": ""
+  },
+  "backend/src/database/migrations/16_impact_metrics.sql": {
+    "mtime": 1789920660.2727146,
+    "seen": 1789920811.7678437,
+    "ast_hash": "26751d0ec7ce99d1b719a17d08094045",
     "semantic_hash": ""
   }
 }

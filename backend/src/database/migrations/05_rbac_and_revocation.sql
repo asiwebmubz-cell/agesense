@@ -1,6 +1,6 @@
 -- 1. Add role to users
 ALTER TABLE users
-ADD COLUMN role VARCHAR(50) DEFAULT 'admin';
+ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'admin';
 
 -- 2. Create revoked_tokens table
 CREATE TABLE IF NOT EXISTS revoked_tokens (
@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS revoked_tokens (
 
 -- 3. Add fingerprinting to refresh_tokens
 ALTER TABLE refresh_tokens
-ADD COLUMN user_agent TEXT,
-ADD COLUMN last_used_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+ADD COLUMN IF NOT EXISTS user_agent TEXT,
+ADD COLUMN IF NOT EXISTS last_used_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
 
 -- 4. Create indexes for performance
 CREATE INDEX IF NOT EXISTS idx_revoked_tokens_jti ON revoked_tokens(token_jti);

@@ -25,6 +25,9 @@ export const statsService = {
     const volunteersResult = await db.query('SELECT COUNT(*)::int as total, COUNT(*) FILTER (WHERE status = \'Approved\')::int as approved FROM volunteers');
     const donorsResult = await db.query('SELECT COUNT(*)::int as total, COALESCE(SUM(amount), 0)::float as amount FROM donors WHERE payment_status = \'Verified\'');
     const programsResult = await db.query('SELECT COUNT(*) FILTER (WHERE type = \'Our Programs\' AND status = \'Published\')::int as programs, COUNT(*) FILTER (WHERE type = \'Our Work\' AND status = \'Published\')::int as work, COUNT(*) FILTER (WHERE type = \'Impact Stories\' AND status = \'Published\')::int as stories FROM programs');
+    const impactContentResult = await db.query('SELECT metadata FROM site_content WHERE key = \'impact_metrics\'');
+
+    const impactMeta = impactContentResult[0]?.metadata || {};
 
     return {
       totalVolunteers: volunteersResult[0]?.total || 0,
@@ -34,13 +37,12 @@ export const statsService = {
       publishedProgramsCount: programsResult[0]?.programs || 0,
       publishedWorkCount: programsResult[0]?.work || 0,
       publishedStoriesCount: programsResult[0]?.stories || 0,
-      // NOTE: Elders Helped, Aid Delivered, and Voluntary Hours have no verified
-      // data source yet — returned as 0 (rendered as a neutral state on the
-      // frontend) instead of invented placeholder numbers.
-      eldersHelped: 0,
-      aidDelivered: 0,
-      voluntaryHours: 0,
-      yearsActive: 2,
+      // Dynamic stats configured by Super Admin via Site Content CMS
+      eldersHelped: Number(impactMeta.elders_helped) || 0,
+      aidDelivered: Number(impactMeta.aid_delivered) || 0,
+      voluntaryHours: Number(impactMeta.voluntary_hours) || 0,
+      yearsActive: Number(impactMeta.years_active) || 2,
     };
   }
 };
+

@@ -1050,9 +1050,9 @@
     "semantic_hash": ""
   },
   "deployment/render.md": {
-    "mtime": 1780428494.6760414,
-    "seen": 1789902712.6755223,
-    "ast_hash": "1cd3a1d8250129834b5d87c2e947ac05",
+    "mtime": 1789917270.3568015,
+    "seen": 1789917286.7652185,
+    "ast_hash": "e7ee9ac8d316baa7cf880ee158744124",
     "semantic_hash": ""
   },
   "deployment/supabase.md": {
@@ -1227,6 +1227,24 @@
     "mtime": 1789911596.201501,
     "seen": 1789911668.1858082,
     "ast_hash": "b29944a63aa9fc80ecbf06168da5956e",
+    "semantic_hash": ""
+  },
+  "backend/scripts/check-accounts-lock.ts": {
+    "mtime": 1789911923.6977034,
+    "seen": 1789917286.7652185,
+    "ast_hash": "44c264a354244653e9f56d7949bb5b6e",
+    "semantic_hash": ""
+  },
+  "backend/scripts/test-online-backend.ts": {
+    "mtime": 1789912779.4062188,
+    "seen": 1789917286.7652185,
+    "ast_hash": "928809adabce96667afa5a4be4c21be3",
+    "semantic_hash": ""
+  },
+  "backend/scripts/verify-db-pooler.ts": {
+    "mtime": 1789913862.5889885,
+    "seen": 1789917286.7652185,
+    "ast_hash": "88f5b59cc185861eb360923ce4bd7456",
     "semantic_hash": ""
   }
 }
