@@ -24,10 +24,12 @@ export default function Footer() {
         <div>
           <h4 className="text-xl font-semibold mb-6">Mission</h4>
           <ul className="space-y-3">
-            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="#">Our Story</Link></li>
-            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="#">Annual Report</Link></li>
-            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="#">Values</Link></li>
-            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="#">Team</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/our-story">Our Story</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/values">Values</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/team">Team &amp; Governance</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/founders-statement">Founder&apos;s Statement</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/regional-chapters">Regional Chapters</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/annual-report">Annual Report</Link></li>
           </ul>
         </div>
         <div>
@@ -35,25 +37,39 @@ export default function Footer() {
           <ul className="space-y-3">
             <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/volunteer">Volunteer</Link></li>
             <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/donate">Donate</Link></li>
-            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="#">Corporate Partners</Link></li>
-            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="#">Ambassadors</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/partner">Partner With Us</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/programs">Our Programs</Link></li>
           </ul>
         </div>
         <div>
-          <h4 className="text-xl font-semibold mb-6">Resources</h4>
+          <h4 className="text-xl font-semibold mb-6">Governance &amp; Trust</h4>
           <ul className="space-y-3">
-            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="#">Family Toolkit</Link></li>
-            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="#">Tech Guides</Link></li>
-            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="#">Safety Tips</Link></li>
-            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="#">Newsletter</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/policies">Organizational Policies</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/annual-report">Financial &amp; Audit Disclosures</Link></li>
+            <li><Link className="text-base text-surface-variant hover:text-surface-bright hover:underline decoration-primary-fixed-dim transition-all" href="/impact">Impact Metrics</Link></li>
           </ul>
         </div>
       </div>
       <div className="max-w-[1200px] mx-auto px-4 md:px-8 pt-8 border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-medium text-surface-variant">
-        <span>© 2024 AgeSense Initiative. All rights reserved.</span>
-        <div className="flex gap-8">
-          <Link className="hover:text-surface-bright" href="#">Privacy Policy</Link>
-          <Link className="hover:text-surface-bright" href="#">Terms of Service</Link>
+        <div>
+          <span>© 2026 AgeSense Initiative. All rights reserved.</span>
+          <span className="mx-2 hidden md:inline">|</span>
+          <span className="block md:inline mt-1 md:mt-0 text-xs">
+            Developed by{" "}
+            <a
+              href="https://www.linkedin.com/in/kmmubin/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-surface-bright font-semibold hover:underline"
+            >
+              K M MUBIN
+            </a>
+          </span>
+        </div>
+        <div className="flex gap-6 text-xs">
+          <Link className="hover:text-surface-bright" href="/policies">Policies</Link>
+          <Link className="hover:text-surface-bright" href="/regional-chapters">Chapters</Link>
+          <Link className="hover:text-surface-bright" href="/admin/login">Admin Portal</Link>
         </div>
       </div>
     </footer>

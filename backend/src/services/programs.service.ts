@@ -15,6 +15,7 @@ export interface Program {
   description: string;
   image_url?: string;
   status: 'Published' | 'Draft';
+  branch_id?: string | null;
   created_at: string;
   updated_at: string;
 
@@ -42,10 +43,17 @@ export const programsService = {
   /**
    * Get all published programs (public).
    */
-  async getPublished(): Promise<Program[]> {
-    const programs = await db.query<Program>(
-      `SELECT * FROM programs WHERE status = 'Published' ORDER BY created_at DESC`
-    );
+  async getPublished(branchId?: string): Promise<Program[]> {
+    let queryText = `SELECT * FROM programs WHERE status = 'Published'`;
+    const params: any[] = [];
+
+    if (branchId) {
+      queryText += ` AND (branch_id = $1 OR branch_id IS NULL)`;
+      params.push(branchId);
+    }
+    queryText += ` ORDER BY created_at DESC`;
+
+    const programs = await db.query<Program>(queryText, params);
     if (programs.length === 0) return [];
 
     const programIds = programs.map(p => p.id);
@@ -63,11 +71,19 @@ export const programsService = {
 
   /**
    * Get all programs including drafts (admin).
+   * If branchId is specified (e.g. For branch_manager), only returns programs belonging to that branch.
    */
-  async getAll(): Promise<Program[]> {
-    const programs = await db.query<Program>(
-      `SELECT * FROM programs ORDER BY created_at DESC`
-    );
+  async getAll(branchId?: string | null): Promise<Program[]> {
+    let queryText = `SELECT * FROM programs`;
+    const params: any[] = [];
+
+    if (branchId) {
+      queryText += ` WHERE branch_id = $1`;
+      params.push(branchId);
+    }
+    queryText += ` ORDER BY created_at DESC`;
+
+    const programs = await db.query<Program>(queryText, params);
     if (programs.length === 0) return [];
 
     const programIds = programs.map(p => p.id);
@@ -85,18 +101,20 @@ export const programsService = {
 
   /**
    * Create a new program entry.
+   * Auto-assigns branch_id if caller is scoped.
    */
-  async create(input: CreateProgramInput): Promise<Program> {
+  async create(input: CreateProgramInput, enforcedBranchId?: string | null): Promise<Program> {
     const { images, ...rawInput } = input as any;
+    const targetBranchId = enforcedBranchId !== undefined ? enforcedBranchId : (rawInput.branch_id || null);
 
     const queryText = `
       INSERT INTO programs (
         type, title, description, image_url, status, subtitle, video_url,
         goals, beneficiaries, expense_categories, project_areas, duration,
         active_years, packages_distributed, gallery_title_1, gallery_link_1,
-        gallery_title_2, gallery_link_2, gallery_description
+        gallery_title_2, gallery_link_2, gallery_description, branch_id
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20
       ) RETURNING *;
     `;
     const params = [
@@ -119,6 +137,7 @@ export const programsService = {
       rawInput.gallery_title_2 || null,
       rawInput.gallery_link_2 || null,
       rawInput.gallery_description || null,
+      targetBranchId,
     ];
 
     const rows = await db.query<Program>(queryText, params);
@@ -141,8 +160,16 @@ export const programsService = {
 
   /**
    * Update an existing program.
+   * Validates branch ownership if caller is branch-scoped.
    */
-  async update(id: string, input: UpdateProgramInput): Promise<Program> {
+  async update(id: string, input: UpdateProgramInput, enforcedBranchId?: string | null): Promise<Program> {
+    const existing = await db.query<Program>('SELECT * FROM programs WHERE id = $1', [id]);
+    if (existing.length === 0) throw new ApiError(404, 'Program not found.');
+
+    if (enforcedBranchId && existing[0].branch_id !== enforcedBranchId) {
+      throw new ApiError(403, 'Access denied. You can only update content belonging to your branch.');
+    }
+
     const { images, ...rawInput } = input as any;
 
     const queryText = `
@@ -166,8 +193,9 @@ export const programsService = {
         gallery_title_2 = COALESCE($17, gallery_title_2),
         gallery_link_2 = COALESCE($18, gallery_link_2),
         gallery_description = COALESCE($19, gallery_description),
+        branch_id = COALESCE($20, branch_id),
         updated_at = NOW()
-      WHERE id = $20
+      WHERE id = $21
       RETURNING *;
     `;
     const params = [
@@ -190,6 +218,7 @@ export const programsService = {
       rawInput.gallery_title_2 !== undefined ? rawInput.gallery_title_2 : null,
       rawInput.gallery_link_2 !== undefined ? rawInput.gallery_link_2 : null,
       rawInput.gallery_description !== undefined ? rawInput.gallery_description : null,
+      enforcedBranchId !== undefined ? enforcedBranchId : (rawInput.branch_id !== undefined ? rawInput.branch_id : null),
       id,
     ];
 
@@ -198,7 +227,6 @@ export const programsService = {
     const updatedProgram = rows[0];
 
     if (images !== undefined) {
-      // Clear out existing associated images first
       await db.query(`DELETE FROM program_images WHERE program_id = $1`, [id]);
       if (images && images.length > 0) {
         for (const imgUrl of images) {
@@ -222,13 +250,21 @@ export const programsService = {
 
   /**
    * Delete a program by ID.
+   * Validates branch ownership if caller is branch-scoped.
    */
-  async remove(id: string): Promise<Program> {
+  async remove(id: string, enforcedBranchId?: string | null): Promise<Program> {
+    const existing = await db.query<Program>('SELECT * FROM programs WHERE id = $1', [id]);
+    if (existing.length === 0) throw new ApiError(404, 'Program not found.');
+
+    if (enforcedBranchId && existing[0].branch_id !== enforcedBranchId) {
+      throw new ApiError(403, 'Access denied. You can only delete content belonging to your branch.');
+    }
+
     const rows = await db.query<Program>(
       `DELETE FROM programs WHERE id = $1 RETURNING *`,
       [id]
     );
-    if (rows.length === 0) throw new ApiError(404, 'Program not found.');
     return rows[0];
   },
 };
+

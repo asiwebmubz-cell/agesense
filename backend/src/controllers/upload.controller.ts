@@ -41,6 +41,10 @@ export const handleImageUpload = asyncHandler(
       targetFolder = 'agesense/gallery';
     } else if (context === 'partners') {
       targetFolder = 'agesense/partners';
+    } else if (context === 'team') {
+      targetFolder = 'agesense/team';
+    } else if (context === 'branches') {
+      targetFolder = 'agesense/branches';
     }
 
     // Wrap Cloudinary upload_stream in a Promise
@@ -95,6 +99,10 @@ export const handleMultipleImagesUpload = asyncHandler(
       targetFolder = 'agesense/gallery';
     } else if (context === 'partners') {
       targetFolder = 'agesense/partners';
+    } else if (context === 'team') {
+      targetFolder = 'agesense/team';
+    } else if (context === 'branches') {
+      targetFolder = 'agesense/branches';
     }
 
     const uploadStream = (fileBuffer: Buffer): Promise<any> => {

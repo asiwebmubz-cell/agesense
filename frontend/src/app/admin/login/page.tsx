@@ -12,6 +12,25 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // Forgot password state
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotMessage, setForgotMessage] = useState("");
+
+  const handleForgotPassword = async () => {
+    if (!forgotEmail.trim()) return;
+    try {
+      setForgotLoading(true);
+      const res = await (await import("@/services/auth.service")).forgotPassword(forgotEmail.trim());
+      setForgotMessage(res.message);
+    } catch (err: any) {
+      setForgotMessage(err?.message || "Failed to submit request.");
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -57,7 +76,16 @@ export default function AdminLoginPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-on-surface-variant" htmlFor="password">Password</label>
+            <div className="flex justify-between items-center">
+              <label className="text-sm font-medium text-on-surface-variant" htmlFor="password">Password</label>
+              <button
+                type="button"
+                onClick={() => setShowForgotModal(true)}
+                className="text-xs text-primary font-semibold hover:underline"
+              >
+                Forgot password?
+              </button>
+            </div>
             <input
               id="password"
               type="password"
@@ -92,6 +120,51 @@ export default function AdminLoginPage() {
             Go to Homepage
           </Link>
         </div>
+
+        {/* Forgot Password Modal */}
+        {showForgotModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+              <h3 className="text-lg font-bold text-on-surface">Reset Your Password</h3>
+              <p className="text-xs text-surface-variant">
+                Enter your staff email address. If an active account exists, password reset instructions will be generated.
+              </p>
+
+              {forgotMessage && (
+                <div className="p-3 bg-primary/10 border border-primary/20 text-primary text-xs rounded-lg">
+                  {forgotMessage}
+                </div>
+              )}
+
+              <input
+                type="email"
+                required
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                placeholder="staff@agesense.org"
+                className="w-full h-11 px-4 rounded-lg border border-outline-variant bg-background text-sm outline-none focus:ring-2 focus:ring-primary"
+              />
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowForgotModal(false)}
+                  className="px-4 py-2 bg-surface-container text-on-surface text-sm rounded-lg"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  disabled={forgotLoading}
+                  className="px-4 py-2 bg-primary text-on-primary text-sm font-bold rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                >
+                  {forgotLoading ? "Submitting..." : "Request Reset"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

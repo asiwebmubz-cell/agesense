@@ -21,12 +21,12 @@ const router = Router();
 router.get('/', getPublishedPrograms);
 
 // ─── Admin routes (require auth) ──────────────────────────────────────────────
-router.get('/admin', authMiddleware, requireRole(['super_admin', 'admin', 'content_manager']), getAllPrograms);
+router.get('/admin', authMiddleware, requireRole(['super_admin', 'marketing', 'branch_manager', 'admin', 'content_manager']), getAllPrograms);
 
 router.post(
   '/admin',
   authMiddleware,
-  requireRole(['super_admin', 'admin', 'content_manager']),
+  requireRole(['super_admin', 'marketing', 'branch_manager', 'admin', 'content_manager']),
   validate(createProgramSchema),
   createProgram
 );
@@ -34,7 +34,7 @@ router.post(
 router.put(
   '/admin/:id',
   authMiddleware,
-  requireRole(['super_admin', 'admin', 'content_manager']),
+  requireRole(['super_admin', 'marketing', 'branch_manager', 'admin', 'content_manager']),
   validate(programIdSchema, 'params'),
   validate(updateProgramSchema),
   updateProgram
@@ -43,7 +43,7 @@ router.put(
 router.delete(
   '/admin/:id',
   authMiddleware,
-  requireRole(['super_admin', 'admin', 'content_manager']),
+  requireRole(['super_admin', 'marketing', 'branch_manager', 'admin', 'content_manager']),
   validate(programIdSchema, 'params'),
   deleteProgram
 );

@@ -54,30 +54,63 @@ export default function WhoWeArePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Dhaka Chapter */}
-            <div className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant hover:border-primary transition-colors flex flex-col justify-between group">
+            <Link href="/regional-chapters" className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant hover:border-primary transition-colors flex flex-col justify-between group">
               <div>
                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
                   <span className="material-symbols-outlined text-primary">hub</span>
                 </div>
-                <h3 className="text-xl font-bold text-on-surface mb-3">Dhaka Chapter</h3>
+                <h3 className="text-xl font-bold text-on-surface mb-3">Dhaka Central Hub</h3>
                 <p className="text-base text-on-surface-variant leading-relaxed">
-                  Our central hub for strategic planning, national advocacy, and core service delivery.
+                  Our central headquarters for strategic planning, national advocacy, and core program delivery.
                 </p>
               </div>
-            </div>
+              <span className="text-xs font-bold text-primary mt-4 flex items-center gap-1">
+                View chapter details &rarr;
+              </span>
+            </Link>
 
             {/* Rajshahi Chapter */}
-            <div className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant hover:border-primary transition-colors flex flex-col justify-between group">
+            <Link href="/regional-chapters" className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant hover:border-primary transition-colors flex flex-col justify-between group">
               <div>
                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
                   <span className="material-symbols-outlined text-primary">distance</span>
                 </div>
-                <h3 className="text-xl font-bold text-on-surface mb-3">Rajshahi Chapter</h3>
+                <h3 className="text-xl font-bold text-on-surface mb-3">Rajshahi Regional Chapter</h3>
                 <p className="text-base text-on-surface-variant leading-relaxed">
-                  Expanding our reach to ensure elderly care and community support across regional demographics.
+                  Pioneering healthcare access, social inclusion, and active volunteer networks across northern Bangladesh.
                 </p>
               </div>
-            </div>
+              <span className="text-xs font-bold text-primary mt-4 flex items-center gap-1">
+                View chapter details &rarr;
+              </span>
+            </Link>
+          </div>
+
+          <div className="pt-4 flex flex-wrap gap-4">
+            <Link
+              href="/our-story"
+              className="px-5 py-2.5 bg-surface-container text-primary font-bold text-sm rounded-xl hover:bg-surface-container-high transition-colors"
+            >
+              Read Our Story &rarr;
+            </Link>
+            <Link
+              href="/values"
+              className="px-5 py-2.5 bg-surface-container text-primary font-bold text-sm rounded-xl hover:bg-surface-container-high transition-colors"
+            >
+              Our Core Values &rarr;
+            </Link>
+            <Link
+              href="/team"
+              className="px-5 py-2.5 bg-surface-container text-primary font-bold text-sm rounded-xl hover:bg-surface-container-high transition-colors"
+            >
+              Meet Governance Team &rarr;
+            </Link>
+            <Link
+              href="/regional-chapters"
+              className="px-5 py-2.5 bg-primary text-on-primary font-bold text-sm rounded-xl hover:bg-primary/90 transition-colors"
+            >
+              All Regional Chapters &rarr;
+            </Link>
           </div>
         </section>
 

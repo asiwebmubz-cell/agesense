@@ -6,6 +6,12 @@ import volunteersRouter from './volunteers.routes';
 import donorsRouter from './donors.routes';
 import statsRouter from './stats.routes';
 import partnershipsRouter from './partnerships.routes';
+import branchesRouter from './branches.routes';
+import teamRouter from './team.routes';
+import annualReportsRouter from './annual-reports.routes';
+import policiesRouter from './policies.routes';
+import siteContentRouter from './site-content.routes';
+import usersRouter from './users.routes';
 import { dbHealthCheck } from '../controllers/db-health.controller';
 import { handleImageUpload, handleMultipleImagesUpload, upload } from '../controllers/upload.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
@@ -33,33 +39,28 @@ const handleUploadMiddleware = (uploadField: any) => {
  * API Route Registry
  *
  * All routes are prefixed with /api in app.ts.
- *
- * Health:           GET  /api/health
- * DB Health:        GET  /api/db-health
- * Cloudinary Health: GET /api/cloudinary-health
- * Auth:             POST /api/auth/login
- * Admin Upload:     POST /api/admin/upload       (auth)
- *                   POST /api/admin/upload-multiple (auth)
- * Programs:         GET  /api/programs           (public)
- *                   CRUD /api/programs/admin      (auth)
- * Volunteers:       POST /api/volunteers          (public)
- *                   CRUD /api/volunteers/admin    (auth)
- * Donors:           POST /api/donors             (public)
- *                   GET  /api/donors/admin        (auth)
- * Stats:            GET  /api/stats              (public)
- * Partnerships:     POST /api/partnerships        (public)
- *                   CRUD /api/partnerships/admin  (auth)
  */
 router.use('/health', healthRouter);
 router.get('/db-health', dbHealthCheck);
 router.get('/cloudinary-health', cloudinaryHealthCheck);
 router.use('/auth', authRouter);
-router.post('/admin/upload', authMiddleware, requireRole(['super_admin', 'admin', 'content_manager']), handleUploadMiddleware(upload.single('image')), handleImageUpload);
-router.post('/admin/upload-multiple', authMiddleware, requireRole(['super_admin', 'admin', 'content_manager']), handleUploadMiddleware(upload.array('images', 20)), handleMultipleImagesUpload);
+
+// Uploads: open to super_admin, marketing, branch_manager (and legacy roles)
+const UPLOAD_ROLES = ['super_admin', 'marketing', 'branch_manager', 'admin', 'content_manager'];
+router.post('/admin/upload', authMiddleware, requireRole(UPLOAD_ROLES), handleUploadMiddleware(upload.single('image')), handleImageUpload);
+router.post('/admin/upload-multiple', authMiddleware, requireRole(UPLOAD_ROLES), handleUploadMiddleware(upload.array('images', 20)), handleMultipleImagesUpload);
+
 router.use('/programs', programsRouter);
 router.use('/volunteers', volunteersRouter);
 router.use('/donors', donorsRouter);
 router.use('/stats', statsRouter);
 router.use('/partnerships', partnershipsRouter);
+router.use('/branches', branchesRouter);
+router.use('/team', teamRouter);
+router.use('/annual-reports', annualReportsRouter);
+router.use('/policies', policiesRouter);
+router.use('/site-content', siteContentRouter);
+router.use('/users/admin', usersRouter);
 
 export default router;
+

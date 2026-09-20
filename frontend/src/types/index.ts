@@ -75,12 +75,96 @@ export interface Donor {
   updated_at: string;
 }
 
-// ─── Auth types ───────────────────────────────────────────────────────────────
-
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
+  user?: {
+    id: string;
+    email: string;
+    name?: string;
+    role: string;
+    branch_id?: string | null;
+  };
+}
+
+// ─── New Entities for AgeSense Expansion ─────────────────────────────────────
+
+export interface Branch {
+  id: string;
+  name: string;
+  division: string;
+  description?: string | null;
+  location?: string | null;
+  contact_info?: any;
+  image_url?: string | null;
+  is_active: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export type CommitteeType = 'Executive Committee' | 'Advisory Board';
+
+export interface TeamMember {
+  id: string;
+  branch_id: string;
+  branch_name?: string;
+  name: string;
+  position: string;
+  committee: CommitteeType;
+  photo_url?: string | null;
+  biography?: string | null;
+  display_order: number;
+  hierarchy_level: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AnnualReport {
+  id: string;
+  year: number;
+  title: string;
+  description?: string | null;
+  pdf_url?: string | null;
+  is_published: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Policy {
+  id: string;
+  title: string;
+  description?: string | null;
+  document_url?: string | null;
+  category?: string | null;
+  is_published: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SiteContent {
+  id: string;
+  key: string;
+  title?: string | null;
+  body: string;
+  metadata?: any;
+  updated_by?: string | null;
+  updated_at: string;
+}
+
+export interface AppUser {
+  id: string;
+  name?: string | null;
   email: string;
+  role: 'super_admin' | 'marketing' | 'branch_manager' | 'admin' | 'content_manager';
+  branch_id?: string | null;
+  branch_name?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 // ─── API utility types ────────────────────────────────────────────────────────
@@ -89,3 +173,4 @@ export interface ApiError {
   error: string;
   details?: string;
 }
+

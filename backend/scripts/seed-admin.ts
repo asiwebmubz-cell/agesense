@@ -41,19 +41,19 @@ async function seed() {
     // Check if user already exists
     const checkUser = await client.query('SELECT * FROM users WHERE email = $1', [email]);
     if (checkUser.rows.length > 0) {
-      console.log(`ℹ️  User "${email}" already exists. Updating password...`);
+      console.log(`ℹ️  User "${email}" already exists. Updating role to super_admin and updating password...`);
       await client.query(
-        'UPDATE users SET password = $1, updated_at = NOW() WHERE email = $2',
-        [hashedPassword, email]
+        'UPDATE users SET password = $1, role = $2, name = COALESCE(name, $3), is_active = true, updated_at = NOW() WHERE email = $4',
+        [hashedPassword, 'super_admin', 'Zarif (Super Admin)', email]
       );
-      console.log('✅ Admin password updated successfully.');
+      console.log('✅ Super Admin password and role updated successfully.');
     } else {
-      console.log(`🌱 Creating admin user "${email}"...`);
+      console.log(`🌱 Creating super_admin user "${email}"...`);
       await client.query(
-        'INSERT INTO users (email, password) VALUES ($1, $2)',
-        [email, hashedPassword]
+        'INSERT INTO users (email, password, role, name, is_active) VALUES ($1, $2, $3, $4, true)',
+        [email, hashedPassword, 'super_admin', 'Zarif (Super Admin)']
       );
-      console.log('✅ Admin user created successfully.');
+      console.log('✅ Super Admin user created successfully.');
     }
   } catch (err) {
     console.error('❌ Seeding operation failed:', err);

@@ -10,6 +10,7 @@ export interface AuthenticatedRequest extends Request {
     id?: string;
     email: string;
     role?: string;
+    branch_id?: string | null;
     jti?: string;
     iat?: number;
     exp?: number;

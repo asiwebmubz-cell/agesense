@@ -95,7 +95,7 @@ export const login = asyncHandler(
 
     const jti = crypto.randomUUID();
     const accessToken = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, jti },
+      { id: user.id, email: user.email, role: user.role, branch_id: user.branch_id || null, jti },
       env.JWT_SECRET,
       { expiresIn: '15m' }
     );
@@ -122,7 +122,14 @@ export const login = asyncHandler(
       success: true,
       message: 'Login successful.',
       accessToken,
-      refreshToken: rawRefreshToken
+      refreshToken: rawRefreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        branch_id: user.branch_id || null
+      }
     });
   }
 );
@@ -175,7 +182,7 @@ export const refresh = asyncHandler(
 
     const jti = crypto.randomUUID();
     const accessToken = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, jti },
+      { id: user.id, email: user.email, role: user.role, branch_id: user.branch_id || null, jti },
       env.JWT_SECRET,
       { expiresIn: '15m' }
     );
@@ -233,3 +240,99 @@ export const logout = asyncHandler(
     res.status(200).json({ success: true, message: 'Logged out successfully.' });
   }
 );
+
+/**
+ * Initiates password reset.
+ * Always returns 200 to prevent user enumeration attacks.
+ * Stores SHA-256 hashed token with 1-hour expiry.
+ */
+export const forgotPassword = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const { email } = req.body;
+
+    const users = await db.query('SELECT id, email, is_active FROM users WHERE email = $1', [email]);
+    if (users.length > 0 && users[0].is_active !== false) {
+      const user = users[0];
+      const rawToken = crypto.randomBytes(32).toString('hex');
+      const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+      // Invalidate existing reset tokens for user
+      await db.query('DELETE FROM password_reset_tokens WHERE user_id = $1', [user.id]);
+
+      // Save new reset token
+      await db.query(
+        'INSERT INTO password_reset_tokens (user_id, token_hash, expires_at) VALUES ($1, $2, $3)',
+        [user.id, tokenHash, expiresAt]
+      );
+
+      await logSecurityEvent({
+        userId: user.id,
+        action: 'password_reset_requested',
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+        metadata: { email }
+      });
+
+      // =========================================================================
+      // [TODO - EMAIL PROVIDER DECISION BLOCKED]
+      // Once email provider (Resend / Brevo / SMTP) is chosen, wire send email here:
+      // const resetUrl = `${process.env.FRONTEND_URL || 'https://agesense.org'}/reset-password?token=${rawToken}`;
+      // await sendPasswordResetEmail(user.email, resetUrl);
+      // =========================================================================
+      console.log(`[PASSWORD_RESET_TOKEN_GENERATED] Email: ${email}, Token: ${rawToken}`);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'If an account exists with this email, password reset instructions have been generated.'
+    });
+  }
+);
+
+/**
+ * Resets user password given a valid token.
+ */
+export const resetPassword = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const { token, newPassword } = req.body;
+
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    const resetRecords = await db.query(
+      'SELECT * FROM password_reset_tokens WHERE token_hash = $1 AND expires_at > NOW()',
+      [tokenHash]
+    );
+
+    if (resetRecords.length === 0) {
+      throw new ApiError(400, 'Invalid or expired password reset token.');
+    }
+
+    const record = resetRecords[0];
+    const hashedPassword = await argon2.hash(newPassword, { type: argon2.argon2id });
+
+    // Update password and clear failed login attempts/lockouts
+    await db.query(
+      'UPDATE users SET password = $1, failed_login_attempts = 0, locked_until = NULL, updated_at = NOW() WHERE id = $2',
+      [hashedPassword, record.user_id]
+    );
+
+    // Delete all reset tokens for this user
+    await db.query('DELETE FROM password_reset_tokens WHERE user_id = $1', [record.user_id]);
+    // Revoke all existing refresh sessions
+    await db.query('DELETE FROM refresh_tokens WHERE user_id = $1', [record.user_id]);
+
+    await logSecurityEvent({
+      userId: record.user_id,
+      action: 'password_reset_completed',
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent']
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Password has been reset successfully. Please log in with your new password.'
+    });
+  }
+);
+
