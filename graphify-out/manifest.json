@@ -354,8 +354,8 @@
     "semantic_hash": "762b209640516f3b5e8490233815850c"
   },
   "frontend/next-env.d.ts": {
-    "mtime": 1780603709.2482736,
-    "seen": 1789896796.0024292,
+    "mtime": 1789911650.8330905,
+    "seen": 1789911668.1858082,
     "ast_hash": "2a74d3909800ca5467fa83b0ab4a4890",
     "semantic_hash": "2a74d3909800ca5467fa83b0ab4a4890"
   },
@@ -1182,9 +1182,9 @@
     "semantic_hash": ""
   },
   "backend/src/database/migrations/15_roles_permissions.sql": {
-    "mtime": 1789907260.0614216,
-    "seen": 1789908933.990033,
-    "ast_hash": "e55cea844efc21ae17b46724f3a16879",
+    "mtime": 1789910984.106279,
+    "seen": 1789911668.1858082,
+    "ast_hash": "601f94cd1d97f9116734edf87824ab6d",
     "semantic_hash": ""
   },
   "backend/src/routes/roles.routes.ts": {
@@ -1215,6 +1215,18 @@
     "mtime": 1789907504.696751,
     "seen": 1789908933.990033,
     "ast_hash": "0910af0cb7864f5f52e39fe9b719b251",
+    "semantic_hash": ""
+  },
+  "backend/scripts/check-online-db.ts": {
+    "mtime": 1789911033.0865057,
+    "seen": 1789911668.1858082,
+    "ast_hash": "cf8b843bbbae9244e0f573d675b91c51",
+    "semantic_hash": ""
+  },
+  "backend/scripts/run-full-qa.ts": {
+    "mtime": 1789911596.201501,
+    "seen": 1789911668.1858082,
+    "ast_hash": "b29944a63aa9fc80ecbf06168da5956e",
     "semantic_hash": ""
   }
 }

@@ -36,6 +36,13 @@ CREATE INDEX IF NOT EXISTS idx_roles_name ON roles(name);
 
 -- ─── System roles ─────────────────────────────────────────────────────────────
 INSERT INTO roles (name, description, is_system, assignable) VALUES
+  ('super_admin',     'Full platform control. Cannot be edited or deleted.', true, true),
+  ('marketing',       'Organization-wide content and partnership management.', true, true),
+  ('branch_manager',  'Branch-scoped content and team management.', true, true),
+  ('admin',           'Legacy role. Kept for existing accounts only.', true, false),
+  ('content_manager', 'Legacy role. Kept for existing accounts only.', true, false)
+ON CONFLICT (name) DO NOTHING;
+
 -- ─── Permission catalog ───────────────────────────────────────────────────────
 INSERT INTO permissions (key, description, category) VALUES
   ('view_users',            'View user accounts.', 'users'),
@@ -112,9 +119,3 @@ SELECT r.id, p.id FROM roles r JOIN permissions p ON p.key IN (
   'upload_images'
 ) WHERE r.name = 'content_manager'
 ON CONFLICT DO NOTHING;
-  ('super_admin',     'Full platform control. Cannot be edited or deleted.', true, true),
-  ('marketing',       'Organization-wide content and partnership management.', true, true),
-  ('branch_manager',  'Branch-scoped content and team management.', true, true),
-  ('admin',           'Legacy role. Kept for existing accounts only.', true, false),
-  ('content_manager', 'Legacy role. Kept for existing accounts only.', true, false)
-ON CONFLICT (name) DO NOTHING;

@@ -18,9 +18,9 @@
     "semantic_hash": "e0a5a72152e03cdbcdb73a81718ec946"
   },
   "backend/scripts/seed-admin.ts": {
-    "mtime": 1789907477.3902576,
-    "seen": 1789908933.990033,
-    "ast_hash": "f1f9e6c47ffac9198ff18aad8f088e80",
+    "mtime": 1789909877.225602,
+    "seen": 1789909936.3499348,
+    "ast_hash": "7f664e478be42007c03d32a6add84aec",
     "semantic_hash": ""
   },
   "backend/scripts/test_delete_cascade.js": {
@@ -120,9 +120,9 @@
     "semantic_hash": "4a07e064196a7a60c9bff2220918e287"
   },
   "backend/src/middleware/auth.middleware.ts": {
-    "mtime": 1789907281.8214223,
-    "seen": 1789908933.990033,
-    "ast_hash": "cad41e65dcd64c54101d3b158000febb",
+    "mtime": 1789909878.9471002,
+    "seen": 1789909936.3499348,
+    "ast_hash": "89c84b3c0765ea25597759d6ba4564b4",
     "semantic_hash": ""
   },
   "backend/src/middleware/error.middleware.ts": {
