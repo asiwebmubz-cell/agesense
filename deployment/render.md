@@ -16,15 +16,20 @@ Configure these variables in the Render Dashboard under **Environment**:
 |---|---|---|
 | `NODE_ENV` | Mode of the application | `production` |
 | `PORT` | Port for the express app | `5000` |
-| `FRONTEND_URL` | URL of the frontend app | `https://agesense.vercel.app` |
+| `FRONTEND_URL` | Primary frontend origin for CORS | `https://agesense.vercel.app` |
+| `ALLOWED_ORIGINS` | Comma-separated additional CORS origins | `https://agesense.org,https://www.agesense.org,https://agesense.vercel.app` |
 | `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:[PASSWORD]@db.supabase.co:5432/postgres` |
+| `SUPABASE_URL` | Supabase REST API URL | `https://<project-ref>.supabase.co/rest/v1/` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service-role secret key | `sb_secret_...` |
 | `JWT_SECRET` | Secret key for JWT | Secure random string (min 16 chars) |
 | `ADMIN_EMAIL` | Administrator Email | `admin@agesense.org` |
 | `ADMIN_PASSWORD` | Administrator Password | Secure admin password |
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary name | `dbacpre0g` |
 | `CLOUDINARY_API_KEY` | Cloudinary API Key | `266564921745161` |
-| `CLOUDINARY_API_SECRET` | Cloudinary API Secret | `PDDSEBsmDfsr4Hxa3MvsOZJEHf4` |
-| `RENDER_EXTERNAL_URL` | External URL of the service | Set to the Render assigned URL (e.g. `https://agesense-api.onrender.com`) |
+| `CLOUDINARY_API_SECRET` | Cloudinary API Secret | _(your Cloudinary secret)_ |
+| `RENDER_EXTERNAL_URL` | External URL of this Render service | `https://agesense-backend.onrender.com` |
+
+> **Important**: `ALLOWED_ORIGINS` must include every custom domain that serves the frontend. If the frontend is accessible via both `agesense.vercel.app` and `agesense.org`, both must be listed. Missing origins will cause CORS errors (HTTP 500) for users on those domains.
 
 ## Health Check URL
 
