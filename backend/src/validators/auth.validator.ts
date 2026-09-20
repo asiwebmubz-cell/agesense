@@ -29,7 +29,7 @@ export const resetPasswordSchema = z.object({
   token: z.string({ required_error: 'token is required.' }).min(1),
   newPassword: z
     .string({ required_error: 'newPassword is required.' })
-    .min(6, 'newPassword must be at least 6 characters.'),
+    .min(8, 'newPassword must be at least 8 characters.'),
 }).strict();
 
 export type LoginInput = z.infer<typeof loginSchema>;

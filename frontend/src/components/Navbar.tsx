@@ -64,10 +64,6 @@ export default function Navbar() {
           <Link href="/regional-chapters" className="text-on-surface-variant hover:text-primary transition-colors text-sm font-medium">Regional Chapters</Link>
           <Link href="/annual-report" className="text-on-surface-variant hover:text-primary transition-colors text-sm font-medium">Annual Report</Link>
           <Link href="/volunteer" className="text-on-surface-variant hover:text-primary transition-colors text-sm font-medium">Get Involved</Link>
-
-          <Link href="/admin/login" className="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium border-t lg:border-t-0 lg:border-l border-outline-variant pt-2 lg:pt-0 lg:pl-4 opacity-75">
-            Admin
-          </Link>
         </nav>
         <div className="flex items-center gap-4">
           <Link href="/donate" className="bg-primary text-on-primary px-6 py-2.5 rounded-full text-sm font-medium hover:opacity-90 active:scale-95 transition-all shadow-md">

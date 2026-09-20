@@ -280,7 +280,8 @@ export const forgotPassword = asyncHandler(
       // const resetUrl = `${process.env.FRONTEND_URL || 'https://agesense.org'}/reset-password?token=${rawToken}`;
       // await sendPasswordResetEmail(user.email, resetUrl);
       // =========================================================================
-      console.log(`[PASSWORD_RESET_TOKEN_GENERATED] Email: ${email}, Token: ${rawToken}`);
+      // NOTE: never log the raw reset token — it grants password-reset access.
+      console.log(`[PASSWORD_RESET_TOKEN_GENERATED] A password reset token was generated for a user account.`);
     }
 
     res.status(200).json({

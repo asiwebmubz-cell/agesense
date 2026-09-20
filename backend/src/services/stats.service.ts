@@ -34,9 +34,12 @@ export const statsService = {
       publishedProgramsCount: programsResult[0]?.programs || 0,
       publishedWorkCount: programsResult[0]?.work || 0,
       publishedStoriesCount: programsResult[0]?.stories || 0,
-      eldersHelped: 2578 + (volunteersResult[0]?.approved || 0),
-      aidDelivered: 1723 + (donorsResult[0]?.total || 0),
-      voluntaryHours: 4320 + (volunteersResult[0]?.approved || 0) * 12,
+      // NOTE: Elders Helped, Aid Delivered, and Voluntary Hours have no verified
+      // data source yet — returned as 0 (rendered as a neutral state on the
+      // frontend) instead of invented placeholder numbers.
+      eldersHelped: 0,
+      aidDelivered: 0,
+      voluntaryHours: 0,
       yearsActive: 2,
     };
   }

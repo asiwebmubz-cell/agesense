@@ -52,38 +52,19 @@ export default function WhoWeArePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Dhaka Chapter */}
-            <Link href="/regional-chapters" className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant hover:border-primary transition-colors flex flex-col justify-between group">
-              <div>
-                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                  <span className="material-symbols-outlined text-primary">hub</span>
-                </div>
-                <h3 className="text-xl font-bold text-on-surface mb-3">Dhaka Central Hub</h3>
-                <p className="text-base text-on-surface-variant leading-relaxed">
-                  Our central headquarters for strategic planning, national advocacy, and core program delivery.
-                </p>
+          <div className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant hover:border-primary transition-colors flex flex-col justify-between group">
+            <div>
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                <span className="material-symbols-outlined text-primary">hub</span>
               </div>
-              <span className="text-xs font-bold text-primary mt-4 flex items-center gap-1">
-                View chapter details &rarr;
-              </span>
-            </Link>
-
-            {/* Rajshahi Chapter */}
-            <Link href="/regional-chapters" className="bg-surface-container-low p-8 rounded-2xl border border-outline-variant hover:border-primary transition-colors flex flex-col justify-between group">
-              <div>
-                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                  <span className="material-symbols-outlined text-primary">distance</span>
-                </div>
-                <h3 className="text-xl font-bold text-on-surface mb-3">Rajshahi Regional Chapter</h3>
-                <p className="text-base text-on-surface-variant leading-relaxed">
-                  Pioneering healthcare access, social inclusion, and active volunteer networks across northern Bangladesh.
-                </p>
-              </div>
-              <span className="text-xs font-bold text-primary mt-4 flex items-center gap-1">
-                View chapter details &rarr;
-              </span>
-            </Link>
+              <h3 className="text-xl font-bold text-on-surface mb-3">Our Regional Chapters</h3>
+              <p className="text-base text-on-surface-variant leading-relaxed">
+                AgeSense operates through regional chapters across Bangladesh. Visit our Regional Chapters page for the current list of active chapters, their locations, and contact details.
+              </p>
+            </div>
+            <span className="text-xs font-bold text-primary mt-4 flex items-center gap-1">
+              View all regional chapters &rarr;
+            </span>
           </div>
 
           <div className="pt-4 flex flex-wrap gap-4">
